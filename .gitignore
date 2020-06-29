@@ -1,0 +1,21 @@
+# Python
+.env
+.pyc
+venv
+
+# Anaconda
+envs
+
+# OS X Artifacts
+.DS_Store
+
+# Publishing Artifacts
+artifacts
+
+# IPython
+.ipynb_checkpoints
+
+# Frontend Ignores
+node_modules
+.next
+.now

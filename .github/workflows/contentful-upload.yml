@@ -1,0 +1,32 @@
+# This workflow will publish labs to contentful for displaying Optimizely Labs
+name: Contentful Upload
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install contentful_management
+        pip install python-frontmatter
+        pip install boto3
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+    - name: Upload
+      env:
+        LABS_CONTENTFUL_SPACE_ID: zw48pl1isxmc
+        LABS_CONTENTFUL_ENVIRONMENT: asa-labs
+        LABS_CONTENTFUL_MANAGEMENT_API_TOKEN: ${{ secrets.MARKETING_CONTENTFUL_MANAGEMENT_API_TOKEN }}
+      run: |
+        python utils/publish.py
