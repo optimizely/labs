@@ -25,6 +25,14 @@ jobs:
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Upload
       env:
+        # TODO: Change to https://library.optimizely.com/
+        LIBRARY_URL: https://asa-labs.s3.us-east-2.amazonaws.com/
+        # TODO: Change to library-optimizely-com
+        LIBRARY_S3_BUCKET: asa-labs
+        LIBRARY_S3_ACCESS_KEY: ${{ secrets.LIBRARY_S3_ACCESS_KEY }}
+
+        LIBRARY_S3_SECRET_KEY: ${{ secrets.LIBRARY_S3_SECRET_KEY }}
+
         LABS_CONTENTFUL_SPACE_ID: zw48pl1isxmc
         LABS_CONTENTFUL_ENVIRONMENT: asa-labs
         LABS_CONTENTFUL_MANAGEMENT_API_TOKEN: ${{ secrets.MARKETING_CONTENTFUL_MANAGEMENT_API_TOKEN }}
