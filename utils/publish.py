@@ -11,7 +11,9 @@ import contentful_management
 LABS_PATH = 'labs'
 ARTIFACTS_PATH = 'artifacts'
 
-CONTENTFUL_ID_REGEX_REQUIREMENT = '^[a-zA-Z0-9-_.]{1,64}$'
+# This satisfies the Contentful Entry Id requirements AND
+# Enforces dashcase-ing which is what our Marketing slugs are
+SLUG_REGEX_REQUIREMENT = '^[a-zA-Z0-9-.]{1,64}$'
 CONTENTFUL_LAB_TYPE = 'lab'
 
 CONTENTFUL_ENVIRONMENT = os.environ['LABS_CONTENTFUL_ENVIRONMENT']
@@ -232,7 +234,7 @@ def main():
   print('Asserting slugs are in proper format...')
   for slug in slugs:
     try:
-      assert re.match(CONTENTFUL_ID_REGEX_REQUIREMENT, slug)
+      assert re.match(SLUG_REGEX_REQUIREMENT, slug)
     except:
       print('Error! Slug must be alphanumeric, dashes, underscores, and periods, between 1 and 64 characters. Got: %s' % slug)
   print('All slugs satisfy string requirements!')

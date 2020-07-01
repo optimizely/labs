@@ -5,12 +5,12 @@ To add a lab:
 
 2. Create a new directory under the `/labs` directory in this repo. For example:
 ```
-/labs/new_awesome_tutorial
+/labs/new-awesome-tutorial
 ```
 
 3. Insert your content in a `README.md` file. For example:
 
-In: `/labs/new_awesome_tutorial/README.md`
+In: `/labs/new-awesome-tutorial/README.md`
 ```
 # Tutorial
 This is the whole tutorial!
@@ -18,7 +18,7 @@ This is the whole tutorial!
 
 4. Add a `metadata.md` file to contain metadata about your tutorial. For example:
 
-In: `/labs/new_awesome_tutorial/metadata.md`:
+In: `/labs/new-awesome-tutorial/metadata.md`:
 ```
 ---
 title: 'Awesome Tutorial'
