@@ -66,7 +66,7 @@ def get_body(slug):
   '''
   body = None
   prioritized_filenames = [
-    'index.html',
+    'index.md',
     'README.md',
   ]
   for filename in prioritized_filenames:
@@ -80,7 +80,7 @@ def get_body(slug):
   if body:
     return body
   else:
-    raise FileNotFoundError('No index.html or README.md found for lab %s' % slug)
+    raise FileNotFoundError('You must provide one of %s for the \'%s\' lab!' % (prioritized_filenames, slug))
 
 
 def zip_contents(slug):
