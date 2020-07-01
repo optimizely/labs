@@ -34,7 +34,7 @@ jobs:
         LIBRARY_S3_SECRET_KEY: ${{ secrets.LIBRARY_S3_SECRET_KEY }}
 
         LABS_CONTENTFUL_SPACE_ID: zw48pl1isxmc
-        LABS_CONTENTFUL_ENVIRONMENT: asa-labs
+        LABS_CONTENTFUL_ENVIRONMENT: master
         LABS_CONTENTFUL_MANAGEMENT_API_TOKEN: ${{ secrets.MARKETING_CONTENTFUL_MANAGEMENT_API_TOKEN }}
       run: |
         python utils/publish.py
