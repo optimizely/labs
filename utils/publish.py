@@ -55,16 +55,30 @@ def get_info(slug):
   frontmatter_object = frontmatter.load(os.path.join(LABS_PATH, slug, 'metadata.md'))
   return frontmatter_object.metadata
 
-def get_markdown(slug):
-  '''
-  Retrieves the markdown text for the specific lab
-  TODO: Use Jupyter notebook file as a priority?
 
-  Returns:
-    String representing the markdown from README.md under a particular lab
+def get_body(slug):
   '''
-  f = open(os.path.join(LABS_PATH, slug, 'README.md'), 'r')
-  return f.read()
+  Retrieves the body of the lab.
+  If there is an index.html file, we use that first
+  Otherwise, we use the README.md file.
+  '''
+  body = None
+  prioritized_filenames = [
+    'index.html',
+    'README.md',
+  ]
+  for filename in prioritized_filenames:
+    try:
+      f = open(os.path.join(LABS_PATH, slug, filename), 'r')
+      body = f.read()
+      break
+    except FileNotFoundError:
+      pass
+
+  if body:
+    return body
+  else:
+    raise FileNotFoundError('No index.html or README.md found for lab %s' % slug)
 
 
 def zip_contents(slug):
@@ -129,7 +143,7 @@ def publish_lab(slug):
   uploaded = upload_to_aws(zip_path, LIBRARY_S3_BUCKET, s3_path)
 
   lab_info = get_info(slug)
-  lab_info['markdown'] = get_markdown(slug)
+  lab_info['body'] = get_body(slug)
 
   resource_url = LIBRARY_URL + s3_path
   lab_info['resourceUrl'] = resource_url if uploaded else None
@@ -160,7 +174,7 @@ def upsert_lab_to_contentful(slug, lab_info):
         'en-US': lab_info['summary'],
       },
       'body': {
-        'en-US': lab_info['markdown'],
+        'en-US': lab_info['body'],
       },
       'resourceUrl': {
         'en-US': lab_info['resourceUrl']
