@@ -4,7 +4,7 @@
 This Optimizely Web extension enables you to put a banner on the top of your website for important message for your users.
 
 ## Screenshot
-![Screenshot](https://github.com/optimizely/extension-library/blob/master/Extensions/Editor%20Extensions/Banner/screenshot.png)
+![Screenshot](https://raw.githubusercontent.com/optimizely/library/master/Extensions/Editor%20Extensions/Banner/screenshot.png)
 
 ## Installation
 
