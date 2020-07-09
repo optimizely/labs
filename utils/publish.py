@@ -141,7 +141,8 @@ def publish_lab(slug):
     slug: String representing the slug of the lab
   '''
   zip_path = zip_contents(slug)
-  s3_path = os.path.join(LABS_PATH, ARTIFACTS_PATH, slug, 'resources.zip')
+  file_name = slug + '.zip'
+  s3_path = os.path.join(LABS_PATH, ARTIFACTS_PATH, slug, file_name)
   uploaded = upload_to_aws(zip_path, LIBRARY_S3_BUCKET, s3_path)
 
   lab_info = get_info(slug)
