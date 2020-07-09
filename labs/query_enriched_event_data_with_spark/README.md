@@ -1,6 +1,6 @@
 # Querying Optimizely Enriched Event data with Apache Spark
 
-In the [Enriched Events](../enriched_events) Lab we learned how to download [Enriched Event Data](https://docs.developers.optimizely.com/web/docs/enriched-events-export).  In this Lab we'll learn how to query that data with [Apache Spark](https://spark.apache.org/).
+In this Lab we'll learn how to query [Optimizely Enriched Event data](https://docs.developers.optimizely.com/web/docs/enriched-events-export) with [Apache Spark](https://spark.apache.org/).
 
 Spark is a powerful, widely-adopted engine for data processing. It's easy to run on a single machine and scales up to handle arbitrarily large workloads. It also works well with the Enriched Events dataset, which is stored using the [Apache Parquet](https://parquet.apache.org/) format.
 
