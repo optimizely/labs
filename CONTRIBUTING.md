@@ -16,14 +16,19 @@ In: `/labs/new-awesome-tutorial/README.md`
 This is the whole tutorial!
 ```
 
-4. Add a `metadata.md` file to contain metadata about your tutorial. For example:
+If you are creating new content, use the [new-content](./templates/new-content/README.md) README.md template.
 
-In: `/labs/new-awesome-tutorial/metadata.md`:
+If you are linking to existing content, use the [link-to-existing](./templates/link-to-existing-content/README.md) README.md template.
+
+4. Add a `metadata.md` file to contain metadata about your tutorial following the [metadata](./templates/metadata.md)
+   template.
+
+For example, in: `/labs/new-awesome-tutorial/metadata.md`:
 ```
 ---
 title: 'Awesome Tutorial'
 summary: 'Description of the awesome tutorial'
-revisionDate: '2020-03-16T05:35:07.322Z'
+revisionDate: '2020-03-16'
 labels:
   - data
 
