@@ -1,25 +1,26 @@
 ---
-title: Title of Post
-summary: Short summary of the post
-revisionDate: 'YYYY-MM-DD'
+title: Feature Flags in Ruby Sinatra
+summary: How to implement feature flags in a Ruby Sinatra server-side application using Optimizely Rollouts.
+revisionDate: '2020-07-09'
 labels:
-  - tag1
-  - tag2
-  - tag3
+  - Full Stack
+  - Ruby
+  - Sinatra
+  - Feature Flags
 
 author:
-  name: FirstName LastName
-  headshot: https://raw.githubusercontent.com/optimizely/labs/master/assets/author-headshots/firstname-lastname.png
-  bio: Short bio describing yourself.
-  title: Your Job Title
-  company: Current Company
+  name: Asa Schachar
+  headshot:
+  bio:
+  title: Developer Advocate
+  company: Optimizely
 
 seo:
-  title: Title of Post
-  description: Short description of post
+  title: Feature Flags in Ruby Sinatra
+  description: How to implement feature flags in a Ruby Sinatra server-side application using Optimizely Rollouts
   ogTitle:
   ogDescription:
   ogImage:
   twitterImage:
-  noindex: true
+  noindex: false
 ---
