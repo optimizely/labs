@@ -20,7 +20,7 @@ If you are creating new content, use the [new-content](./templates/new-content/R
 
 If you are linking to existing content, use the [link-to-existing](./templates/link-to-existing-content/README.md) README.md template.
 
-Note: If you include any links, ensure the link is an absolute url rather than a url that points to a relative location on this repository.
+Note: If you include any links or screenshots in your post, ensure the link is an absolute url rather than a url that points to a relative location on this repository. You can convert any relative link to this repository to an absolute link by prefixing the relative link with `https://raw.githubusercontent.com/optimizely/labs/master/` for images and `https://github.com/optimizely/labs/master/` for any other content. For example: a relative link to `./templates/new-content/README.md` would become: `https://github.com/optimizely/labs/blob/master/templates/new-content/README.md`
 
 4. Add a `metadata.md` file to contain metadata about your tutorial following the [metadata](./templates/metadata.md)
    template.
