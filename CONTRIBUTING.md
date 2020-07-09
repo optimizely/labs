@@ -20,6 +20,8 @@ If you are creating new content, use the [new-content](./templates/new-content/R
 
 If you are linking to existing content, use the [link-to-existing](./templates/link-to-existing-content/README.md) README.md template.
 
+Note: If you include any links, ensure the link is an absolute url rather than a url that points to a relative location on this repository.
+
 4. Add a `metadata.md` file to contain metadata about your tutorial following the [metadata](./templates/metadata.md)
    template.
 
