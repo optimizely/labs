@@ -11,6 +11,10 @@ This Lab covers some of the basics of working with event-level experiment data. 
 
 This guide borrows some initialization code from the [Spark SQL getting started guide](https://spark.apache.org/docs/latest/sql-getting-started.html).
 
+## How to run this notebook
+
+This lab lives in the [Optimizely Labs](https://github.com/optimizely/labs) repository.  Each lab contains a `README.md` file with instructions for running notebooks and any other executable code.
+
 ## Creating a Spark Session
 
 
