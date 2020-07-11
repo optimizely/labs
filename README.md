@@ -8,7 +8,7 @@ Labs are **self-contained**, so all of the instructions and resources needed to 
 
 ## Resources
 
-- [Optimizely Labs page](https://stage-marketing-pr-1182.herokuapp.com/labs/) - A hand website for exploring, reading, and downloading lab code.
+- [Optimizely Labs page](https://stage-marketing-pr-1182.herokuapp.com/labs/) - A handy website for exploring, reading, and downloading lab code.
 - [Labs directory](labs) - The source of truth for lab content.
 - [Contributing guide](CONTRIBUTING.md) - Want to contribute to this repository?  Start here.
 
