@@ -4,7 +4,7 @@
 
 However, building a feature flagging system is usually not your company's core competency and can be a distraction from other development efforts.
 
-In this step-by-step lab, you'll see how to easily integrate feature flags into your Ruby Sinatra application with a
+In this step-by-step lab, you'll see how to integrate feature flags into your Ruby Sinatra application with a
 free version of Optimizely, Optimizely Rollouts.
 
 ## Pre-requisites
