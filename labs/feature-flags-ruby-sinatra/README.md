@@ -5,14 +5,14 @@
 However, building a feature flagging system is usually not your company's core competency and can be a distraction from other development efforts.
 
 In this step-by-step lab, you'll see how to integrate feature flags into your Ruby Sinatra application with a
-free version of Optimizely, Optimizely Rollouts.
+free version of Optimizely, [Optimizely Rollouts](https://www.optimizely.com/rollouts-signup/?utm_source=labs&utm_campaign=asa-sinatra-flags-lab).
 
 ## Pre-requisites
  [Ruby 2.3](https://www.ruby-lang.org/en/documentation/installation/)
 
-### Create a Ruby Sinatra Application
+## Create a Ruby Sinatra Application
 
-If you already have a Ruby application feel free to skip to the [next section](#create-a-feature-flag). Otherwise, follow the instructions to start a new Ruby Sinatra application:
+If you already have a Ruby application feel free to skip to the next section "Create a Feature Flag". Otherwise, follow the instructions to start a new Ruby Sinatra application:
 
 
 Create a file called `myapp.rb` and paste the following contents:
@@ -46,11 +46,11 @@ Open a browser to see your server running at http://localhost:4567 with the mess
 
 ![Screenshot](https://raw.githubusercontent.com/optimizely/labs/master/labs/feature-flags-ruby-sinatra/screenshots/app.png)
 
-### Create a Feature Flag
+## Steps
 
-#### 1. Setup the Feature Flag Interface
+### 1. Setup the Feature Flag Interface
 
-Create a free Optimizely Rollouts account [here](https://www.optimizely.com/rollouts-signup/?utm_source=labs&utm_campaign=asa-sinatra-flags).
+Create a free Optimizely Rollouts account [here](https://www.optimizely.com/rollouts-signup/?utm_source=labs&utm_campaign=asa-sinatra-flags-lab).
 
 In the Rollouts interface, navigate to 'Features > Create New Feature' and create a feature flag called 'hello_world':
 
@@ -60,7 +60,7 @@ To connect your 'hello_world' feature to your application, find your SDK Key. Na
 
 ![Screenshot](https://raw.githubusercontent.com/optimizely/labs/master/labs/feature-flags-ruby-sinatra/screenshots/sdk-key.gif)
 
-#### 2. Install the Optimizely Rollouts Ruby SDK
+### 2. Install the Optimizely Rollouts Ruby SDK
 
 The Ruby SDK allows you to setup feature toggles from within your codebase.
 
@@ -128,7 +128,7 @@ get '/' do
 end
 ```
 
-#### 3. Implement the Feature Flag
+### 3. Implement the Feature Flag
 
 To implement your 'hello_world' feature flag, use the is_feature_enabled method on the optimizely client instance:
 
@@ -167,7 +167,7 @@ get '/' do
 end
 ```
 
-#### Turn the Feature Toggle on!
+### 4. Turn the Feature Toggle on!
 
 If you save and re-run your application now, you'll notice that you did not get the feature. This is because the feature is not enabled, which means it's off for all visitors to your application.
 
