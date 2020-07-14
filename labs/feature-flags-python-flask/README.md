@@ -105,7 +105,7 @@ optimizely_client = optimizely.Optimizely(config_manager=config_manager)
 ```
 
 The above code initializes Optimizely to poll for changes in feature flags and experiments every 10 seconds. The reason
-we place this code in an `optimizely-singelton.py` file is so that you can import this file anywhere you want in your
+we place this code in an `optimizely-singleton.py` file is so that you can import this file anywhere you want in your
 Flask application and it will point to the same instance of Optimizely.
 
 Require the Optimizely singleton instance in your Flask application by adding `from optimizely_singleton import optimizely_client` in `main.py`:
