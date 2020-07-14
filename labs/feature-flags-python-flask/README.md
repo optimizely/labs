@@ -5,7 +5,7 @@
 However, building a feature flagging system is usually not your company's core competency and can be a distraction from other development efforts.
 
 In this step-by-step lab, you'll see how to integrate feature flags into your Python Flask application with a
-free version of Optimizely, [Optimizely Rollouts](https://www.optimizely.com/rollouts-signup/?utm_source=labs&utm_campaign=asa-python-flask-flags-lab).
+free version of Optimizely, [Optimizely Rollouts](https://www.optimizely.com/rollouts-signup/?utm_source=labs&utm_campaign=python-flask-feature-flags-lab).
 
 ## Pre-requisites
  [Python 3](https://www.python.org/downloads/)
@@ -66,15 +66,15 @@ Open a browser to see your server running at `http://127.0.0.1:5000/` with the m
 
 ### 2. Setup the Feature Flag Interface
 
-Create a free Optimizely Rollouts account [here](https://www.optimizely.com/rollouts-signup/?utm_source=labs&utm_campaign=asa-sinatra-flags-lab).
+Create a free Optimizely Rollouts account [here](https://www.optimizely.com/rollouts-signup/?utm_source=labs&utm_campaign=python-flask-feature-flags-lab).
 
 In the Rollouts interface, navigate to 'Features > Create New Feature' and create a feature flag called 'hello_world':
 
-![Screenshot](https://raw.githubusercontent.com/optimizely/labs/master/labs/feature-flags-ruby-sinatra/screenshots/create-flag.gif)
+![Screenshot](https://raw.githubusercontent.com/optimizely/labs/master/assets/optimizely-screenshots/create-flag.gif)
 
 To connect your 'hello_world' feature to your application, find your SDK Key. Navigate to the far left 'Settings' > 'Environments' and copy the Development SDK Key value.
 
-![Screenshot](https://raw.githubusercontent.com/optimizely/labs/master/labs/feature-flags-ruby-sinatra/screenshots/sdk-key.gif)
+![Screenshot](https://raw.githubusercontent.com/optimizely/labs/master/assets/optimizely-screenshots/sdk-key.gif)
 
 ### 3. Install the Optimizely Python SDK
 
@@ -178,6 +178,8 @@ To turn on the feature:
 4. Change to the 'Development' environment to match the SDK Key we used
 5. Roll the feature out to ensure it is set to 100% for everyone
 6. Click Save to save your changes
+
+![Screenshot](https://raw.githubusercontent.com/optimizely/labs/master/assets/optimizely-screenshots/flag-rollout-dev.gif)
 
 In less than 1 min, refreshing your Python app should now show the feature toggled on and you should see "Feature flag is ON!".
 

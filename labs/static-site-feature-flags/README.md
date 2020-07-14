@@ -94,9 +94,10 @@ To turn on your feature flag:
 3. Change to the 'Development' environment to match the SDK Key we used
 4. Roll the feature out to ensure it is set to 100% for everyone
 5. Click Save to save your changes
-6. Wait at least 10 seconds
-7. Reload the codepen page to see the feature flag update.
 
+![Screenshot](https://raw.githubusercontent.com/optimizely/labs/master/assets/optimizely-screenshots/flag-rollout-dev.gif)
+
+After at least 10 seconds you can try and reload the codepen page to see the feature flag update has propagated to your application.
 
 If you did not see the feature flag turn on, double check that you are not running any ad-blockers and check your code against a full code sample below (being sure to update the SDK key to your own SDK key):
 ```

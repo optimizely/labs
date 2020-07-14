@@ -178,6 +178,8 @@ To turn on the feature:
 5. Roll the feature out to ensure it is set to 100% for everyone
 6. Click Save to save your changes
 
+![Screenshot](https://raw.githubusercontent.com/optimizely/labs/master/assets/optimizely-screenshots/flag-rollout-dev.gif)
+
 In less than 1 min, refreshing your Ruby app should now show the feature toggled on and you should see "Hello world! You got the hello_world feature!".
 
 Congrats! You've implemented a feature flag in a Ruby Sinatra application. Hope you've enjoyed this lab!
