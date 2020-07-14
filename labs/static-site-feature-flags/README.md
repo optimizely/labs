@@ -39,6 +39,10 @@ _Note: You can also follow along [this video](https://youtu.be/Q7xjIvQf2G4) with
     <script src="https://cdn.optimizely.com/datafiles/<Your_SDK_KEY>.json/tag.js"></script>
 ```
 
+You can find your SDK Key in the Optimizely application by navigating to the far left 'Settings' > 'Environments' and copy the Development SDK Key value.
+
+![Screenshot](https://raw.githubusercontent.com/optimizely/labs/master/assets/optimizely-screenshots/sdk-key.gif)
+
 6. Place the following script tag near the bottom of the html within the `<html>` tag, which will initialize the SDK:
 ```
   <script>
@@ -47,7 +51,10 @@ _Note: You can also follow along [this video](https://youtu.be/Q7xjIvQf2G4) with
     });
   </script>
 ```
-7. Create a feature flag named `hello_world` in the [Optimizely UI](https://app.optimizely.com).
+7. Create a feature flag named `hello_world` in the [Optimizely UI](https://app.optimizely.com). Navigate to 'Features > Create New Feature' and create a feature flag called 'hello_world':
+
+![Screenshot](https://raw.githubusercontent.com/optimizely/labs/master/assets/optimizely-screenshots/create-flag.gif)
+
 9. Implement the `hello_world` feature flag by placing the following code just below our initialization code above:
 ```
     var userId = 'user123';
