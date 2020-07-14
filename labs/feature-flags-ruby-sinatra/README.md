@@ -14,8 +14,7 @@ free version of Optimizely, [Optimizely Rollouts](https://www.optimizely.com/rol
 
 ### 1. Create a Ruby Sinatra Application
 
-If you already have a Ruby application feel free to skip to the next section "Create a Feature Flag". Otherwise, follow the instructions to start a new Ruby Sinatra application:
-
+If you already have a Ruby application feel free to skip to step 2. Otherwise, follow the instructions to start a new Ruby Sinatra application:
 
 Create a file called `myapp.rb` and paste the following contents:
 
