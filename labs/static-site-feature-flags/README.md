@@ -88,7 +88,17 @@ You can find your SDK Key in the Optimizely application by navigating to the far
 
 10. Now you can turn the feature flag on and off in the Optimizely UI and see the changes in your static site! 🎉
 
-A full code sample is here:
+To turn on your feature flag:
+1. Navigate to Features
+2. Click on the 'hello_world' feature
+3. Change to the 'Development' environment to match the SDK Key we used
+4. Roll the feature out to ensure it is set to 100% for everyone
+5. Click Save to save your changes
+6. Wait at least 10 seconds
+7. Reload the codepen page to see the feature flag update.
+
+
+If you did not see the feature flag turn on, double check that you are not running any ad-blockers and check your code against a full code sample below (being sure to update the SDK key to your own SDK key):
 ```
 <html>
   <head>
