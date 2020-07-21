@@ -28,10 +28,17 @@ This Lab contains `oevents`, a simple CLI tool for loading enriched event data.
 $ ./oevents help
 ```
 
-Or you can add it to a directory in your `PATH` environment variable.  You can do this temporarily by navigating to this tutorial's directory and adding it to your `PATH` variable:
+Or you can add it to a directory in your `PATH` environment variable.  
 
 ```sh
-$ cd enriched_events/
+$ sudo cp oevents /usr/local/bin/
+$ oevents help
+```
+
+You can do this temporarily by adding this tutorial's directory to your `PATH` variable in your shell session:
+
+```sh
+$ cd optimizely-data-cli/
 $ export PATH="$(pwd):$PATH"
 $ oevents help
 ```
