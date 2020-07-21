@@ -13,11 +13,10 @@ This Lab contains `oevents`, a simple CLI tool for loading enriched event data.
 
 ## Prerequisites: bash (v4+), date, jq, curl, and aws
 
-`oevents` is written in [bash](https://www.gnu.org/software/bash/) and requires version 4 or greater to run.  It also requires the following prerequisites:
+`oevents` is written in [bash](https://www.gnu.org/software/bash/) and should run on OS X and most GNU/Linux distributions.  You'll need to install the following prerequisites:
 
-- [`date`](https://www.gnu.org/software/coreutils/manual/html_node/date-invocation.html) (included in OS X and most GNU/Linux distributions)
-- [`jq`](https://stedolan.github.io/jq/)
-- [`curl`](https://curl.haxx.se/)
+- [jq](https://stedolan.github.io/jq/)
+- [curl](https://curl.haxx.se/)  (Note: All versions of OS X starting with Jaguar come with curl installed)
 - the [Amazon AWS CLI](https://aws.amazon.com/cli/) (v2+) 
 
 ## Installation
@@ -142,6 +141,6 @@ $ oevents load \
     --output ~/optimizely_data
 ```
 
-## Testing `e3`
+## Testing `oevents`
 
-You can run the `e3` test suite by install [BATS](https://github.com/bats-core/bats-core) and running `test.bats` in this directory.  Note: the `e3` test suite requires bash v4.4+.
+You can run the `oevents` test suite by install [BATS](https://github.com/bats-core/bats-core) and running `test.bats` in this directory.  Note: the `oevents` test suite requires bash v4.4+.
