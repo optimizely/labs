@@ -1,5 +1,5 @@
-# This workflow will publish labs to contentful for displaying Optimizely Labs
-name: Contentful Upload
+# This workflow will delete labs to remove them from displaying in Optimizely Labs
+name: Contentful Delete
 
 on:
   workflow_dispatch:
