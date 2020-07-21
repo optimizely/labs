@@ -487,7 +487,7 @@ function ListCommand()
   BuildS3AbsolutePaths
 
   for p in "${s3_absolute_paths[@]}"; do
-    ExecuteAWSCLICommand "aws s3 ls --human-readable $p"
+    ExecuteAWSCLICommand aws s3 ls --human-readable "$p"
   done
 }
 
@@ -498,13 +498,13 @@ function LoadCommand()
 {
   BuildS3AbsolutePaths
 
-  for (( i=0; i<${#s3_absolute_paths[@]}; ++i ))
+  for (( i=0; i<"${#s3_absolute_paths[@]}"; ++i ))
   do
     local rel_path="${s3_relative_paths[i]}"
     local abs_path="${s3_absolute_paths[i]}"
     local output_path="$outputdir/$rel_path"
     mkdir -p "$output_path"
-    ExecuteAWSCLICommand "aws s3 sync $abs_path $output_path"
+    ExecuteAWSCLICommand aws s3 sync "$abs_path" "$output_path"
   done
 }
 
