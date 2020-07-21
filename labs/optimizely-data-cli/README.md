@@ -5,7 +5,7 @@ Optimizely [Enriched Events Export](https://docs.developers.optimizely.com/optim
 - Raw metadata (event names, user IDs, etc) that you pass to Optimizely, without additional processing
 - Enriched metadata that Optimizely adds such as experiment IDs, variation IDs, and session IDs
 
-For more information, see the Enriche Events [data specification](https://docs.developers.optimizely.com/optimizely-data/docs/enriched-events-data-specification).
+For more information, see the Enriched Events [data specification](https://docs.developers.optimizely.com/optimizely-data/docs/enriched-events-data-specification).
 
 This Lab contains `oevents`, a simple CLI tool for loading enriched event data.
 
