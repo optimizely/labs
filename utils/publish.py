@@ -1,32 +1,16 @@
-import os
 import json
+import os
 import re
 import shutil
+
+import labs_constants
+
 import boto3
 from botocore.exceptions import NoCredentialsError
-
 import frontmatter
 import contentful_management
 
-LABS_PATH = 'labs'
-ARTIFACTS_PATH = 'artifacts'
-
-# This satisfies the Contentful Entry Id requirements AND
-# Enforces dashcase-ing which is what our Marketing slugs are
-SLUG_REGEX_REQUIREMENT = '^[a-zA-Z0-9-.]{1,64}$'
-CONTENTFUL_LAB_TYPE = 'lab'
-
-CONTENTFUL_ENVIRONMENT = os.environ['LABS_CONTENTFUL_ENVIRONMENT']
-CONTENTFUL_SPACE_ID = os.environ['LABS_CONTENTFUL_SPACE_ID']
-CONTENTFUL_MANAGEMENT_TOKEN = os.environ['LABS_CONTENTFUL_MANAGEMENT_API_TOKEN']
-
-LIBRARY_URL = os.environ['LIBRARY_URL']
-LIBRARY_S3_BUCKET = os.environ['LIBRARY_S3_BUCKET']
-LIBRARY_S3_ACCESS_KEY = os.environ.get('LIBRARY_S3_ACCESS_KEY')
-LIBRARY_S3_SECRET_KEY = os.environ.get('LIBRARY_S3_SECRET_KEY')
-
-
-client = contentful_management.Client(CONTENTFUL_MANAGEMENT_TOKEN)
+client = contentful_management.Client(labs_constants.CONTENTFUL_MANAGEMENT_TOKEN)
 
 SLUG_BLACKLIST = []
 
@@ -41,7 +25,7 @@ def get_slugs():
   slugs = []
 
   # r=root, d=directories, f = files
-  for r, d, f in os.walk(LABS_PATH):
+  for r, d, f in os.walk(labs_constants.LABS_PATH):
       slugs = [folder for folder in d]
       break
 
@@ -54,7 +38,7 @@ def get_info(slug):
   Returns:
     Dictionary of the metadata from metadata.md under a particular lab
   '''
-  frontmatter_object = frontmatter.load(os.path.join(LABS_PATH, slug, 'metadata.md'))
+  frontmatter_object = frontmatter.load(os.path.join(labs_constants.LABS_PATH, slug, 'metadata.md'))
   return frontmatter_object.metadata
 
 
@@ -71,7 +55,7 @@ def get_body(slug):
   ]
   for filename in prioritized_filenames:
     try:
-      f = open(os.path.join(LABS_PATH, slug, filename), 'r')
+      f = open(os.path.join(labs_constants.LABS_PATH, slug, filename), 'r')
       body = f.read()
       break
     except FileNotFoundError:
@@ -85,8 +69,8 @@ def get_body(slug):
 
 def zip_contents(slug):
   print('Zipping contents for lab %s...' % slug)
-  lab_path = os.path.join(LABS_PATH, slug)
-  output_path = os.path.join(ARTIFACTS_PATH, slug, 'resources')
+  lab_path = os.path.join(labs_constants.LABS_PATH, slug)
+  output_path = os.path.join(labs_constants.ARTIFACTS_PATH, slug, 'resources')
 
   shutil.make_archive(output_path, 'zip', lab_path)
 
@@ -110,8 +94,8 @@ def upload_to_aws(local_file_path, bucket, s3_file_path):
   '''
   s3 = boto3.client(
     's3',
-    aws_access_key_id=LIBRARY_S3_ACCESS_KEY,
-    aws_secret_access_key=LIBRARY_S3_SECRET_KEY
+    aws_access_key_id=labs_constants.LIBRARY_S3_ACCESS_KEY,
+    aws_secret_access_key=labs_constants.LIBRARY_S3_SECRET_KEY
   )
 
   try:
@@ -142,13 +126,18 @@ def publish_lab(slug):
   '''
   zip_path = zip_contents(slug)
   file_name = slug + '.zip'
-  s3_path = os.path.join(LABS_PATH, ARTIFACTS_PATH, slug, file_name)
-  uploaded = upload_to_aws(zip_path, LIBRARY_S3_BUCKET, s3_path)
+  s3_path = os.path.join(
+    labs_constants.LABS_PATH,
+    labs_constants.ARTIFACTS_PATH,
+    slug,
+    file_name
+  )
+  uploaded = upload_to_aws(zip_path, labs_constants.LIBRARY_S3_BUCKET, s3_path)
 
   lab_info = get_info(slug)
   lab_info['body'] = get_body(slug)
 
-  resource_url = LIBRARY_URL + s3_path
+  resource_url = labs_constants.LIBRARY_URL + s3_path
   lab_info['resourceUrl'] = resource_url if uploaded else None
 
   upsert_lab_to_contentful(slug, lab_info)
@@ -165,7 +154,7 @@ def upsert_lab_to_contentful(slug, lab_info):
     lab_info: Dictionary representing the information about the lab
   '''
   entry_attributes = {
-    'content_type_id': CONTENTFUL_LAB_TYPE,
+    'content_type_id': labs_constants.CONTENTFUL_LAB_TYPE,
     'fields': {
       'slug': {
         'en-US': slug,
@@ -201,10 +190,10 @@ def upsert_lab_to_contentful(slug, lab_info):
   entry = None
 
   try:
-    entry = client.entries(CONTENTFUL_SPACE_ID, CONTENTFUL_ENVIRONMENT).find(slug)
+    entry = client.entries(labs_constants.CONTENTFUL_SPACE_ID, labs_constants.CONTENTFUL_ENVIRONMENT).find(slug)
   except contentful_management.errors.NotFoundError:
     print('Entry not found for slug %s, creating a new one...' % slug)
-    entry = client.entries(CONTENTFUL_SPACE_ID, CONTENTFUL_ENVIRONMENT).create(
+    entry = client.entries(labs_constants.CONTENTFUL_SPACE_ID, labs_constants.CONTENTFUL_ENVIRONMENT).create(
       slug,
       entry_attributes
     )
@@ -235,7 +224,7 @@ def main():
   print('Asserting slugs are in proper format...')
   for slug in slugs:
     try:
-      assert re.match(SLUG_REGEX_REQUIREMENT, slug)
+      assert re.match(labs_constants.SLUG_REGEX_REQUIREMENT, slug)
     except:
       print('Error! Slug must be alphanumeric, dashes, underscores, and periods, between 1 and 64 characters. Got: %s' % slug)
   print('All slugs satisfy string requirements!')

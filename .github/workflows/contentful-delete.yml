@@ -1,0 +1,42 @@
+# This workflow will publish labs to contentful for displaying Optimizely Labs
+name: Contentful Upload
+
+on:
+  workflow_dispatch:
+    inputs:
+      slugToDelete:
+        description: 'Slug id of the lab to delete'
+        required: true
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.8
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install contentful_management
+        pip install python-frontmatter
+        pip install boto3
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+    - name: Delete
+      env:
+        SLUG_TO_DELETE: ${{ github.event.inputs.slugToDelete }}
+
+        LIBRARY_URL: null
+        LIBRARY_S3_BUCKET: null
+        LIBRARY_S3_ACCESS_KEY: null
+        LIBRARY_S3_SECRET_KEY: null
+
+        LABS_CONTENTFUL_SPACE_ID: zw48pl1isxmc
+        LABS_CONTENTFUL_ENVIRONMENT: master
+        LABS_CONTENTFUL_MANAGEMENT_API_TOKEN: ${{ secrets.MARKETING_CONTENTFUL_MANAGEMENT_API_TOKEN }}
+      run: |
+        python utils/delete.py
