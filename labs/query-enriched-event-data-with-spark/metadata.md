@@ -9,8 +9,8 @@ labels:
 
 author:
   name: Pete Koomen
-  headshot: 
-  bio: 
+  headshot:
+  bio:
   title: Co-founder
   company: Optimizely
 
