@@ -1,3 +1,8 @@
+## demogif.yml
+# This is a config file used by terminalizer to render the shell gif
+# displayed in this lab's README.md. 
+# See https://github.com/faressoft/terminalizer
+
 # The configurations that used for the recording, feel free to edit them
 config:
 
