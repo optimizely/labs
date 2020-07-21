@@ -1,3 +1,5 @@
+import os
+
 LABS_PATH = 'labs'
 ARTIFACTS_PATH = 'artifacts'
 

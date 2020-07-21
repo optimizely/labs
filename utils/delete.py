@@ -1,4 +1,5 @@
 import labs_constants
+import os
 
 SLUG_TO_DELETE = os.environ['SLUG_TO_DELETE']
 
