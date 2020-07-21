@@ -9,10 +9,10 @@ labels:
 
 author:
   name: Segment
-  headshot:
+  headshot: https://raw.githubusercontent.com/optimizely/labs/master/assets/author-headshots/segment-icon.svg
   bio:
   title:
-  company: Segment
+  company:
 
 seo:
   title: Send Full Stack Events to Segment
