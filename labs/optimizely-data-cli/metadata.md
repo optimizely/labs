@@ -5,7 +5,7 @@ revisionDate: '2020-07-20'
 labels:
   - data
   - analysis
-  - odata
+  - oevents
   - enriched events
   - e3
   - cli
