@@ -145,9 +145,9 @@ function TimestampMsToDateString()
   local timestamp_ms="$1"
   local timestamp_s=$(( timestamp_ms / 1000 ))
   if [[ $(uname) = 'Darwin' ]]; then
-    echo $(date -r "$timestamp_s")
+    date -r "$timestamp_s"
   else
-    echo $(date -d "@$timestamp_s")
+    date -d "@$timestamp_s"
   fi
 }
 
@@ -159,9 +159,9 @@ function IncrDay()
   
   # From https://stackoverflow.com/questions/25701265/how-to-generate-a-list-of-all-dates-in-a-range-using-the-tools-available-in-bash
   if [[ $(uname) = 'Darwin' ]]; then
-    echo $(date -j -v+1d -f "%Y-%m-%d" $to_be_incremented "+%Y-%m-%d")
+    date -j -v+1d -f "%Y-%m-%d" "$to_be_incremented" "+%Y-%m-%d"
   else
-    echo $(date -I -d "$to_be_incremented + 1 day")
+    date -I -d "$to_be_incremented + 1 day"
   fi
 }
 
@@ -220,10 +220,10 @@ function ComputeDateRange()
 # set $authenticated to false
 function CheckAWSCredentialExpiration()
 {
-  if [ ! -z "${AWS_SESSION_EXPIRATION:-}" ]; then
+  if [ -n "${AWS_SESSION_EXPIRATION:-}" ]; then
     local expiration_time_in_seconds=$(( $AWS_SESSION_EXPIRATION / 1000 ))
     local current_time_in_seconds=$( date +%s )
-    if [ $expiration_time_in_seconds -le $current_time_in_seconds ]; then
+    if [ "$expiration_time_in_seconds" -le "$current_time_in_seconds" ]; then
       authenticated=false
       local expiration_time_str=$(TimestampMsToDateString "$AWS_SESSION_EXPIRATION")
       VerboseEcho "AWS Credentials expired at $expiration_time_str."
@@ -329,7 +329,7 @@ function Authenticate()
 # credentials that can be used to access Enriched Event data.
 function EnsureAuthenticatedIfTokenPresent()
 {
-  if [ ! -z "${OPTIMIZELY_API_TOKEN:-}" ]; then
+  if [ -n "${OPTIMIZELY_API_TOKEN:-}" ]; then
     CheckAWSCredentialExpiration
 
     if [ "$authenticated" = false ]; then
@@ -344,10 +344,9 @@ function EnsureAuthenticatedIfTokenPresent()
 # Execute the supplied AWS command
 function ExecuteAWSCLICommand()
 {
-  command="$@"
   VerboseEcho "$command"
   EnsureAuthenticatedIfTokenPresent
-  $command
+  "$@"
 }
 
 ################################################################################
@@ -409,12 +408,12 @@ function BuildS3RelativePaths()
 
   # Construct a partition string if a partition key and value were supplied
   local partition_str=""
-  if [[ ! -z "${partition_key:-}" && ! -z "${partition_val:-}" ]]; then
+  if [[ -n "${partition_key:-}" && -n "${partition_val:-}" ]]; then
     partition_str="/$partition_key=$partition_val"
   fi
 
   # Build relative paths for each date in the supplied date range
-  for d in ${date_range[@]}
+  for d in "${date_range[@]}"
   do
     local relative_path="type=$type/date=$d$partition_str"
     s3_relative_paths+=("$relative_path")
@@ -441,16 +440,6 @@ function BuildS3AbsolutePaths()
     fi
     s3_absolute_paths+=("$S3_BASE_PATH$rel_path")
   done
-}
-
-# ExecuteAWSCLICommand
-# Execute the supplied AWS command
-function ExecuteAWSCLICommand()
-{
-  local command="$@"
-  VerboseEcho "$command"
-  EnsureAuthenticatedIfTokenPresent
-  $command
 }
 
 ################################################################################
@@ -485,7 +474,7 @@ function PathsCommand()
 {
   BuildS3AbsolutePaths
 
-  for p in ${s3_absolute_paths[@]}; do
+  for p in "${s3_absolute_paths[@]}"; do
     echo "$p"
   done
 }
@@ -497,7 +486,7 @@ function ListCommand()
 {
   BuildS3AbsolutePaths
 
-  for p in ${s3_absolute_paths[@]}; do
+  for p in "${s3_absolute_paths[@]}"; do
     ExecuteAWSCLICommand "aws s3 ls --human-readable $p"
   done
 }
@@ -514,7 +503,7 @@ function LoadCommand()
     local rel_path="${s3_relative_paths[i]}"
     local abs_path="${s3_absolute_paths[i]}"
     local output_path="$outputdir/$rel_path"
-    mkdir -p $output_path
+    mkdir -p "$output_path"
     ExecuteAWSCLICommand "aws s3 sync $abs_path $output_path"
   done
 }
@@ -542,10 +531,6 @@ while (( "$#" )); do
   case "$1" in
     help)
       cmd="help"
-      shift
-      ;;
-    auth)
-      cmd="auth"
       shift
       ;;
     auth)
