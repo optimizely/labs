@@ -9,7 +9,8 @@ labels:
 
 author:
   name: Contentful Team
-  headshot:
+  headshot: https://raw.githubusercontent.com/optimizely/labs/master/assets/author-headshots/contentful-icon.svg
+
   bio:
   title:
   company: Contentful
