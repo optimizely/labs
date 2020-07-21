@@ -334,6 +334,7 @@ past=$(( (present-3600) * 1000 ))
 
 @test "BuildS3BasePath without valid Optimizely token, but with account_id" {
   bucket="optimizely-events-data"
+  unset OPTIMIZELY_API_TOKEN
   account_id="12345"
   authenticated=false
   
@@ -347,6 +348,8 @@ past=$(( (present-3600) * 1000 ))
 
 @test "BuildS3BasePath without valid Optimizely token or account_id" {
   bucket="optimizely-events-data"
+  unset OPTIMIZELY_API_TOKEN
+  unset account_id
   authenticated=false
   
   run BuildS3BasePath
@@ -471,6 +474,7 @@ past=$(( (present-3600) * 1000 ))
 
 @test "BuildS3AbsolutePaths with no type" {
   bucket="optimizely-events-data"
+  unset OPTIMIZELY_API_TOKEN
   account_id="12345"
   expected=( "s3://$bucket/v1/account_id=$account_id/" )
   
@@ -481,6 +485,7 @@ past=$(( (present-3600) * 1000 ))
 
 @test "BuildS3AbsolutePaths with type specified" {
   bucket="optimizely-events-data"
+  unset OPTIMIZELY_API_TOKEN
   account_id="12345"
   type="decisions"
   expected=( "s3://$bucket/v1/account_id=$account_id/type=decisions/" )
@@ -490,6 +495,7 @@ past=$(( (present-3600) * 1000 ))
 
 @test "BuildS3AbsolutePaths with type and single date specified" {
   bucket="optimizely-events-data"
+  unset OPTIMIZELY_API_TOKEN
   account_id="12345"
   type="decisions"
   start="2020-07-01"
@@ -502,6 +508,7 @@ past=$(( (present-3600) * 1000 ))
 
 @test "BuildS3AbsolutePaths with type and date range specified" {
   bucket="optimizely-events-data"
+  unset OPTIMIZELY_API_TOKEN
   account_id="12345"
   type="decisions"
   start="2020-07-01"
@@ -519,6 +526,7 @@ past=$(( (present-3600) * 1000 ))
 
 @test "BuildS3AbsolutePaths with type, date range, and experiment specified" {
   bucket="optimizely-events-data"
+  unset OPTIMIZELY_API_TOKEN
   account_id="12345"
   type="decisions"
   start="2020-07-01"
@@ -539,7 +547,7 @@ past=$(( (present-3600) * 1000 ))
 # ExecuteAWSCLICommand
 
 @test "ExecuteAWSCLICommand with valid Optimizely api token" {
-  OPTIMIZELY_API_TOKEN="token"
+  export OPTIMIZELY_API_TOKEN="token"
   authenticated=false
   curl() { echo "${valid_auth_api_response}200"; }
   export -f curl
@@ -578,6 +586,7 @@ past=$(( (present-3600) * 1000 ))
 }
 
 @test "paths command" {
+  unset OPTIMIZELY_API_TOKEN
 
   run "./$CLI_NAME" paths --account-id 12345 --type decisions --start 2020-07-01 --end 2020-07-03 --experiment 56789
 
@@ -589,6 +598,7 @@ past=$(( (present-3600) * 1000 ))
 
 @test "ls command" {
   # Stub the aws command to echo itself
+  unset OPTIMIZELY_API_TOKEN
   aws() { echo "aws $@"; }
   export -f aws
 
@@ -601,6 +611,7 @@ past=$(( (present-3600) * 1000 ))
 
 @test "load command" {
   # Stub the aws command to echo itself
+  unset OPTIMIZELY_API_TOKEN
   aws() { echo "aws $@"; }
   export -f aws
 
