@@ -5,6 +5,7 @@ revisionDate: '2020-07-21'
 labels:
   - contentful
   - full stack
+  - cms
 
 author:
   name: Contentful Team
