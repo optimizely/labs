@@ -76,7 +76,7 @@ You can use the `oevents auth` command to acquire temporary AWS credentials:
 [decisions]: https://docs.developers.optimizely.com/web/docs/enriched-events-export#section-decisions
 [conversions]: https://docs.developers.optimizely.com/web/docs/enriched-events-export#section-conversions
 
-Enriched Events are partitioned into two top-level datasets, [decisions] and [conversions].  Each of these dataset is partitioned by date and experiment (for decisions) or event type (for conversions).  
+Enriched Events are partitioned into two top-level datasets, [decisions] (`type=decisions`) and [conversions] (`type=events`).  Each of these datasets is partitioned by date and experiment (for decisions) or event type (for conversions).  
 
 You can use `oevents ls` to list the all of the experiments that produced decision data on a given date:
 
@@ -107,11 +107,13 @@ $ oevents ls --type events --date 2020-05-10
 
 You can use `oevents load` to download your Enriched Event data in [Apache Parquet](https://parquet.apache.org/) format.  Command line arguments can be used to specify a progressively narrower subset of your data.
 
+The following command will download *all* enriched event data associated with your Optimizely account:
+
 ```sh
 $ oevents load --output ~/optimizely_data
 ```
 
-will download *all* enriched event data associated with your Optimizely account.
+This will download all [decision](decisions) data associated with your Optimizely account:
 
 ```sh
 $ oevents load \
@@ -119,7 +121,7 @@ $ oevents load \
     --output ~/optimizely_data
 ```
 
-will download all [decision](decisions) data associated with your Optimizely account.
+This will download all [decision](decisions) data collected between July 1st and 5th, 2020:
 
 ```sh
 $ oevents load \
@@ -129,7 +131,7 @@ $ oevents load \
     --output ~/optimizely_data
 ```
 
-will download all [decision](decisions) data collected between 7/1/2020 and 7/5/2020.
+This will download all [decision](decisions) data for experiment `12345` collected between July 1st and 5th, 2020:
 
 ```sh
 $ oevents load \
@@ -139,8 +141,6 @@ $ oevents load \
     --experiment 12345 \
     --output ~/optimizely_data
 ```
-
-will download all [decision](decisions) data collected between 7/1/2020 and 7/5/2020 for experiment #12345.
 
 ## Testing `e3`
 
