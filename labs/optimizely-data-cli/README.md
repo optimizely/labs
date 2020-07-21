@@ -9,7 +9,7 @@ For more information, see the Enriched Events [data specification](https://docs.
 
 This Lab contains `oevents`, a simple CLI tool for loading enriched event data.
 
-![oevents demo](img/demo.gif)
+![oevents demo](https://raw.githubusercontent.com/optimizely/labs/master/labs/optimizely-data-cli/img/demo.gif)
 
 ## Prerequisites: bash (v4+), date, jq, curl, and aws
 
