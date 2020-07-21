@@ -8,11 +8,11 @@ labels:
   - analytics
 
 author:
-  name: Segment
+  name: Segment Team
   headshot: https://raw.githubusercontent.com/optimizely/labs/master/assets/author-headshots/segment-icon.svg
   bio:
   title:
-  company:
+  company: Segment
 
 seo:
   title: Send Full Stack Events to Segment
