@@ -344,7 +344,7 @@ function EnsureAuthenticatedIfTokenPresent()
 # Execute the supplied AWS command
 function ExecuteAWSCLICommand()
 {
-  VerboseEcho "$command"
+  VerboseEcho "$@"
   EnsureAuthenticatedIfTokenPresent
   "$@"
 }
