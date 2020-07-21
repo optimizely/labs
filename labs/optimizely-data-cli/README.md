@@ -13,7 +13,7 @@ This Lab contains `oevents`, a simple CLI tool for loading enriched event data.
 
 ## Prerequisites: bash (v4+), date, jq, curl, and aws
 
-`oevents` is written is [bash](https://www.gnu.org/software/bash/) and requires version 4 or greater to run.  It also requires the following prerequisites:
+`oevents` is written in [bash](https://www.gnu.org/software/bash/) and requires version 4 or greater to run.  It also requires the following prerequisites:
 
 - [`date`](https://www.gnu.org/software/coreutils/manual/html_node/date-invocation.html) (included in OS X and most GNU/Linux distributions)
 - [`jq`](https://stedolan.github.io/jq/)
