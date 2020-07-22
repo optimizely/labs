@@ -208,11 +208,10 @@ compute_date_range() {
 # Authentication                                                               #
 ################################################################################
 
-# CheckAWSCredentialExpiration
+# check_aws_credential_expiration
 # Check if the $AWS_SESSION_EXPIRATION timestamp exists and is in the past. If so
 # set $authenticated to false
-function CheckAWSCredentialExpiration()
-{
+check_aws_credential_expiration() {
   if [ -n "${AWS_SESSION_EXPIRATION:-}" ]; then
     local expiration_time_in_seconds=$(( $AWS_SESSION_EXPIRATION / 1000 ))
     local current_time_in_seconds=$( date +%s )
@@ -323,7 +322,7 @@ function Authenticate()
 function EnsureAuthenticatedIfTokenPresent()
 {
   if [ -n "${OPTIMIZELY_API_TOKEN:-}" ]; then
-    CheckAWSCredentialExpiration
+    check_aws_credential_expiration
 
     if [ "$authenticated" = false ]; then
       # We either haven't authenticated yet, or our credentials have expired.

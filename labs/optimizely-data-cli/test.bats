@@ -113,35 +113,35 @@ past=$(( (present-3600) * 1000 ))
   [ "$status" = 1 ]
 }
 
-# CheckAWSCredentialExpiration
+# check_aws_credential_expiration
 
-@test "CheckAWSCredentialExpiration with AWS_SESSION_EXPIRATION unset" {
+@test "check_aws_credential_expiration with AWS_SESSION_EXPIRATION unset" {
   unset AWS_SESSION_EXPIRATION
   authenticated=true
 
-  CheckAWSCredentialExpiration
+  check_aws_credential_expiration
   
-  # CheckAWSCredentialExpiration shouldn't modify authenticated if AWS_SESSION_EXPIRATION isn't set
+  # check_aws_credential_expiration shouldn't modify authenticated if AWS_SESSION_EXPIRATION isn't set
   [ "$authenticated" = true ]
 }
 
-@test "CheckAWSCredentialExpiration with AWS_SESSION_EXPIRATION in the future" {
+@test "check_aws_credential_expiration with AWS_SESSION_EXPIRATION in the future" {
   authenticated=true
   AWS_SESSION_EXPIRATION="$future"
 
-  CheckAWSCredentialExpiration
+  check_aws_credential_expiration
 
-  # CheckAWSCredentialExpiration shouldn't modify authenticated if AWS_SESSION_EXPIRATION hasn't passed
+  # check_aws_credential_expiration shouldn't modify authenticated if AWS_SESSION_EXPIRATION hasn't passed
   [ "$authenticated" = true ]
 }
 
-@test "CheckAWSCredentialExpiration with AWS_SESSION_EXPIRATION in the past" {
+@test "check_aws_credential_expiration with AWS_SESSION_EXPIRATION in the past" {
   authenticated=true
   AWS_SESSION_EXPIRATION="$past"
   
-  CheckAWSCredentialExpiration
+  check_aws_credential_expiration
   
-  # CheckAWSCredentialExpiration should modify authenticated if AWS_SESSION_EXPIRATION has passed
+  # check_aws_credential_expiration should modify authenticated if AWS_SESSION_EXPIRATION has passed
   [ "$authenticated" = false ]
 }
 
