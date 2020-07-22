@@ -135,10 +135,9 @@ require() {
 # Date and Time                                                                #
 ################################################################################
 
-# TimestampMsToDateString
+# timestamp_ms_to_date_str
 # Convert a unix timestamp (in milliseconds) to a date string and return the result
-function TimestampMsToDateString()
-{
+timestamp_ms_to_date_str() {
   local timestamp_ms="$1"
   local timestamp_s=$(( timestamp_ms / 1000 ))
   if [[ $(uname) = 'Darwin' ]]; then
@@ -222,7 +221,7 @@ function CheckAWSCredentialExpiration()
     local current_time_in_seconds=$( date +%s )
     if [ "$expiration_time_in_seconds" -le "$current_time_in_seconds" ]; then
       authenticated=false
-      local expiration_time_str=$(TimestampMsToDateString "$AWS_SESSION_EXPIRATION")
+      local expiration_time_str=$(timestamp_ms_to_date_str "$AWS_SESSION_EXPIRATION")
       verbose_echo "AWS Credentials expired at $expiration_time_str."
     fi
   fi
@@ -316,7 +315,7 @@ function Authenticate()
 
   authenticated=true
 
-  local expiration_date_str=$(TimestampMsToDateString "$AWS_SESSION_EXPIRATION")
+  local expiration_date_str=$(timestamp_ms_to_date_str "$AWS_SESSION_EXPIRATION")
   verbose_echo "Acquired AWS credentials valid until $expiration_date_str."
   verbose_echo "S3 base path set to $S3_BASE_PATH"
 }
