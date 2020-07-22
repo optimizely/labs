@@ -64,6 +64,26 @@ past=$(( (present-3600) * 1000 ))
 # Unit Tests                                                                   #
 ################################################################################
 
+# cmd_exists
+
+@test "cmd_exists" {
+  run cmd_exists "bash"
+  [ "$status" = "0" ]
+  run cmd_exists "thiscmdshouldnotexist"
+  [ "$status" = "1" ]
+}
+
+# check_requirements
+
+@test "check_requirements" {
+  run check_requirements
+  [ "$status" = "0" ]
+
+  export PATH="$(pwd)"
+  run check_requirements
+  [ "$status" = "1" ]
+}
+
 # incr_day
 
 @test "incr_day" {
@@ -117,32 +137,32 @@ past=$(( (present-3600) * 1000 ))
 
 @test "check_aws_credential_expiration with AWS_SESSION_EXPIRATION unset" {
   unset AWS_SESSION_EXPIRATION
-  authenticated=true
+  AUTHENTICATED=true
 
   check_aws_credential_expiration
   
-  # check_aws_credential_expiration shouldn't modify authenticated if AWS_SESSION_EXPIRATION isn't set
-  [ "$authenticated" = true ]
+  # check_aws_credential_expiration shouldn't modify AUTHENTICATED if AWS_SESSION_EXPIRATION isn't set
+  [ "$AUTHENTICATED" = true ]
 }
 
 @test "check_aws_credential_expiration with AWS_SESSION_EXPIRATION in the future" {
-  authenticated=true
+  AUTHENTICATED=true
   AWS_SESSION_EXPIRATION="$future"
 
   check_aws_credential_expiration
 
-  # check_aws_credential_expiration shouldn't modify authenticated if AWS_SESSION_EXPIRATION hasn't passed
-  [ "$authenticated" = true ]
+  # check_aws_credential_expiration shouldn't modify AUTHENTICATED if AWS_SESSION_EXPIRATION hasn't passed
+  [ "$AUTHENTICATED" = true ]
 }
 
 @test "check_aws_credential_expiration with AWS_SESSION_EXPIRATION in the past" {
-  authenticated=true
+  AUTHENTICATED=true
   AWS_SESSION_EXPIRATION="$past"
   
   check_aws_credential_expiration
   
-  # check_aws_credential_expiration should modify authenticated if AWS_SESSION_EXPIRATION has passed
-  [ "$authenticated" = false ]
+  # check_aws_credential_expiration should modify AUTHENTICATED if AWS_SESSION_EXPIRATION has passed
+  [ "$AUTHENTICATED" = false ]
 }
 
 # make_auth_api_request
@@ -250,7 +270,7 @@ past=$(( (present-3600) * 1000 ))
   [ "$AWS_SESSION_TOKEN" = "$sessionToken_stub" ]
   [ "$AWS_SESSION_EXPIRATION" = "$expiration_stub" ]
   [ "$S3_BASE_PATH" = "$s3Path_stub" ]
-  [ "$authenticated" = true ]
+  [ "$AUTHENTICATED" = true ]
 }
 
 @test "authenticate with an invalid API response" {
@@ -268,30 +288,30 @@ past=$(( (present-3600) * 1000 ))
 
 @test "ensure_authenticated_if_token_present with no token present" {
   unset OPTIMIZELY_API_TOKEN
-  authenticated=false
+  AUTHENTICATED=false
 
   ensure_authenticated_if_token_present
   
-  [ "$authenticated" = false ]
+  [ "$AUTHENTICATED" = false ]
 }
 
 @test "ensure_authenticated_if_token_present with AWS_SESSION_EXPIRATION unset" {
   OPTIMIZELY_API_TOKEN="token"
   unset AWS_SESSION_EXPIRATION
-  authenticated=false
+  AUTHENTICATED=false
   curl() { echo "${valid_auth_api_response}200"; }
   export -f curl
   
   ensure_authenticated_if_token_present
 
-  [ "$authenticated" = true ]
+  [ "$AUTHENTICATED" = true ]
   [ "$AWS_ACCESS_KEY_ID" = "$accessKeyId_stub" ]
 }
 
 @test "ensure_authenticated_if_token_present with valid credentials" {
   OPTIMIZELY_API_TOKEN="token"
   AWS_ACCESS_KEY_ID="accessKeyId_stub_1"
-  authenticated=true
+  AUTHENTICATED=true
   AWS_SESSION_EXPIRATION="$future"
   curl() { echo "${valid_auth_api_response}200"; }
   export -f curl
@@ -299,14 +319,14 @@ past=$(( (present-3600) * 1000 ))
   ensure_authenticated_if_token_present
   
   # ensure_authenticated_if_token_present should NOT reauthenticate; AWS_ACCESS_KEY_ID should be preserved
-  [ "$authenticated" = true ]
+  [ "$AUTHENTICATED" = true ]
   [ "$AWS_ACCESS_KEY_ID" = "accessKeyId_stub_1" ]
 }
 
 @test "ensure_authenticated_if_token_present with expired credentials" {
   OPTIMIZELY_API_TOKEN="token"
   AWS_ACCESS_KEY_ID="accessKeyId_stub_1"
-  authenticated=true
+  AUTHENTICATED=true
   AWS_SESSION_EXPIRATION="$past"
   curl() { echo "${valid_auth_api_response}200"; }
   export -f curl
@@ -314,7 +334,7 @@ past=$(( (present-3600) * 1000 ))
   ensure_authenticated_if_token_present
 
   # ensure_authenticated_if_token_present should re-authenticate and reset the value of AWS_ACCESS_KEY_ID
-  [ "$authenticated" = true ]
+  [ "$AUTHENTICATED" = true ]
   [ "$AWS_ACCESS_KEY_ID" = "$accessKeyId_stub" ] 
 }
 
@@ -322,35 +342,35 @@ past=$(( (present-3600) * 1000 ))
 
 @test "build_s3_base_path with valid Optimizely token" {
   OPTIMIZELY_API_TOKEN="token"
-  authenticated=false
+  AUTHENTICATED=false
   curl() { echo "${valid_auth_api_response}200"; }
   export -f curl
 
   build_s3_base_path
 
-  [ "$authenticated" = true ]
+  [ "$AUTHENTICATED" = true ]
   [ "$S3_BASE_PATH" = "$s3Path_stub" ] 
 }
 
 @test "build_s3_base_path without valid Optimizely token, but with account_id" {
-  bucket="optimizely-events-data"
+  BUCKET="optimizely-events-data"
   unset OPTIMIZELY_API_TOKEN
   account_id="12345"
-  authenticated=false
+  AUTHENTICATED=false
   
   build_s3_base_path
   
   # build_s3_base_path cannot authenticate without a valid token
-  [ "$authenticated" = false ] 
+  [ "$AUTHENTICATED" = false ] 
   # build_s3_base_path should be able to use account_id to build a valid base path
-  [ "$S3_BASE_PATH" = "s3://$bucket/v1/account_id=$account_id/" ] 
+  [ "$S3_BASE_PATH" = "s3://$BUCKET/v1/account_id=$account_id/" ] 
 }
 
 @test "build_s3_base_path without valid Optimizely token or account_id" {
-  bucket="optimizely-events-data"
+  BUCKET="optimizely-events-data"
   unset OPTIMIZELY_API_TOKEN
   unset account_id
-  authenticated=false
+  AUTHENTICATED=false
   
   run build_s3_base_path
   
@@ -377,7 +397,7 @@ past=$(( (present-3600) * 1000 ))
 # build_s3_relative_paths
 
 @test "build_s3_relative_paths with no type" {
-  bucket="optimizely-events-data"
+  BUCKET="optimizely-events-data"
   account_id="12345"
   expected=( "" )
   
@@ -388,7 +408,7 @@ past=$(( (present-3600) * 1000 ))
 }
 
 @test "build_s3_relative_paths with date specified, but no type" {
-  bucket="optimizely-events-data"
+  BUCKET="optimizely-events-data"
   account_id="12345"
   start="2020-07-01"
   expected=( "" )
@@ -400,7 +420,7 @@ past=$(( (present-3600) * 1000 ))
 }
 
 @test "build_s3_relative_paths with type specified" {
-  bucket="optimizely-events-data"
+  BUCKET="optimizely-events-data"
   account_id="12345"
   type="decisions"
   expected=( "type=decisions" )
@@ -412,7 +432,7 @@ past=$(( (present-3600) * 1000 ))
 }
 
 @test "build_s3_relative_paths with misspelled type specified" {
-  bucket="optimizely-events-data"
+  BUCKET="optimizely-events-data"
   account_id="12345"
   type="x"
 
@@ -423,7 +443,7 @@ past=$(( (present-3600) * 1000 ))
 }
 
 @test "build_s3_relative_paths with type and single date specified" {
-  bucket="optimizely-events-data"
+  BUCKET="optimizely-events-data"
   account_id="12345"
   type="decisions"
   start="2020-07-01"
@@ -435,7 +455,7 @@ past=$(( (present-3600) * 1000 ))
 }
 
 @test "build_s3_relative_paths with type and date range specified" {
-  bucket="optimizely-events-data"
+  BUCKET="optimizely-events-data"
   account_id="12345"
   type="decisions"
   start="2020-07-01"
@@ -452,7 +472,7 @@ past=$(( (present-3600) * 1000 ))
 }
 
 @test "build_s3_relative_paths with type, date range, and experiment specified" {
-  bucket="optimizely-events-data"
+  BUCKET="optimizely-events-data"
   account_id="12345"
   type="decisions"
   start="2020-07-01"
@@ -473,10 +493,10 @@ past=$(( (present-3600) * 1000 ))
 # build_s3_absolute_paths
 
 @test "build_s3_absolute_paths with no type" {
-  bucket="optimizely-events-data"
+  BUCKET="optimizely-events-data"
   unset OPTIMIZELY_API_TOKEN
   account_id="12345"
-  expected=( "s3://$bucket/v1/account_id=$account_id/" )
+  expected=( "s3://$BUCKET/v1/account_id=$account_id/" )
   
   build_s3_absolute_paths
   
@@ -484,22 +504,22 @@ past=$(( (present-3600) * 1000 ))
 }
 
 @test "build_s3_absolute_paths with type specified" {
-  bucket="optimizely-events-data"
+  BUCKET="optimizely-events-data"
   unset OPTIMIZELY_API_TOKEN
   account_id="12345"
   type="decisions"
-  expected=( "s3://$bucket/v1/account_id=$account_id/type=decisions/" )
+  expected=( "s3://$BUCKET/v1/account_id=$account_id/type=decisions/" )
   build_s3_absolute_paths
   AreArraysEqual s3_absolute_paths expected
 }
 
 @test "build_s3_absolute_paths with type and single date specified" {
-  bucket="optimizely-events-data"
+  BUCKET="optimizely-events-data"
   unset OPTIMIZELY_API_TOKEN
   account_id="12345"
   type="decisions"
   start="2020-07-01"
-  expected=( "s3://$bucket/v1/account_id=$account_id/type=decisions/date=2020-07-01/" )
+  expected=( "s3://$BUCKET/v1/account_id=$account_id/type=decisions/date=2020-07-01/" )
   
   build_s3_absolute_paths
   
@@ -507,16 +527,16 @@ past=$(( (present-3600) * 1000 ))
 }
 
 @test "build_s3_absolute_paths with type and date range specified" {
-  bucket="optimizely-events-data"
+  BUCKET="optimizely-events-data"
   unset OPTIMIZELY_API_TOKEN
   account_id="12345"
   type="decisions"
   start="2020-07-01"
   end="2020-07-03"
   expected=( 
-    "s3://$bucket/v1/account_id=$account_id/type=decisions/date=2020-07-01/"
-    "s3://$bucket/v1/account_id=$account_id/type=decisions/date=2020-07-02/"
-    "s3://$bucket/v1/account_id=$account_id/type=decisions/date=2020-07-03/"
+    "s3://$BUCKET/v1/account_id=$account_id/type=decisions/date=2020-07-01/"
+    "s3://$BUCKET/v1/account_id=$account_id/type=decisions/date=2020-07-02/"
+    "s3://$BUCKET/v1/account_id=$account_id/type=decisions/date=2020-07-03/"
   )
 
   build_s3_absolute_paths
@@ -525,7 +545,7 @@ past=$(( (present-3600) * 1000 ))
 }
 
 @test "build_s3_absolute_paths with type, date range, and experiment specified" {
-  bucket="optimizely-events-data"
+  BUCKET="optimizely-events-data"
   unset OPTIMIZELY_API_TOKEN
   account_id="12345"
   type="decisions"
@@ -534,9 +554,9 @@ past=$(( (present-3600) * 1000 ))
   partition_key="experiment"
   partition_val="5678"
   expected=( 
-    "s3://$bucket/v1/account_id=$account_id/type=decisions/date=2020-07-01/experiment=5678/"
-    "s3://$bucket/v1/account_id=$account_id/type=decisions/date=2020-07-02/experiment=5678/"
-    "s3://$bucket/v1/account_id=$account_id/type=decisions/date=2020-07-03/experiment=5678/"
+    "s3://$BUCKET/v1/account_id=$account_id/type=decisions/date=2020-07-01/experiment=5678/"
+    "s3://$BUCKET/v1/account_id=$account_id/type=decisions/date=2020-07-02/experiment=5678/"
+    "s3://$BUCKET/v1/account_id=$account_id/type=decisions/date=2020-07-03/experiment=5678/"
   )
 
   build_s3_absolute_paths
@@ -548,7 +568,7 @@ past=$(( (present-3600) * 1000 ))
 
 @test "execute_aws_cli_cmd with valid Optimizely api token" {
   export OPTIMIZELY_API_TOKEN="token"
-  authenticated=false
+  AUTHENTICATED=false
   curl() { echo "${valid_auth_api_response}200"; }
   export -f curl
   testcmd() { testcmdcalled=true; }
@@ -556,7 +576,7 @@ past=$(( (present-3600) * 1000 ))
   # execute_aws_cli_cmd should authenticate via the auth API, and then call testcmd
   execute_aws_cli_cmd "testcmd"
 
-  [ "$authenticated" = true ]
+  [ "$AUTHENTICATED" = true ]
   [ "$testcmdcalled" = true ]
 }
 

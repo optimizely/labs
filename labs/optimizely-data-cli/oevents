@@ -106,7 +106,7 @@ The following examples use the $CLI_NAME paths command to demonstrate how argume
 # verbose_echo
 # Echo the supplied text if the --verbose flag is on
 verbose_echo() {
-  if [ "$verbose" = true ]; then 
+  if [ "$VERBOSE" = true ]; then 
     echo "$@"
   fi
 }
@@ -121,15 +121,29 @@ error_echo() {
 # Prerequisites                                                                #
 ################################################################################
 
-require() {
-  local requirement="$1"
+cmd_exists() {
+  local cmd="$1"
 
-  if ! command -v "$requirement" &> /dev/null; then
-    error_echo "Error: $CLI_NAME requires $requirement to run.  Please install it and try again."
+  command -v ${cmd} >/dev/null
+}
+
+check_requirements() {
+
+  local should_exit=false
+
+  local cmd=
+  for cmd in "${REQUIREMENTS[@]}"
+  do
+    if ! cmd_exists "$cmd"; then
+      error_echo "Error: $CLI_NAME requires $cmd to run.  Please install it and try again."
+      should_exit=true
+    fi
+  done
+
+  if [ "$should_exit" = true ]; then
     exit 1
   fi
 }
-
 
 ################################################################################
 # Date and Time                                                                #
@@ -210,13 +224,13 @@ compute_date_range() {
 
 # check_aws_credential_expiration
 # Check if the $AWS_SESSION_EXPIRATION timestamp exists and is in the past. If so
-# set $authenticated to false
+# set $AUTHENTICATED to false
 check_aws_credential_expiration() {
   if [ -n "${AWS_SESSION_EXPIRATION:-}" ]; then
     local expiration_time_in_seconds=$(( $AWS_SESSION_EXPIRATION / 1000 ))
     local current_time_in_seconds=$( date +%s )
     if [ "$expiration_time_in_seconds" -le "$current_time_in_seconds" ]; then
-      authenticated=false
+      AUTHENTICATED=false
       local expiration_time_str=$(timestamp_ms_to_date_str "$AWS_SESSION_EXPIRATION")
       verbose_echo "AWS Credentials expired at $expiration_time_str."
     fi
@@ -305,7 +319,7 @@ authenticate() {
   make_auth_api_request
   parse_auth_api_response
 
-  authenticated=true
+  AUTHENTICATED=true
 
   local expiration_date_str=$(timestamp_ms_to_date_str "$AWS_SESSION_EXPIRATION")
   verbose_echo "Acquired AWS credentials valid until $expiration_date_str."
@@ -319,7 +333,7 @@ ensure_authenticated_if_token_present() {
   if [ -n "${OPTIMIZELY_API_TOKEN:-}" ]; then
     check_aws_credential_expiration
 
-    if [ "$authenticated" = false ]; then
+    if [ "$AUTHENTICATED" = false ]; then
       # We either haven't authenticated yet, or our credentials have expired.
       # Authenticate using the Optimizely API token
       authenticate
@@ -346,11 +360,11 @@ build_s3_base_path() {
   ensure_authenticated_if_token_present
 
   if [ -z "${S3_BASE_PATH:-}" ]; then
-    if [[ -z "${account_id:-}" || -z "${bucket:-}" ]]; then
+    if [[ -z "${account_id:-}" || -z "${BUCKET:-}" ]]; then
       error_echo "Error: Unable to construct S3 base path. Please specify an Optimizely Account ID or an Optimizely Personal Access Token"
       exit 1
     else
-      S3_BASE_PATH="s3://$bucket/v1/account_id=$account_id/"
+      S3_BASE_PATH="s3://$BUCKET/v1/account_id=$account_id/"
     fi
   fi
 }
@@ -480,7 +494,7 @@ load_command() {
   do
     local rel_path="${s3_relative_paths[i]}"
     local abs_path="${s3_absolute_paths[i]}"
-    local output_path="$outputdir/$rel_path"
+    local output_path="$OUTPUT_DIR/$rel_path"
     mkdir -p "$output_path"
     execute_aws_cli_cmd aws s3 sync "$abs_path" "$output_path"
   done
@@ -490,49 +504,43 @@ load_command() {
 # Main                                                                         #
 ################################################################################
 
-# Check prerequisites
-
-require "aws"
-require "jq"
-require "date"
-require "curl"
-
 # Set default global variable values
-bucket="optimizely-events-data"
-authenticated=false
-outputdir="$(pwd)"
-verbose=false
-cmd="help"
+REQUIREMENTS=( "aws" "curl" "date" "jq" "uname" )
+BUCKET="optimizely-events-data"
+AUTHENTICATED=false
+OUTPUT_DIR="$(pwd)"
+VERBOSE=false
+CMD="help"
 
 # Parse command line arguments
 while (( "$#" )); do
   case "$1" in
     help)
-      cmd="help"
+      CMD="help"
       shift
       ;;
     auth)
-      cmd="auth"
+      CMD="auth"
       shift
       ;;
     paths)
-      cmd="paths"
+      CMD="paths"
       shift
       ;;
     ls)
-      cmd="ls"
+      CMD="ls"
       shift
       ;;
     load)
-      cmd="load"
+      CMD="load"
       shift
       ;;
     --verbose)
-      verbose=true
+      VERBOSE=true
       shift
       ;;
     --bucket)
-      bucket="$2"
+      BUCKET="$2"
       shift
       shift
       ;;
@@ -579,7 +587,7 @@ while (( "$#" )); do
       shift
       ;;
     --output)
-      outputdir="$2"
+      OUTPUT_DIR="$2"
       shift
       shift
       ;;
@@ -591,7 +599,10 @@ while (( "$#" )); do
   esac
 done
 
-case "$cmd" in
+# Check if requirements are installed
+check_requirements
+
+case "$CMD" in
   help)
     help_command
     ;;
@@ -608,7 +619,7 @@ case "$cmd" in
     load_command
     ;;
   *)
-    echo "Error: command $cmd not recognized."
+    echo "Error: command $CMD not recognized."
     help_command
     exit 1
 esac
