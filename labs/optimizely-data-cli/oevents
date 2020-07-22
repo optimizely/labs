@@ -228,10 +228,14 @@ compute_date_range() {
 check_aws_credential_expiration() {
   if [ -n "${AWS_SESSION_EXPIRATION:-}" ]; then
     local expiration_time_in_seconds=$(( $AWS_SESSION_EXPIRATION / 1000 ))
-    local current_time_in_seconds=$( date +%s )
+
+    local current_time_in_seconds=
+    current_time_in_seconds=$( date +%s )
+
     if [ "$expiration_time_in_seconds" -le "$current_time_in_seconds" ]; then
       AUTHENTICATED=false
-      local expiration_time_str=$(timestamp_ms_to_date_str "$AWS_SESSION_EXPIRATION")
+      local expiration_time_str=
+      expiration_time_str=$(timestamp_ms_to_date_str "$AWS_SESSION_EXPIRATION")
       verbose_echo "AWS Credentials expired at $expiration_time_str."
     fi
   fi
@@ -255,7 +259,8 @@ make_auth_api_request() {
 
   verbose_echo "Requesting AWS credentials from $auth_endpoint"
 
-  local auth_api_response=$(curl -w "%{response_code}" -s -H "Authorization: Bearer $OPTIMIZELY_API_TOKEN" -X GET $auth_endpoint)
+  local auth_api_response=
+  auth_api_response=$(curl -w "%{response_code}" -s -H "Authorization: Bearer $OPTIMIZELY_API_TOKEN" -X GET $auth_endpoint)
 
   local auth_api_response_code="${auth_api_response:(-3)}"
 
@@ -276,7 +281,8 @@ extract_value_from_json() {
   local json_str="$1"
   local path="$2"
 
-  local val=$(echo "$json_str" | jq -r "$path")
+  local val=
+  val=$(echo "$json_str" | jq -r "$path")
 
   if [[ -z "${val:-}" || "$val" == "null" ]]; then
     error_echo "Error: Unable to extract $path from $json_str"
@@ -321,7 +327,8 @@ authenticate() {
 
   AUTHENTICATED=true
 
-  local expiration_date_str=$(timestamp_ms_to_date_str "$AWS_SESSION_EXPIRATION")
+  local expiration_date_str=
+  expiration_date_str=$(timestamp_ms_to_date_str "$AWS_SESSION_EXPIRATION")
   verbose_echo "Acquired AWS credentials valid until $expiration_date_str."
   verbose_echo "S3 base path set to $S3_BASE_PATH"
 }
