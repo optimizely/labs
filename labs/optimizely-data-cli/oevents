@@ -272,12 +272,11 @@ extract_value_from_json() {
   echo "$val"
 }
 
-# ParseAuthAPIResponse
+# parse_auth_api_response
 # Extract access key id and other important values from the Optimizely
 # Auth API request.  See:
 # https://docs.developers.optimizely.com/optimizely-data/docs/authentication-api
-function ParseAuthAPIResponse()
-{
+parse_auth_api_response() {
   local cred_str="${auth_api_credential_str:-{\}}"
 
   # Extract AWS credentials from the JSON response.
@@ -300,12 +299,12 @@ function ParseAuthAPIResponse()
   fi
 }
 
-# Authenticate
+# authenticate
 # Retrieve AWS credentials from Optimizely's authentication API.  
-function Authenticate()
+function authenticate()
 {
   make_auth_api_request
-  ParseAuthAPIResponse
+  parse_auth_api_response
 
   authenticated=true
 
@@ -314,28 +313,26 @@ function Authenticate()
   verbose_echo "S3 base path set to $S3_BASE_PATH"
 }
 
-# EnsureAuthenticatedIfTokenPresent
+# ensure_authenticated_if_token_present
 # If an Optimizely API token has been passed, use it to generate temporary AWS
 # credentials that can be used to access Enriched Event data.
-function EnsureAuthenticatedIfTokenPresent()
-{
+ensure_authenticated_if_token_present() {
   if [ -n "${OPTIMIZELY_API_TOKEN:-}" ]; then
     check_aws_credential_expiration
 
     if [ "$authenticated" = false ]; then
       # We either haven't authenticated yet, or our credentials have expired.
       # Authenticate using the Optimizely API token
-      Authenticate
+      authenticate
     fi
   fi
 }
 
-# ExecuteAWSCLICommand
+# execute_aws_cli_cmd
 # Execute the supplied AWS command
-function ExecuteAWSCLICommand()
-{
+execute_aws_cli_cmd() {
   verbose_echo "$@"
-  EnsureAuthenticatedIfTokenPresent
+  ensure_authenticated_if_token_present
   "$@"
 }
 
@@ -343,12 +340,11 @@ function ExecuteAWSCLICommand()
 # S3 Prefixes and Paths                                                        #
 ################################################################################
 
-# BuildS3BasePath
+# build_s3_base_path
 # Use --account-id and --bucket parameters to construct an S3 base path if one
 # has not been already been supplied from the Optimizely Authentication API. 
-function BuildS3BasePath()
-{
-  EnsureAuthenticatedIfTokenPresent
+build_s3_base_path() {
+  ensure_authenticated_if_token_present
 
   if [ -z "${S3_BASE_PATH:-}" ]; then
     if [[ -z "${account_id:-}" || -z "${bucket:-}" ]]; then
@@ -371,11 +367,10 @@ function ValidateType()
   fi
 }
 
-# BuildS3RelativePaths
+# build_s3_relative_paths
 # Build S3 relative paths from passed parameters. Relative paths are stored in 
 # $s3_relative_paths
-function BuildS3RelativePaths()
-{
+build_s3_relative_paths() {
   s3_relative_paths=()
 
   if [ -z "${type:-}" ]; then
@@ -410,13 +405,12 @@ function BuildS3RelativePaths()
   done
 }
 
-# BuildS3AbsolutePaths
+# build_s3_absolute_paths
 # Build S3 absolute paths from passed parameters.  Absolute paths are stored in
 # $s3_absolute_paths
-function BuildS3AbsolutePaths()
-{
-  BuildS3BasePath
-  BuildS3RelativePaths
+build_s3_absolute_paths() {
+  build_s3_base_path
+  build_s3_relative_paths
   
   s3_absolute_paths=()
 
@@ -449,7 +443,7 @@ HelpCommand()
 # those credentials to stdout.
 function AuthCommand()
 {
-  Authenticate
+  authenticate
 
   echo "export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" 
   echo "export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY"
@@ -462,7 +456,7 @@ function AuthCommand()
 # Build and list the S3 paths specified by the supplied arguments.
 function PathsCommand()
 {
-  BuildS3AbsolutePaths
+  build_s3_absolute_paths
 
   for p in "${s3_absolute_paths[@]}"; do
     echo "$p"
@@ -474,10 +468,10 @@ function PathsCommand()
 # supplied arguments.
 function ListCommand()
 {
-  BuildS3AbsolutePaths
+  build_s3_absolute_paths
 
   for p in "${s3_absolute_paths[@]}"; do
-    ExecuteAWSCLICommand aws s3 ls --human-readable "$p"
+    execute_aws_cli_cmd aws s3 ls --human-readable "$p"
   done
 }
 
@@ -486,7 +480,7 @@ function ListCommand()
 # by the supplied arguments.
 function LoadCommand() 
 {
-  BuildS3AbsolutePaths
+  build_s3_absolute_paths
 
   for (( i=0; i<"${#s3_absolute_paths[@]}"; ++i ))
   do
@@ -494,7 +488,7 @@ function LoadCommand()
     local abs_path="${s3_absolute_paths[i]}"
     local output_path="$outputdir/$rel_path"
     mkdir -p "$output_path"
-    ExecuteAWSCLICommand aws s3 sync "$abs_path" "$output_path"
+    execute_aws_cli_cmd aws s3 sync "$abs_path" "$output_path"
   done
 }
 
