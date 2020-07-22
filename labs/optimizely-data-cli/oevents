@@ -428,19 +428,18 @@ build_s3_absolute_paths() {
 # Commands                                                                     #
 ################################################################################
 
-# HelpCommand
+# help_command
 # Display usage information.
-HelpCommand()
+help_command()
 {
   # Display Help
   echo "$usage"
 }
 
-# AuthCommand
+# auth_command
 # Use the Optimizely Authentication API to acquire AWS credentials, and echo
 # those credentials to stdout.
-function AuthCommand()
-{
+auth_command() {
   authenticate
 
   echo "export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID" 
@@ -450,10 +449,9 @@ function AuthCommand()
   echo "export S3_BASE_PATH=$S3_BASE_PATH"
 }
 
-# PathsCommand
+# paths_command
 # Build and list the S3 paths specified by the supplied arguments.
-function PathsCommand()
-{
+paths_command() {
   build_s3_absolute_paths
 
   for p in "${s3_absolute_paths[@]}"; do
@@ -461,11 +459,10 @@ function PathsCommand()
   done
 }
 
-# ListCommand
+# list_command
 # List all of the top-level S3 keys with prefixes specified by the 
 # supplied arguments.
-function ListCommand()
-{
+list_command() {
   build_s3_absolute_paths
 
   for p in "${s3_absolute_paths[@]}"; do
@@ -473,11 +470,10 @@ function ListCommand()
   done
 }
 
-# LoadCommand
+# load_command
 # Use aws s3 sync to download all s3 objects with prefixes specified
 # by the supplied arguments.
-function LoadCommand() 
-{
+load_command() {
   build_s3_absolute_paths
 
   for (( i=0; i<"${#s3_absolute_paths[@]}"; ++i ))
@@ -590,29 +586,29 @@ while (( "$#" )); do
     *)
       echo "Error: command $1 not recognized."
       echo
-      HelpCommand
+      help_command
       exit 1
   esac
 done
 
 case "$cmd" in
   help)
-    HelpCommand
+    help_command
     ;;
   auth)
-    AuthCommand
+    auth_command
     ;;
   paths)
-    PathsCommand
+    paths_command
     ;;
   ls)
-    ListCommand
+    list_command
     ;;
   load)
-    LoadCommand
+    load_command
     ;;
   *)
     echo "Error: command $cmd not recognized."
-    HelpCommand
+    help_command
     exit 1
 esac
