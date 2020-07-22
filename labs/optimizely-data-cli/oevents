@@ -147,10 +147,9 @@ timestamp_ms_to_date_str() {
   fi
 }
 
-# IncrDay
+# incr_day
 # Increment a YYYY-MM-DD date string by one day and return the result
-function IncrDay()
-{
+incr_day() {
   local to_be_incremented="$1"
   
   # From https://stackoverflow.com/questions/25701265/how-to-generate-a-list-of-all-dates-in-a-range-using-the-tools-available-in-bash
@@ -198,12 +197,12 @@ function ComputeDateRange()
 
   AssertIsBeforeOrEqual "$start" "$end"
 
-  loopend=$(IncrDay "$end")
+  loopend=$(incr_day "$end")
 
   d="$start"
   while [ "$d" != "$loopend" ]; do 
     date_range+=("$d")
-    d=$(IncrDay "$d")
+    d=$(incr_day "$d")
   done
 }
 

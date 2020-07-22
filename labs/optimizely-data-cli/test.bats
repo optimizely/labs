@@ -64,10 +64,10 @@ past=$(( (present-3600) * 1000 ))
 # Unit Tests                                                                   #
 ################################################################################
 
-# IncrDay
+# incr_day
 
-@test "IncrDay" {
-  [ "$(IncrDay 2020-06-30)" = "2020-07-01" ]
+@test "incr_day" {
+  [ "$(incr_day 2020-06-30)" = "2020-07-01" ]
 }
 
 # AssertIsBeforeOrEqual
