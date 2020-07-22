@@ -255,11 +255,10 @@ make_auth_api_request() {
   auth_api_credential_str="${auth_api_response:0:((response_length-3))}"
 }
 
-# ExtractValueFromJSON
+# extract_value_from_json
 # Extract a value from the passed json string.  The value to be extract is specified
 # by a JSON path, passed in the second parameter.
-function ExtractValueFromJSON()
-{
+extract_value_from_json() {
   local json_str="$1"
   local path="$2"
 
@@ -284,11 +283,11 @@ function ParseAuthAPIResponse()
   # Extract AWS credentials from the JSON response.
   # Export key id, access key, and session token variables so that they are visible to
   # aws when invoked by this script
-  export AWS_ACCESS_KEY_ID=$(ExtractValueFromJSON "$cred_str" ".credentials.accessKeyId")
-  export AWS_SECRET_ACCESS_KEY=$(ExtractValueFromJSON "$cred_str" ".credentials.secretAccessKey")
-  export AWS_SESSION_TOKEN=$(ExtractValueFromJSON "$cred_str" ".credentials.sessionToken")
-  export AWS_SESSION_EXPIRATION=$(ExtractValueFromJSON "$cred_str" ".credentials.expiration")
-  S3_BASE_PATH=$(ExtractValueFromJSON "$cred_str" ".s3Path")
+  export AWS_ACCESS_KEY_ID=$(extract_value_from_json "$cred_str" ".credentials.accessKeyId")
+  export AWS_SECRET_ACCESS_KEY=$(extract_value_from_json "$cred_str" ".credentials.secretAccessKey")
+  export AWS_SESSION_TOKEN=$(extract_value_from_json "$cred_str" ".credentials.sessionToken")
+  export AWS_SESSION_EXPIRATION=$(extract_value_from_json "$cred_str" ".credentials.expiration")
+  S3_BASE_PATH=$(extract_value_from_json "$cred_str" ".s3Path")
 
   # Exit if we failed to extract any of the expected variables 
   if [[ -z "$AWS_ACCESS_KEY_ID" || 

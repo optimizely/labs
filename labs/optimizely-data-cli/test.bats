@@ -180,34 +180,34 @@ past=$(( (present-3600) * 1000 ))
   [ "$status" -eq 1 ]
 }
 
-# ExtractValueFromJSON
+# extract_value_from_json
 
-@test "ExtractValueFromJSON with valid path" {
+@test "extract_value_from_json with valid path" {
   json_str="{\"obj\":{\"a\":5,\"b\":6}}"
   path=".obj.a"
 
-  val=$(ExtractValueFromJSON "$json_str" "$path")
+  val=$(extract_value_from_json "$json_str" "$path")
   
   [ "$val" = "5" ]
 }
 
-@test "ExtractValueFromJSON with invalid path" {
+@test "extract_value_from_json with invalid path" {
   json_str="{\"obj\":{\"a\":5,\"b\":6}}"
   path=".obj.c"
   
-  run ExtractValueFromJSON "$json_str" "$path"
+  run extract_value_from_json "$json_str" "$path"
   
-  # ExtractValueFromJSON should fail if the provided path doesn't correspond to the provide JSON obj
+  # extract_value_from_json should fail if the provided path doesn't correspond to the provide JSON obj
   [ "$status" -eq 1 ]
 }
 
-@test "ExtractValueFromJSON with empty json str" {
+@test "extract_value_from_json with empty json str" {
   json_str=""
   path=".obj.c"
   
-  run ExtractValueFromJSON "$json_str" "$path"
+  run extract_value_from_json "$json_str" "$path"
   
-  # ExtractValueFromJSON if there is no JSON object provided
+  # extract_value_from_json if there is no JSON object provided
   [ "$status" -eq 1 ]
 }
 
