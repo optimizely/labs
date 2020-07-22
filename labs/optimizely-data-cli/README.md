@@ -21,7 +21,7 @@ This Lab contains `oevents`, a simple CLI tool for loading enriched event data.
 
 ## Downloading `oevents`
 
-You can download a zipped directory containing the `oevents` CLI here.
+You can download a zipped directory containing the `oevents` CLI [here](https://library.optimizely.com/labs/artifacts/optimizely-data-cli/optimizely-data-cli.zip).
 
 `oevents` lives in the  [Optimizely Labs Github repository](https://github.com/optimizely/labs/tree/master/labs/optimizely-data-cli).  You can also access it by cloning the repository or downloading the `oevents` script directly from the Github web interface.
 
@@ -62,7 +62,7 @@ Enriched Event data is served via [Amazon S3](https://aws.amazon.com/s3/).  You 
 
 2. Providing your AWS credentials directly. See the [AWS user guide](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html) for instructions.
 
-You can use the `oevents auth` command to acquire temporary AWS credentials:
+**Note:** If you have an Optimizely Personal Access Token, you can use the `oevents auth` command to acquire temporary AWS credentials that may be used directly with the AWS CLI or client libraries in your ETL pipeline:
 
 ```sh
   $ oevents auth --token <optimizely personal access token>
