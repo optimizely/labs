@@ -180,10 +180,9 @@ assert_before_or_equal() {
   fi
 }
 
-# ComputeDateRange
+# compute_date_range
 # Compute a date range between $start and $end, and store the result in $date_range
-function ComputeDateRange()
-{
+compute_date_range() {
   date_range=()
 
   if [ -z "${start:-}" ]; then
@@ -391,7 +390,7 @@ function BuildS3RelativePaths()
   fi
 
   ValidateType "$type"
-  ComputeDateRange
+  compute_date_range
 
   if [ ${#date_range[@]} = 0 ]; then
     # Type was specified, but no dates were provided.

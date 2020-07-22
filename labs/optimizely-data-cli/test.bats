@@ -81,35 +81,35 @@ past=$(( (present-3600) * 1000 ))
   [ "$status" = 1 ]
 }
 
-# ComputeDateRange
+# compute_date_range
 
-@test "ComputeDateRange with a multi-day range" {
+@test "compute_date_range with a multi-day range" {
   start="2020-06-29"
   end="2020-07-03"
   expected=( "2020-06-29" "2020-06-30" "2020-07-01" "2020-07-02" "2020-07-03" )
 
-  ComputeDateRange
+  compute_date_range
 
   AreArraysEqual date_range expected
 }
 
-@test "ComputeDateRange with a single-day range" {
+@test "compute_date_range with a single-day range" {
   start="2020-06-29"
   expected=( "2020-06-29" )
 
-  ComputeDateRange
+  compute_date_range
 
-  # ComputeDateRange should yield a single date if no end date is specified
+  # compute_date_range should yield a single date if no end date is specified
   AreArraysEqual date_range expected
 }
 
-@test "ComputeDateRange with an invalid range" {
+@test "compute_date_range with an invalid range" {
   start="2020-07-03"
   end="2020-06-29"
 
-  run ComputeDateRange
+  run compute_date_range
 
-  # ComputeDateRange should fail given an invalid date range
+  # compute_date_range should fail given an invalid date range
   [ "$status" = 1 ]
 }
 
