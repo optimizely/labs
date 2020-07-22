@@ -81,7 +81,7 @@ Enriched Event data is served via [Amazon S3](https://aws.amazon.com/s3/).  You 
 
 Enriched Events are partitioned into two top-level datasets, [decisions] (`type=decisions`) and [conversions] (`type=events`).  Each of these datasets is partitioned by date and experiment (for decisions) or event type (for conversions).  
 
-You can use `oevents ls` to list the all of the experiments that produced decision data on a given date:
+You can use `oevents ls` to list all of the experiments that produced decision data on a given date:
 
 ```sh
 $ oevents ls --type decisions --date 2020-05-10
