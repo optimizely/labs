@@ -145,38 +145,38 @@ past=$(( (present-3600) * 1000 ))
   [ "$authenticated" = false ]
 }
 
-# MakeAuthAPIRequest
+# make_auth_api_request
 
-@test "MakeAuthAPIRequest with OPTIMIZELY_API_TOKEN unset" {
+@test "make_auth_api_request with OPTIMIZELY_API_TOKEN unset" {
   unset OPTIMIZELY_API_TOKEN
 
-  run MakeAuthAPIRequest
+  run make_auth_api_request
   
-  # MakeAuthAPIRequest should fail if it can't find an optimizely api token
+  # make_auth_api_request should fail if it can't find an optimizely api token
   [ "$status" -eq 1 ]
 }
 
-@test "MakeAuthAPIRequest with OK response" {
+@test "make_auth_api_request with OK response" {
   OPTIMIZELY_API_TOKEN="token"
   response_body="response_body"
   curl() { echo "${response_body}200"; }
   export -f curl
 
-  MakeAuthAPIRequest
+  make_auth_api_request
   
-  # MakeAuthAPIRequest should return the response body (without the response code)
+  # make_auth_api_request should return the response body (without the response code)
   [ "$auth_api_credential_str" = "$response_body" ]
 }
 
-@test "MakeAuthAPIRequest with NOT OK response" {
+@test "make_auth_api_request with NOT OK response" {
   OPTIMIZELY_API_TOKEN="token"
   response_body="response_body"
   curl() { echo "${response_body}400"; }
   export -f curl
 
-  run MakeAuthAPIRequest
+  run make_auth_api_request
   
-  # MakeAuthAPIRequest should fail if the response code is not 200
+  # make_auth_api_request should fail if the response code is not 200
   [ "$status" -eq 1 ]
 }
 

@@ -223,11 +223,10 @@ check_aws_credential_expiration() {
   fi
 }
 
-# MakeAuthAPIRequest
+# make_auth_api_request
 # Retrieve AWS credentials from Optimizely's authentication API. See:
 # https://docs.developers.optimizely.com/optimizely-data/docs/authentication-api
-function MakeAuthAPIRequest()
-{
+make_auth_api_request() {
   if [ -z "${OPTIMIZELY_API_TOKEN:-}" ]; then
     error_echo "Error: no Optimizely API token specified."
     error_echo "An Optimizely API token may be passed via the --token command line argument, e.g."
@@ -306,7 +305,7 @@ function ParseAuthAPIResponse()
 # Retrieve AWS credentials from Optimizely's authentication API.  
 function Authenticate()
 {
-  MakeAuthAPIRequest
+  make_auth_api_request
   ParseAuthAPIResponse
 
   authenticated=true
