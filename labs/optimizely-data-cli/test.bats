@@ -358,19 +358,19 @@ past=$(( (present-3600) * 1000 ))
   [ "$status" -eq 1 ]
 }
 
-# ValidateType
+# validate_type_param
 
-@test "ValidateType should accept only decisions or events" {
-  run ValidateType "decisions"
+@test "validate_type_param should accept only decisions or events" {
+  run validate_type_param "decisions"
   [ "$status" -eq 0 ]
 
-  run ValidateType "events"
+  run validate_type_param "events"
   [ "$status" -eq 0 ]
 
-  run ValidateType "x"
+  run validate_type_param "x"
   [ "$status" -eq 1 ]
 
-  run ValidateType
+  run validate_type_param
   [ "$status" -eq 1 ]
 }
 

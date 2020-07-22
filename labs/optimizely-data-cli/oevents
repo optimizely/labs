@@ -355,10 +355,9 @@ build_s3_base_path() {
   fi
 }
 
-# Validate type
+# validate_type
 # Validate that the specified type is one of ["decisions", "events"]
-function ValidateType() 
-{
+validate_type_param() {
   local type="$1"
   if [[ "$type" != "decisions" && "$type" != "events" ]]; then
     error_echo "Error: specified type (\"$type\") must be one of \"decisions\" or \"events\""
@@ -380,7 +379,7 @@ build_s3_relative_paths() {
     return
   fi
 
-  ValidateType "$type"
+  validate_type_param "$type"
   compute_date_range
 
   if [ ${#date_range[@]} = 0 ]; then
