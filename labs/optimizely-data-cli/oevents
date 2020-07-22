@@ -111,10 +111,9 @@ verbose_echo() {
   fi
 }
 
-# ErrorEcho
+# error_echo
 # Echo the supplied text to stderr 
-function ErrorEcho()
-{
+error_echo() {
   echo "$@" >&2
 }
 
@@ -127,7 +126,7 @@ function Require()
   local requirement="$1"
 
   if ! command -v "$requirement" &> /dev/null; then
-    ErrorEcho "Error: $CLI_NAME requires $requirement to run.  Please install it and try again."
+    error_echo "Error: $CLI_NAME requires $requirement to run.  Please install it and try again."
     exit 1
   fi
 }
@@ -180,7 +179,7 @@ function AssertIsBeforeOrEqual()
   fi
 
   if [ "$ts1" -gt "$ts2" ]; then
-    ErrorEcho "Error: invalid date range: $d1 - $d2"
+    error_echo "Error: invalid date range: $d1 - $d2"
     exit 1
   fi
 }
@@ -236,12 +235,12 @@ function CheckAWSCredentialExpiration()
 function MakeAuthAPIRequest()
 {
   if [ -z "${OPTIMIZELY_API_TOKEN:-}" ]; then
-    ErrorEcho "Error: no Optimizely API token specified."
-    ErrorEcho "An Optimizely API token may be passed via the --token command line argument, e.g."
-    ErrorEcho "  $ $CLI_NAME ls --token <token> --type decisions --date 2020-07-01"
-    ErrorEcho "...or set the OPTIMIZELY_API_TOKEN environment variable, e.g."
-    ErrorEcho "  $ export OPTIMIZELY_API_TOKEN=<token>"
-    ErrorEcho "  $ $CLI_NAME ls --type decisions --date 2020-07-01"
+    error_echo "Error: no Optimizely API token specified."
+    error_echo "An Optimizely API token may be passed via the --token command line argument, e.g."
+    error_echo "  $ $CLI_NAME ls --token <token> --type decisions --date 2020-07-01"
+    error_echo "...or set the OPTIMIZELY_API_TOKEN environment variable, e.g."
+    error_echo "  $ export OPTIMIZELY_API_TOKEN=<token>"
+    error_echo "  $ $CLI_NAME ls --type decisions --date 2020-07-01"
     exit 1
   fi
 
@@ -254,7 +253,7 @@ function MakeAuthAPIRequest()
   local auth_api_response_code="${auth_api_response:(-3)}"
 
   if [ "$auth_api_response_code" != "200" ]; then
-    ErrorEcho "Error: received error response from Optimizely Authentication API: $auth_api_response"
+    error_echo "Error: received error response from Optimizely Authentication API: $auth_api_response"
     exit 1
   fi
 
@@ -274,7 +273,7 @@ function ExtractValueFromJSON()
   local val=$(echo "$json_str" | jq -r "$path")
 
   if [[ -z "${val:-}" || "$val" == "null" ]]; then
-    ErrorEcho "Error: Unable to extract $path from $json_str"
+    error_echo "Error: Unable to extract $path from $json_str"
     exit 1
   fi
   
@@ -304,7 +303,7 @@ function ParseAuthAPIResponse()
         -z "$AWS_SESSION_TOKEN" ||
         -z "$AWS_SESSION_EXPIRATION" || 
         -z "$S3_BASE_PATH" ]]; then 
-    ErrorEcho "Error: Failed to extract one or more expected values from the Authentication API response"
+    error_echo "Error: Failed to extract one or more expected values from the Authentication API response"
     exit 1
   fi
 }
@@ -361,7 +360,7 @@ function BuildS3BasePath()
 
   if [ -z "${S3_BASE_PATH:-}" ]; then
     if [[ -z "${account_id:-}" || -z "${bucket:-}" ]]; then
-      ErrorEcho "Error: Unable to construct S3 base path. Please specify an Optimizely Account ID or an Optimizely Personal Access Token"
+      error_echo "Error: Unable to construct S3 base path. Please specify an Optimizely Account ID or an Optimizely Personal Access Token"
       exit 1
     else
       S3_BASE_PATH="s3://$bucket/v1/account_id=$account_id/"
@@ -375,7 +374,7 @@ function ValidateType()
 {
   local type="$1"
   if [[ "$type" != "decisions" && "$type" != "events" ]]; then
-    ErrorEcho "Error: specified type (\"$type\") must be one of \"decisions\" or \"events\""
+    error_echo "Error: specified type (\"$type\") must be one of \"decisions\" or \"events\""
     exit 1 
   fi
 }
