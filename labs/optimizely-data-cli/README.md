@@ -19,9 +19,21 @@ This Lab contains `oevents`, a simple CLI tool for loading enriched event data.
 - [curl](https://curl.haxx.se/)  (Note: All versions of OS X starting with Jaguar come with curl installed)
 - the [Amazon AWS CLI](https://aws.amazon.com/cli/) (v2+) 
 
-## Installation
+## Downloading `oevents`
 
-`oevents` is a bash script. To use it, you can specify the script's path explicitly like this (assuming `oevents` is in your working directory):
+You can download a zipped directory containing the `oevents` CLI here.
+
+`oevents` lives in the  [Optimizely Labs Github repository](https://github.com/optimizely/labs/tree/master/labs/optimizely-data-cli).  You can also access it by cloning the repository or downloading the `oevents` script directly from the Github web interface.
+
+## Installation 
+
+`oevents` is a bash script. To run it, you'll need to make sure it's executable.  Assuming `oevents` is in your working directory, you can do this with the following command:
+
+```sh
+$ chmod +x oevents
+```
+
+To run `oevents`, you can specify the script's path explicitly like this (again, assuming `oevents` is in your working directory):
 
 ```sh
 $ ./oevents help
@@ -31,14 +43,6 @@ Or you can add it to a directory in your `PATH` environment variable.
 
 ```sh
 $ sudo cp oevents /usr/local/bin/
-$ oevents help
-```
-
-You can do this temporarily by adding this tutorial's directory to your `PATH` variable in your shell session:
-
-```sh
-$ cd optimizely-data-cli/
-$ export PATH="$(pwd):$PATH"
 $ oevents help
 ```
 
