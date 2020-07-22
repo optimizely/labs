@@ -121,8 +121,7 @@ error_echo() {
 # Prerequisites                                                                #
 ################################################################################
 
-function Require()
-{
+require() {
   local requirement="$1"
 
   if ! command -v "$requirement" &> /dev/null; then
@@ -512,10 +511,10 @@ function LoadCommand()
 
 # Check prerequisites
 
-Require "aws"
-Require "jq"
-Require "date"
-Require "curl"
+require "aws"
+require "jq"
+require "date"
+require "curl"
 
 # Set default global variable values
 bucket="optimizely-events-data"
