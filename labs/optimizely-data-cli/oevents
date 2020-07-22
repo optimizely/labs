@@ -160,10 +160,9 @@ incr_day() {
   fi
 }
 
-# AssertIsBeforeOrEqual
+# assert_before_or_equal
 # Given two dates, assert that the first is before or equal to the second
-function AssertIsBeforeOrEqual()
-{
+assert_before_or_equal() {
   d1="$1"
   d2="$2"
 
@@ -195,7 +194,7 @@ function ComputeDateRange()
     end=$start
   fi
 
-  AssertIsBeforeOrEqual "$start" "$end"
+  assert_before_or_equal "$start" "$end"
 
   loopend=$(incr_day "$end")
 

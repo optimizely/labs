@@ -70,14 +70,14 @@ past=$(( (present-3600) * 1000 ))
   [ "$(incr_day 2020-06-30)" = "2020-07-01" ]
 }
 
-# AssertIsBeforeOrEqual
+# assert_before_or_equal
 
-@test "AssertIsBeforeOrEqual with increasing, equal, and decreasing dates" {
-  run AssertIsBeforeOrEqual "2020-03-01" "2020-03-02"
+@test "assert_before_or_equal with increasing, equal, and decreasing dates" {
+  run assert_before_or_equal "2020-03-01" "2020-03-02"
   [ "$status" = 0 ]
-  run AssertIsBeforeOrEqual "2020-03-01" "2020-03-01"
+  run assert_before_or_equal "2020-03-01" "2020-03-01"
   [ "$status" = 0 ]
-  run AssertIsBeforeOrEqual "2020-03-01" "2020-02-28"
+  run assert_before_or_equal "2020-03-01" "2020-02-28"
   [ "$status" = 1 ]
 }
 
