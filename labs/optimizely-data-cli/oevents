@@ -301,8 +301,7 @@ parse_auth_api_response() {
 
 # authenticate
 # Retrieve AWS credentials from Optimizely's authentication API.  
-function authenticate()
-{
+authenticate() {
   make_auth_api_request
   parse_auth_api_response
 
