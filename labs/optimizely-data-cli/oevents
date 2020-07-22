@@ -103,10 +103,9 @@ The following examples use the $CLI_NAME paths command to demonstrate how argume
 # Logging and Error output                                                     #
 ################################################################################
 
-# VerboseEcho
+# verbose_echo
 # Echo the supplied text if the --verbose flag is on
-function VerboseEcho()
-{
+verbose_echo() {
   if [ "$verbose" = true ]; then 
     echo "$@"
   fi
@@ -226,7 +225,7 @@ function CheckAWSCredentialExpiration()
     if [ "$expiration_time_in_seconds" -le "$current_time_in_seconds" ]; then
       authenticated=false
       local expiration_time_str=$(TimestampMsToDateString "$AWS_SESSION_EXPIRATION")
-      VerboseEcho "AWS Credentials expired at $expiration_time_str."
+      verbose_echo "AWS Credentials expired at $expiration_time_str."
     fi
   fi
 }
@@ -248,7 +247,7 @@ function MakeAuthAPIRequest()
 
   local auth_endpoint="https://api.optimizely.com/v2/export/credentials"
 
-  VerboseEcho "Requesting AWS credentials from $auth_endpoint"
+  verbose_echo "Requesting AWS credentials from $auth_endpoint"
 
   local auth_api_response=$(curl -w "%{response_code}" -s -H "Authorization: Bearer $OPTIMIZELY_API_TOKEN" -X GET $auth_endpoint)
 
@@ -320,8 +319,8 @@ function Authenticate()
   authenticated=true
 
   local expiration_date_str=$(TimestampMsToDateString "$AWS_SESSION_EXPIRATION")
-  VerboseEcho "Acquired AWS credentials valid until $expiration_date_str."
-  VerboseEcho "S3 base path set to $S3_BASE_PATH"
+  verbose_echo "Acquired AWS credentials valid until $expiration_date_str."
+  verbose_echo "S3 base path set to $S3_BASE_PATH"
 }
 
 # EnsureAuthenticatedIfTokenPresent
@@ -344,7 +343,7 @@ function EnsureAuthenticatedIfTokenPresent()
 # Execute the supplied AWS command
 function ExecuteAWSCLICommand()
 {
-  VerboseEcho "$@"
+  verbose_echo "$@"
   EnsureAuthenticatedIfTokenPresent
   "$@"
 }
@@ -391,7 +390,7 @@ function BuildS3RelativePaths()
   if [ -z "${type:-}" ]; then
     # type was not specified, so the only relative path we can construct is an 
     # empty string
-    VerboseEcho "Type not specified; date range, experiment, and event params will be ignored."
+    verbose_echo "Type not specified; date range, experiment, and event params will be ignored."
     s3_relative_paths+=("")
     return
   fi
@@ -401,7 +400,7 @@ function BuildS3RelativePaths()
 
   if [ ${#date_range[@]} = 0 ]; then
     # Type was specified, but no dates were provided.
-    VerboseEcho "Valid date range not provided; experiment and event params will be ignored."
+    verbose_echo "Valid date range not provided; experiment and event params will be ignored."
     s3_relative_paths+=("type=$type")
     return
   fi
