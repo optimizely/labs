@@ -333,7 +333,7 @@ extract_value_from_json() {
   local path="$2"
 
   local val=
-  val=$(echo "$json_str" | jq -r "$path")
+  val=$(echo "$json_str" | jq -rc "$path")
 
   if [[ -z ${val:-} || $val == "null" ]]; then
     error_echo "Error: Unable to extract $path from $json_str"
