@@ -272,7 +272,7 @@ check_aws_credential_expiration() {
     local expiration_time_in_seconds=$(( $AWS_SESSION_EXPIRATION / 1000 ))
 
     local current_time_in_seconds=
-    current_time_in_seconds=$( date +%s )
+    current_time_in_seconds=$(date +%s)
 
     if [ "$expiration_time_in_seconds" -le "$current_time_in_seconds" ]; then
       AUTHENTICATED=false
