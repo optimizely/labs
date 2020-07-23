@@ -219,8 +219,8 @@ incr_day() {
 # assert_before_or_equal
 # Given two dates, assert that the first is before or equal to the second
 assert_before_or_equal() {
-  d1="$1"
-  d2="$2"
+  local d1="$1"
+  local d2="$2"
 
   if is_darwin; then
     ts1=$(date -j -u -f "%Y-%m-%d" "$d1" "+%s")
