@@ -237,23 +237,23 @@ assert_before_or_equal() {
 }
 
 # compute_date_range
-# Compute a date range between $start and $end, and store the result in $date_range
+# Compute a date range between $DATE_RANGE_START and $DATE_RANGE_END, and store the result in $date_range
 compute_date_range() {
   date_range=()
 
-  if [ -z "${start:-}" ]; then
+  if [ -z "${DATE_RANGE_START:-}" ]; then
     return
   fi
 
-  if [ -z "${end:-}" ]; then
-    end=$start
+  if [ -z "${DATE_RANGE_END:-}" ]; then
+    DATE_RANGE_END=$DATE_RANGE_START
   fi
 
-  assert_before_or_equal "$start" "$end"
+  assert_before_or_equal "$DATE_RANGE_START" "$DATE_RANGE_END"
 
-  loopend=$(incr_day "$end")
+  loopend=$(incr_day "$DATE_RANGE_END")
 
-  d="$start"
+  d="$DATE_RANGE_START"
   while [ "$d" != "$loopend" ]; do 
     date_range+=("$d")
     d=$(incr_day "$d")
@@ -609,17 +609,17 @@ while (( "$#" )); do
       shift
       ;;
     --date)
-      start="$2"
+      DATE_RANGE_START="$2"
       shift
       shift
       ;;
     --start)
-      start="$2"
+      DATE_RANGE_START="$2"
       shift
       shift
       ;;
     --end)
-      end="$2"
+      DATE_RANGE_END="$2"
       shift
       shift
       ;;

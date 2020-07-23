@@ -180,8 +180,8 @@ past=$(( (present-3600) * 1000 ))
 # compute_date_range
 
 @test "compute_date_range with a multi-day range" {
-  start="2020-06-29"
-  end="2020-07-03"
+  DATE_RANGE_START="2020-06-29"
+  DATE_RANGE_END="2020-07-03"
   expected=( "2020-06-29" "2020-06-30" "2020-07-01" "2020-07-02" "2020-07-03" )
 
   compute_date_range
@@ -190,7 +190,7 @@ past=$(( (present-3600) * 1000 ))
 }
 
 @test "compute_date_range with a single-day range" {
-  start="2020-06-29"
+  DATE_RANGE_START="2020-06-29"
   expected=( "2020-06-29" )
 
   compute_date_range
@@ -200,8 +200,8 @@ past=$(( (present-3600) * 1000 ))
 }
 
 @test "compute_date_range with an invalid range" {
-  start="2020-07-03"
-  end="2020-06-29"
+  DATE_RANGE_START="2020-07-03"
+  DATE_RANGE_END="2020-06-29"
 
   run compute_date_range
 
@@ -486,7 +486,7 @@ past=$(( (present-3600) * 1000 ))
 @test "build_s3_relative_paths with date specified, but no type" {
   BUCKET="optimizely-events-data"
   account_id="12345"
-  start="2020-07-01"
+  DATE_RANGE_START="2020-07-01"
   expected=( "" )
   
   build_s3_relative_paths
@@ -522,7 +522,7 @@ past=$(( (present-3600) * 1000 ))
   BUCKET="optimizely-events-data"
   account_id="12345"
   type="decisions"
-  start="2020-07-01"
+  DATE_RANGE_START="2020-07-01"
   expected=( "type=decisions/date=2020-07-01" )
   
   build_s3_relative_paths
@@ -534,8 +534,8 @@ past=$(( (present-3600) * 1000 ))
   BUCKET="optimizely-events-data"
   account_id="12345"
   type="decisions"
-  start="2020-07-01"
-  end="2020-07-03"
+  DATE_RANGE_START="2020-07-01"
+  DATE_RANGE_END="2020-07-03"
   expected=( 
     "type=decisions/date=2020-07-01"
     "type=decisions/date=2020-07-02"
@@ -551,8 +551,8 @@ past=$(( (present-3600) * 1000 ))
   BUCKET="optimizely-events-data"
   account_id="12345"
   type="decisions"
-  start="2020-07-01"
-  end="2020-07-03"
+  DATE_RANGE_START="2020-07-01"
+  DATE_RANGE_END="2020-07-03"
   partition_key="experiment"
   partition_val="5678"
   expected=( 
@@ -594,7 +594,7 @@ past=$(( (present-3600) * 1000 ))
   unset OPTIMIZELY_API_TOKEN
   account_id="12345"
   type="decisions"
-  start="2020-07-01"
+  DATE_RANGE_START="2020-07-01"
   expected=( "s3://$BUCKET/v1/account_id=$account_id/type=decisions/date=2020-07-01/" )
   
   build_s3_absolute_paths
@@ -607,8 +607,8 @@ past=$(( (present-3600) * 1000 ))
   unset OPTIMIZELY_API_TOKEN
   account_id="12345"
   type="decisions"
-  start="2020-07-01"
-  end="2020-07-03"
+  DATE_RANGE_START="2020-07-01"
+  DATE_RANGE_END="2020-07-03"
   expected=( 
     "s3://$BUCKET/v1/account_id=$account_id/type=decisions/date=2020-07-01/"
     "s3://$BUCKET/v1/account_id=$account_id/type=decisions/date=2020-07-02/"
@@ -625,8 +625,8 @@ past=$(( (present-3600) * 1000 ))
   unset OPTIMIZELY_API_TOKEN
   account_id="12345"
   type="decisions"
-  start="2020-07-01"
-  end="2020-07-03"
+  DATE_RANGE_START="2020-07-01"
+  DATE_RANGE_END="2020-07-03"
   partition_key="experiment"
   partition_val="5678"
   expected=( 
