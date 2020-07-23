@@ -159,4 +159,4 @@ $ oevents load \
 
 ## Testing `oevents`
 
-You can run the `oevents` test suite by install [BATS](https://github.com/bats-core/bats-core) and running `test.bats` in this directory.  Note: the `oevents` test suite requires bash v4.4+.
+You can run the `oevents` test suite by installing [BATS](https://github.com/bats-core/bats-core) and running `test.bats` in this directory.  Note: the `oevents` test suite requires bash v4.4+.
