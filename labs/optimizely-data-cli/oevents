@@ -264,30 +264,40 @@ compute_date_range() {
 # Authentication                                                               #
 ################################################################################
 
-# check_aws_credential_expiration
-# Check if the $AWS_SESSION_EXPIRATION timestamp exists and is in the past. If so
-# set $AUTHENTICATED to false
-check_aws_credential_expiration() {
-  if [ -n "${AWS_SESSION_EXPIRATION:-}" ]; then
-    local expiration_time_in_seconds=$(( $AWS_SESSION_EXPIRATION / 1000 ))
+# has_token
+# Return true if a token has been passed to the script (either via command line
+# param or environment variable)
+has_token() {
+  [[ -n ${OPTIMIZELY_API_TOKEN:-} ]]
+}
 
-    local current_time_in_seconds=
-    current_time_in_seconds=$(date +%s)
+# is_authenticated_via_auth_api
+# Return true if AWS_SESSION_EXPIRATION exists and is in the future
+is_authenticated_via_auth_api() {
+  if [[ -z ${AWS_SESSION_EXPIRATION:-} ]]; then
+    return 1
+  fi 
 
-    if [ "$expiration_time_in_seconds" -le "$current_time_in_seconds" ]; then
-      AUTHENTICATED=false
-      local expiration_time_str=
-      expiration_time_str=$(timestamp_ms_to_date_str "$AWS_SESSION_EXPIRATION")
-      verbose_echo "AWS Credentials expired at $expiration_time_str."
-    fi
+  local expiration_time_in_seconds=$(( $AWS_SESSION_EXPIRATION / 1000 ))
+
+  local current_time_in_seconds=
+  current_time_in_seconds=$(date +%s)
+
+  if (( "$expiration_time_in_seconds" <= "$current_time_in_seconds" )); then
+    local expiration_time_str=
+    expiration_time_str=$(timestamp_ms_to_date_str "$AWS_SESSION_EXPIRATION")
+    verbose_echo "AWS Credentials expired at $expiration_time_str."
+    return 1
   fi
+
+  return 0
 }
 
 # make_auth_api_request
 # Retrieve AWS credentials from Optimizely's authentication API. See:
 # https://docs.developers.optimizely.com/optimizely-data/docs/authentication-api
 make_auth_api_request() {
-  if [ -z "${OPTIMIZELY_API_TOKEN:-}" ]; then
+  if ! has_token; then
     error_echo "Error: no Optimizely API token specified."
     error_echo "An Optimizely API token may be passed via the --token command line argument, e.g."
     error_echo "  $ $CLI_NAME ls --token <token> --type decisions --date 2020-07-01"
@@ -367,8 +377,6 @@ authenticate() {
   make_auth_api_request
   parse_auth_api_response
 
-  AUTHENTICATED=true
-
   local expiration_date_str=
   expiration_date_str=$(timestamp_ms_to_date_str "$AWS_SESSION_EXPIRATION")
   verbose_echo "Acquired AWS credentials valid until $expiration_date_str."
@@ -379,14 +387,8 @@ authenticate() {
 # If an Optimizely API token has been passed, use it to generate temporary AWS
 # credentials that can be used to access Enriched Event data.
 ensure_authenticated_if_token_present() {
-  if [ -n "${OPTIMIZELY_API_TOKEN:-}" ]; then
-    check_aws_credential_expiration
-
-    if [ "$AUTHENTICATED" = false ]; then
-      # We either haven't authenticated yet, or our credentials have expired.
-      # Authenticate using the Optimizely API token
-      authenticate
-    fi
+  if has_token && ! is_authenticated_via_auth_api; then
+    authenticate
   fi
 }
 
@@ -556,7 +558,6 @@ load_command() {
 # Set default global variable values
 REQUIREMENTS=( "aws" "curl" "date" "jq" "uname" )
 BUCKET="optimizely-events-data"
-AUTHENTICATED=false
 OUTPUT_DIR="$(pwd)"
 VERBOSE=false
 CMD="help"

@@ -24,10 +24,19 @@ AreArraysEqual() {
   done
 }
 
+# Current time (in seconds)
+present=$(date +%s)
+
+# One hour in the future (in milliseconds)
+future=$(( (present+3600) * 1000 ))
+
+# One hour in the past (in milliseconds)
+past=$(( (present-3600) * 1000 ))
+
 accessKeyId_stub="accessKeyId_stub"
 secretAccessKey_stub="secretAccessKey_stub"
 sessionToken_stub="sessionToken_stub"
-expiration_stub="1595225431000"
+expiration_stub="$future"
 s3Path_stub="s3://optimizely-events-data/v1/account_id=123/"
 
 # an example "valid" Optimizely auth api response
@@ -51,14 +60,6 @@ export invalid_auth_api_response="{
   \"s3Path\":\"$s3Path_stub\"
 }"
 
-# Current time (in seconds)
-present=$(date +%s)
-
-# One hour in the future (in milliseconds)
-future=$(( (present+3600) * 1000 ))
-
-# One hour in the past (in milliseconds)
-past=$(( (present-3600) * 1000 ))
 
 ################################################################################
 # Unit Tests                                                                   #
@@ -206,39 +207,39 @@ past=$(( (present-3600) * 1000 ))
   run compute_date_range
 
   # compute_date_range should fail given an invalid date range
-  [ "$status" = 1 ]
+  [ "$status" = "1" ]
 }
 
-# check_aws_credential_expiration
+# has_token
 
-@test "check_aws_credential_expiration with AWS_SESSION_EXPIRATION unset" {
+@test "has_token" {
+  unset OPTIMIZELY_API_TOKEN
+  run has_token
+  [ "$status" = "1" ]
+
+  OPTIMIZELY_API_TOKEN="token"
+  run has_token
+  [ "$status" = "0" ]
+}
+
+# is_authenticated_via_auth_api
+
+@test "is_authenticated_via_auth_api with AWS_SESSION_EXPIRATION unset" {
   unset AWS_SESSION_EXPIRATION
-  AUTHENTICATED=true
-
-  check_aws_credential_expiration
-  
-  # check_aws_credential_expiration shouldn't modify AUTHENTICATED if AWS_SESSION_EXPIRATION isn't set
-  [ "$AUTHENTICATED" = true ]
+  run is_authenticated_via_auth_api
+  [ "$status" = "1" ]
 }
 
-@test "check_aws_credential_expiration with AWS_SESSION_EXPIRATION in the future" {
-  AUTHENTICATED=true
-  AWS_SESSION_EXPIRATION="$future"
-
-  check_aws_credential_expiration
-
-  # check_aws_credential_expiration shouldn't modify AUTHENTICATED if AWS_SESSION_EXPIRATION hasn't passed
-  [ "$AUTHENTICATED" = true ]
-}
-
-@test "check_aws_credential_expiration with AWS_SESSION_EXPIRATION in the past" {
-  AUTHENTICATED=true
+@test "is_authenticated_via_auth_api with AWS_SESSION_EXPIRATION in the past" {
   AWS_SESSION_EXPIRATION="$past"
-  
-  check_aws_credential_expiration
-  
-  # check_aws_credential_expiration should modify AUTHENTICATED if AWS_SESSION_EXPIRATION has passed
-  [ "$AUTHENTICATED" = false ]
+  run is_authenticated_via_auth_api
+  [ "$status" = "1" ]
+}
+
+@test "is_authenticated_via_auth_api with AWS_SESSION_EXPIRATION in the future" {
+  AWS_SESSION_EXPIRATION="$future"
+  run is_authenticated_via_auth_api
+  [ "$status" = "0" ]
 }
 
 # make_auth_api_request
@@ -346,7 +347,6 @@ past=$(( (present-3600) * 1000 ))
   [ "$AWS_SESSION_TOKEN" = "$sessionToken_stub" ]
   [ "$AWS_SESSION_EXPIRATION" = "$expiration_stub" ]
   [ "$S3_BASE_PATH" = "$s3Path_stub" ]
-  [ "$AUTHENTICATED" = true ]
 }
 
 @test "authenticate with an invalid API response" {
@@ -364,80 +364,78 @@ past=$(( (present-3600) * 1000 ))
 
 @test "ensure_authenticated_if_token_present with no token present" {
   unset OPTIMIZELY_API_TOKEN
-  AUTHENTICATED=false
 
   ensure_authenticated_if_token_present
-  
-  [ "$AUTHENTICATED" = false ]
+
+  run is_authenticated_via_auth_api
+  [ "$status" -eq "1" ]
 }
 
 @test "ensure_authenticated_if_token_present with AWS_SESSION_EXPIRATION unset" {
   OPTIMIZELY_API_TOKEN="token"
   unset AWS_SESSION_EXPIRATION
-  AUTHENTICATED=false
   curl() { echo "${valid_auth_api_response}200"; }
   export -f curl
   
   ensure_authenticated_if_token_present
-
-  [ "$AUTHENTICATED" = true ]
   [ "$AWS_ACCESS_KEY_ID" = "$accessKeyId_stub" ]
+
+  run is_authenticated_via_auth_api
+  [ "$status" -eq "0" ]
 }
 
 @test "ensure_authenticated_if_token_present with valid credentials" {
   OPTIMIZELY_API_TOKEN="token"
-  AWS_ACCESS_KEY_ID="accessKeyId_stub_1"
-  AUTHENTICATED=true
+  AWS_ACCESS_KEY_ID="accessKeyId_stub_old"
   AWS_SESSION_EXPIRATION="$future"
   curl() { echo "${valid_auth_api_response}200"; }
   export -f curl
   
   ensure_authenticated_if_token_present
-  
-  # ensure_authenticated_if_token_present should NOT reauthenticate; AWS_ACCESS_KEY_ID should be preserved
-  [ "$AUTHENTICATED" = true ]
-  [ "$AWS_ACCESS_KEY_ID" = "accessKeyId_stub_1" ]
+  [ "$AWS_ACCESS_KEY_ID" = "accessKeyId_stub_old" ]
+
+  run is_authenticated_via_auth_api
+  [ "$status" -eq "0" ]
 }
 
 @test "ensure_authenticated_if_token_present with expired credentials" {
   OPTIMIZELY_API_TOKEN="token"
-  AWS_ACCESS_KEY_ID="accessKeyId_stub_1"
-  AUTHENTICATED=true
+  AWS_ACCESS_KEY_ID="accessKeyId_stub_old"
   AWS_SESSION_EXPIRATION="$past"
   curl() { echo "${valid_auth_api_response}200"; }
   export -f curl
   
   ensure_authenticated_if_token_present
-
-  # ensure_authenticated_if_token_present should re-authenticate and reset the value of AWS_ACCESS_KEY_ID
-  [ "$AUTHENTICATED" = true ]
   [ "$AWS_ACCESS_KEY_ID" = "$accessKeyId_stub" ] 
+
+  run is_authenticated_via_auth_api
+  [ "$status" -eq "0" ]
 }
 
 # build_s3_base_path
 
 @test "build_s3_base_path with valid Optimizely token" {
   OPTIMIZELY_API_TOKEN="token"
-  AUTHENTICATED=false
   curl() { echo "${valid_auth_api_response}200"; }
   export -f curl
 
   build_s3_base_path
-
-  [ "$AUTHENTICATED" = true ]
   [ "$S3_BASE_PATH" = "$s3Path_stub" ] 
+
+  run is_authenticated_via_auth_api
+  [ "$status" -eq "0" ]
 }
 
 @test "build_s3_base_path without valid Optimizely token, but with account_id" {
   BUCKET="optimizely-events-data"
   unset OPTIMIZELY_API_TOKEN
   account_id="12345"
-  AUTHENTICATED=false
   
   build_s3_base_path
+
+  run is_authenticated_via_auth_api
+  [ "$status" -eq "1" ]
   
-  # build_s3_base_path cannot authenticate without a valid token
-  [ "$AUTHENTICATED" = false ] 
   # build_s3_base_path should be able to use account_id to build a valid base path
   [ "$S3_BASE_PATH" = "s3://$BUCKET/v1/account_id=$account_id/" ] 
 }
@@ -446,7 +444,6 @@ past=$(( (present-3600) * 1000 ))
   BUCKET="optimizely-events-data"
   unset OPTIMIZELY_API_TOKEN
   unset account_id
-  AUTHENTICATED=false
   
   run build_s3_base_path
   
@@ -644,16 +641,16 @@ past=$(( (present-3600) * 1000 ))
 
 @test "execute_aws_cli_cmd with valid Optimizely api token" {
   export OPTIMIZELY_API_TOKEN="token"
-  AUTHENTICATED=false
   curl() { echo "${valid_auth_api_response}200"; }
   export -f curl
   testcmd() { testcmdcalled=true; }
 
   # execute_aws_cli_cmd should authenticate via the auth API, and then call testcmd
   execute_aws_cli_cmd "testcmd"
-
-  [ "$AUTHENTICATED" = true ]
   [ "$testcmdcalled" = true ]
+
+  run is_authenticated_via_auth_api
+  [ "$status" -eq "0" ]
 }
 
 ################################################################################
