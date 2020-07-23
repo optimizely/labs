@@ -80,9 +80,11 @@ export invalid_auth_api_response="{
   run check_requirements
   [[ $status == '0' ]]
 
+  local old_path="$PATH"
   export PATH="$(pwd)"
   run check_requirements
   [[ $status == '1' ]]
+  export PATH="$old_path"
 }
 
 # get_arch
