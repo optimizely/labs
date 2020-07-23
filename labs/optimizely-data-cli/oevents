@@ -174,8 +174,7 @@ check_requirements() {
   local should_exit=false
 
   local cmd=
-  for cmd in "${REQUIREMENTS[@]}"
-  do
+  for cmd in "${REQUIREMENTS[@]}"; do
     if ! cmd_exists "$cmd"; then
       error_echo "Error: $CLI_NAME requires $cmd to run.  Please install it and try again."
       should_exit=true
@@ -461,8 +460,7 @@ build_s3_relative_paths() {
   fi
 
   # Build relative paths for each date in the supplied date range
-  for d in "${date_range[@]}"
-  do
+  for d in ${date_range[@]}; do
     local relative_path="type=$type/date=$d$partition_str"
     s3_relative_paths+=("$relative_path")
   done
@@ -477,8 +475,7 @@ build_s3_absolute_paths() {
   
   s3_absolute_paths=()
 
-  for (( i=0; i<${#s3_relative_paths[@]}; ++i ))
-  do
+  for (( i=0; i<${#s3_relative_paths[@]}; ++i )); do
     local rel_path="${s3_relative_paths[i]}"
     if [ "$rel_path" ]; then
       # if the relative path is non-zero length, add a "/" to the end of the 
@@ -541,8 +538,7 @@ list_command() {
 load_command() {
   build_s3_absolute_paths
 
-  for (( i=0; i<"${#s3_absolute_paths[@]}"; ++i ))
-  do
+  for (( i=0; i<"${#s3_absolute_paths[@]}"; ++i )); do
     local rel_path="${s3_relative_paths[i]}"
     local abs_path="${s3_absolute_paths[i]}"
     local output_path="$OUTPUT_DIR/$rel_path"
