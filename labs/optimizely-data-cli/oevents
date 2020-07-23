@@ -196,7 +196,7 @@ check_architecture() {
 timestamp_ms_to_date_str() {
   local timestamp_ms="$1"
   local timestamp_s=$(( timestamp_ms / 1000 ))
-  if [[ $(uname) = 'Darwin' ]]; then
+  if is_darwin; then
     date -r "$timestamp_s"
   else
     date -d "@$timestamp_s"
@@ -209,7 +209,7 @@ incr_day() {
   local to_be_incremented="$1"
   
   # From https://stackoverflow.com/questions/25701265/how-to-generate-a-list-of-all-dates-in-a-range-using-the-tools-available-in-bash
-  if [[ $(uname) = 'Darwin' ]]; then
+  if is_darwin; then
     date -j -v+1d -f "%Y-%m-%d" "$to_be_incremented" "+%Y-%m-%d"
   else
     date -I -d "$to_be_incremented + 1 day"
@@ -222,7 +222,7 @@ assert_before_or_equal() {
   d1="$1"
   d2="$2"
 
-  if [[ $(uname) = 'Darwin' ]]; then
+  if is_darwin; then
     ts1=$(date -j -u -f "%Y-%m-%d" "$d1" "+%s")
     ts2=$(date -j -u -f "%Y-%m-%d" "$d2" "+%s")
   else
