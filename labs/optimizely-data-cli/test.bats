@@ -17,10 +17,10 @@ AreArraysEqual() {
   local -n arr1="$1"
   local -n arr2="$2"
 
-  [ ${#arr1[@]} = ${#arr2[@]} ]
+  [[ ${#arr1[@]} == ${#arr2[@]} ]]
 
   for (( i=0; i<${#arr1[@]}; ++i )); do
-    [ "${arr1[i]}" = "${arr2[i]}" ]
+    [[ "${arr1[i]}" == "${arr2[i]}" ]]
   done
 }
 
@@ -69,20 +69,20 @@ export invalid_auth_api_response="{
 
 @test "cmd_exists" {
   run cmd_exists "bash"
-  [ "$status" = "0" ]
+  [[ $status == "0" ]]
   run cmd_exists "thiscmdshouldnotexist"
-  [ "$status" = "1" ]
+  [[ $status == "1" ]]
 }
 
 # check_requirements
 
 @test "check_requirements" {
   run check_requirements
-  [ "$status" = "0" ]
+  [[ "$status" == "0" ]]
 
   export PATH="$(pwd)"
   run check_requirements
-  [ "$status" = "1" ]
+  [[ "$status" == "1" ]]
 }
 
 # get_arch
@@ -91,7 +91,7 @@ export invalid_auth_api_response="{
   uname() { echo "Linux"; }
   export -f uname
   run get_arch
-  [ "$output" = "Linux" ]
+  [[ "$output" == "Linux" ]]
 }
 
 # is_darwin
@@ -100,12 +100,12 @@ export invalid_auth_api_response="{
   uname() { echo "Darwin"; }
   export -f uname
   run is_darwin
-  [ "$status" = "0" ] 
+  [[ "$status" == "0" ]] 
 
   uname() { echo "Linux"; }
   export -f uname
   run is_darwin
-  [ "$status" = "1" ] 
+  [[ "$status" == "1" ]] 
 }
 
 # is_linux
@@ -114,12 +114,12 @@ export invalid_auth_api_response="{
   uname() { echo "Darwin"; }
   export -f uname
   run is_linux
-  [ "$status" = "1" ] 
+  [[ "$status" == "1" ]] 
 
   uname() { echo "Linux"; }
   export -f uname
   run is_linux
-  [ "$status" = "0" ] 
+  [[ "$status" == "0" ]] 
 }
 
 # is_supported_arch
@@ -129,17 +129,17 @@ export invalid_auth_api_response="{
   uname() { echo "Linux"; }
   export -f uname
   run is_supported_arch
-  [ "$status" = "0" ] 
+  [[ "$status" == "0" ]] 
 
   uname() { echo "Darwin"; }
   export -f uname
   run is_supported_arch
-  [ "$status" = "0" ] 
+  [[ "$status" == "0" ]] 
 
   uname() { echo "Other"; }
   export -f uname
   run is_supported_arch
-  [ "$status" = "1" ] 
+  [[ "$status" == "1" ]] 
 }
 
 # check_architecture
@@ -148,34 +148,34 @@ export invalid_auth_api_response="{
   uname() { echo "Linux"; }
   export -f uname
   run check_architecture
-  [ "$status" = "0" ] 
+  [[ "$status" == "0" ]] 
 
   uname() { echo "Darwin"; }
   export -f uname
   run check_architecture
-  [ "$status" = "0" ] 
+  [[ "$status" == "0" ]] 
 
   uname() { echo "Other"; }
   export -f uname
   run check_architecture
-  [ "$status" = "1" ] 
+  [[ "$status" == "1" ]] 
 }
 
 # incr_day
 
 @test "incr_day" {
-  [ "$(incr_day 2020-06-30)" = "2020-07-01" ]
+  [[ "$(incr_day 2020-06-30)" == "2020-07-01" ]]
 }
 
 # assert_before_or_equal
 
 @test "assert_before_or_equal with increasing, equal, and decreasing dates" {
   run assert_before_or_equal "2020-03-01" "2020-03-02"
-  [ "$status" = 0 ]
+  [[ "$status" == 0 ]]
   run assert_before_or_equal "2020-03-01" "2020-03-01"
-  [ "$status" = 0 ]
+  [[ "$status" == 0 ]]
   run assert_before_or_equal "2020-03-01" "2020-02-28"
-  [ "$status" = 1 ]
+  [[ "$status" == 1 ]]
 }
 
 # compute_date_range
@@ -207,7 +207,7 @@ export invalid_auth_api_response="{
   run compute_date_range
 
   # compute_date_range should fail given an invalid date range
-  [ "$status" = "1" ]
+  [[ "$status" == "1" ]]
 }
 
 # has_token
@@ -215,11 +215,11 @@ export invalid_auth_api_response="{
 @test "has_token" {
   unset OPTIMIZELY_API_TOKEN
   run has_token
-  [ "$status" = "1" ]
+  [[ "$status" == "1" ]]
 
   OPTIMIZELY_API_TOKEN="token"
   run has_token
-  [ "$status" = "0" ]
+  [[ "$status" == "0" ]]
 }
 
 # is_authenticated_via_auth_api
@@ -227,19 +227,19 @@ export invalid_auth_api_response="{
 @test "is_authenticated_via_auth_api with AWS_SESSION_EXPIRATION unset" {
   unset AWS_SESSION_EXPIRATION
   run is_authenticated_via_auth_api
-  [ "$status" = "1" ]
+  [[ "$status" == "1" ]]
 }
 
 @test "is_authenticated_via_auth_api with AWS_SESSION_EXPIRATION in the past" {
   AWS_SESSION_EXPIRATION="$past"
   run is_authenticated_via_auth_api
-  [ "$status" = "1" ]
+  [[ "$status" == "1" ]]
 }
 
 @test "is_authenticated_via_auth_api with AWS_SESSION_EXPIRATION in the future" {
   AWS_SESSION_EXPIRATION="$future"
   run is_authenticated_via_auth_api
-  [ "$status" = "0" ]
+  [[ "$status" == "0" ]]
 }
 
 # make_auth_api_request
@@ -250,7 +250,7 @@ export invalid_auth_api_response="{
   run make_auth_api_request
   
   # make_auth_api_request should fail if it can't find an optimizely api token
-  [ "$status" -eq 1 ]
+  [[ "$status" == 1 ]]
 }
 
 @test "make_auth_api_request with OK response" {
@@ -262,7 +262,7 @@ export invalid_auth_api_response="{
   make_auth_api_request
   
   # make_auth_api_request should return the response body (without the response code)
-  [ "$auth_api_credential_str" = "$response_body" ]
+  [[ "$auth_api_credential_str" == "$response_body" ]]
 }
 
 @test "make_auth_api_request with NOT OK response" {
@@ -274,7 +274,7 @@ export invalid_auth_api_response="{
   run make_auth_api_request
   
   # make_auth_api_request should fail if the response code is not 200
-  [ "$status" -eq 1 ]
+  [[ "$status" == 1 ]]
 }
 
 # extract_value_from_json
@@ -285,7 +285,7 @@ export invalid_auth_api_response="{
 
   val=$(extract_value_from_json "$json_str" "$path")
   
-  [ "$val" = "5" ]
+  [[ "$val" == "5" ]]
 }
 
 @test "extract_value_from_json with invalid path" {
@@ -295,7 +295,7 @@ export invalid_auth_api_response="{
   run extract_value_from_json "$json_str" "$path"
   
   # extract_value_from_json should fail if the provided path doesn't correspond to the provide JSON obj
-  [ "$status" -eq 1 ]
+  [[ "$status" == 1 ]]
 }
 
 @test "extract_value_from_json with empty json str" {
@@ -305,7 +305,7 @@ export invalid_auth_api_response="{
   run extract_value_from_json "$json_str" "$path"
   
   # extract_value_from_json if there is no JSON object provided
-  [ "$status" -eq 1 ]
+  [[ "$status" == 1 ]]
 }
 
 # parse_auth_api_response
@@ -316,11 +316,11 @@ export invalid_auth_api_response="{
   parse_auth_api_response
   
   # parse_auth_api_response should set each of these variables given a valid API response
-  [ "$AWS_ACCESS_KEY_ID" = "$accessKeyId_stub" ]
-  [ "$AWS_SECRET_ACCESS_KEY" = "$secretAccessKey_stub" ]
-  [ "$AWS_SESSION_TOKEN" = "$sessionToken_stub" ]
-  [ "$AWS_SESSION_EXPIRATION" = "$expiration_stub" ]
-  [ "$S3_BASE_PATH" = "$s3Path_stub" ]
+  [[ "$AWS_ACCESS_KEY_ID" == "$accessKeyId_stub" ]]
+  [[ "$AWS_SECRET_ACCESS_KEY" == "$secretAccessKey_stub" ]]
+  [[ "$AWS_SESSION_TOKEN" == "$sessionToken_stub" ]]
+  [[ "$AWS_SESSION_EXPIRATION" == "$expiration_stub" ]]
+  [[ "$S3_BASE_PATH" == "$s3Path_stub" ]]
 }
 
 @test "parse_auth_api_response with invalid API response" {
@@ -329,7 +329,7 @@ export invalid_auth_api_response="{
   run parse_auth_api_response
   
   # parse_auth_api_response should fail if it receives an invalid JSON response
-  [ "$status" -eq 1 ]
+  [[ "$status" == 1 ]]
 }
 
 # authenticate
@@ -342,11 +342,11 @@ export invalid_auth_api_response="{
   authenticate 
   
   # authenticate should set the following variables given a valid Optimizely access token
-  [ "$AWS_ACCESS_KEY_ID" = "$accessKeyId_stub" ]
-  [ "$AWS_SECRET_ACCESS_KEY" = "$secretAccessKey_stub" ]
-  [ "$AWS_SESSION_TOKEN" = "$sessionToken_stub" ]
-  [ "$AWS_SESSION_EXPIRATION" = "$expiration_stub" ]
-  [ "$S3_BASE_PATH" = "$s3Path_stub" ]
+  [[ "$AWS_ACCESS_KEY_ID" == "$accessKeyId_stub" ]]
+  [[ "$AWS_SECRET_ACCESS_KEY" == "$secretAccessKey_stub" ]]
+  [[ "$AWS_SESSION_TOKEN" == "$sessionToken_stub" ]]
+  [[ "$AWS_SESSION_EXPIRATION" == "$expiration_stub" ]]
+  [[ "$S3_BASE_PATH" == "$s3Path_stub" ]]
 }
 
 @test "authenticate with an invalid API response" {
@@ -357,7 +357,7 @@ export invalid_auth_api_response="{
   run authenticate 
   
   # authenticate should fail if an invalid JSON response is received from the Optimizely auth API
-  [ "$status" -eq 1 ]
+  [[ "$status" == 1 ]]
 }
 
 # ensure_authenticated_if_token_present
@@ -368,7 +368,7 @@ export invalid_auth_api_response="{
   ensure_authenticated_if_token_present
 
   run is_authenticated_via_auth_api
-  [ "$status" -eq "1" ]
+  [[ "$status" == "1" ]]
 }
 
 @test "ensure_authenticated_if_token_present with AWS_SESSION_EXPIRATION unset" {
@@ -378,10 +378,10 @@ export invalid_auth_api_response="{
   export -f curl
   
   ensure_authenticated_if_token_present
-  [ "$AWS_ACCESS_KEY_ID" = "$accessKeyId_stub" ]
+  [[ "$AWS_ACCESS_KEY_ID" == "$accessKeyId_stub" ]]
 
   run is_authenticated_via_auth_api
-  [ "$status" -eq "0" ]
+  [[ "$status" == "0" ]]
 }
 
 @test "ensure_authenticated_if_token_present with valid credentials" {
@@ -392,10 +392,10 @@ export invalid_auth_api_response="{
   export -f curl
   
   ensure_authenticated_if_token_present
-  [ "$AWS_ACCESS_KEY_ID" = "accessKeyId_stub_old" ]
+  [[ "$AWS_ACCESS_KEY_ID" == "accessKeyId_stub_old" ]]
 
   run is_authenticated_via_auth_api
-  [ "$status" -eq "0" ]
+  [[ "$status" == "0" ]]
 }
 
 @test "ensure_authenticated_if_token_present with expired credentials" {
@@ -406,10 +406,10 @@ export invalid_auth_api_response="{
   export -f curl
   
   ensure_authenticated_if_token_present
-  [ "$AWS_ACCESS_KEY_ID" = "$accessKeyId_stub" ] 
+  [[ "$AWS_ACCESS_KEY_ID" == "$accessKeyId_stub" ]] 
 
   run is_authenticated_via_auth_api
-  [ "$status" -eq "0" ]
+  [[ "$status" == "0" ]]
 }
 
 # build_s3_base_path
@@ -420,10 +420,10 @@ export invalid_auth_api_response="{
   export -f curl
 
   build_s3_base_path
-  [ "$S3_BASE_PATH" = "$s3Path_stub" ] 
+  [[ "$S3_BASE_PATH" == "$s3Path_stub" ]] 
 
   run is_authenticated_via_auth_api
-  [ "$status" -eq "0" ]
+  [[ "$status" == "0" ]]
 }
 
 @test "build_s3_base_path without valid Optimizely token, but with account_id" {
@@ -434,10 +434,10 @@ export invalid_auth_api_response="{
   build_s3_base_path
 
   run is_authenticated_via_auth_api
-  [ "$status" -eq "1" ]
+  [[ "$status" == "1" ]]
   
   # build_s3_base_path should be able to use account_id to build a valid base path
-  [ "$S3_BASE_PATH" = "s3://$BUCKET/v1/account_id=$account_id/" ] 
+  [[ "$S3_BASE_PATH" == "s3://$BUCKET/v1/account_id=$account_id/" ]] 
 }
 
 @test "build_s3_base_path without valid Optimizely token or account_id" {
@@ -448,23 +448,23 @@ export invalid_auth_api_response="{
   run build_s3_base_path
   
   # build_s3_base_path should fail, since a base path cannot be constructed
-  [ "$status" -eq 1 ]
+  [[ "$status" == 1 ]]
 }
 
 # validate_type_param
 
 @test "validate_type_param should accept only decisions or events" {
   run validate_type_param "decisions"
-  [ "$status" -eq 0 ]
+  [[ "$status" == 0 ]]
 
   run validate_type_param "events"
-  [ "$status" -eq 0 ]
+  [[ "$status" == 0 ]]
 
   run validate_type_param "x"
-  [ "$status" -eq 1 ]
+  [[ "$status" == 1 ]]
 
   run validate_type_param
-  [ "$status" -eq 1 ]
+  [[ "$status" == 1 ]]
 }
 
 # build_s3_relative_paths
@@ -512,7 +512,7 @@ export invalid_auth_api_response="{
   run build_s3_relative_paths
 
   # build_s3_relative_paths should fail if the specified type is misspelled
-  [ "$status" = 1 ]
+  [[ "$status" == 1 ]]
 }
 
 @test "build_s3_relative_paths with type and single date specified" {
@@ -647,10 +647,10 @@ export invalid_auth_api_response="{
 
   # execute_aws_cli_cmd should authenticate via the auth API, and then call testcmd
   execute_aws_cli_cmd "testcmd"
-  [ "$testcmdcalled" = true ]
+  [[ "$testcmdcalled" == true ]]
 
   run is_authenticated_via_auth_api
-  [ "$status" -eq "0" ]
+  [[ "$status" == "0" ]]
 }
 
 ################################################################################
@@ -659,7 +659,7 @@ export invalid_auth_api_response="{
 
 @test "help command" {
   run "./$CLI_NAME" help
-  [ "$status" = 0 ]
+  [[ "$status" == 0 ]]
 }
 
 @test "auth command" {
@@ -670,12 +670,12 @@ export invalid_auth_api_response="{
 
   run "./$CLI_NAME" auth
   
-  [ "$status" = 0 ]
-  [ "${lines[0]}" = "export AWS_ACCESS_KEY_ID=$accessKeyId_stub" ]
-  [ "${lines[1]}" = "export AWS_SECRET_ACCESS_KEY=$secretAccessKey_stub" ]
-  [ "${lines[2]}" = "export AWS_SESSION_TOKEN=$sessionToken_stub" ]
-  [ "${lines[3]}" = "export AWS_SESSION_EXPIRATION=$expiration_stub" ]
-  [ "${lines[4]}" = "export S3_BASE_PATH=$s3Path_stub" ]
+  [[ "$status" == 0 ]]
+  [[ "${lines[0]}" == "export AWS_ACCESS_KEY_ID=$accessKeyId_stub" ]]
+  [[ "${lines[1]}" == "export AWS_SECRET_ACCESS_KEY=$secretAccessKey_stub" ]]
+  [[ "${lines[2]}" == "export AWS_SESSION_TOKEN=$sessionToken_stub" ]]
+  [[ "${lines[3]}" == "export AWS_SESSION_EXPIRATION=$expiration_stub" ]]
+  [[ "${lines[4]}" == "export S3_BASE_PATH=$s3Path_stub" ]]
 }
 
 @test "paths command" {
@@ -683,9 +683,9 @@ export invalid_auth_api_response="{
 
   run "./$CLI_NAME" paths --account-id 12345 --type decisions --start 2020-07-01 --end 2020-07-03 --experiment 56789
 
-  [ "${lines[0]}" = "s3://optimizely-events-data/v1/account_id=12345/type=decisions/date=2020-07-01/experiment=56789/" ]
-  [ "${lines[1]}" = "s3://optimizely-events-data/v1/account_id=12345/type=decisions/date=2020-07-02/experiment=56789/" ]
-  [ "${lines[2]}" = "s3://optimizely-events-data/v1/account_id=12345/type=decisions/date=2020-07-03/experiment=56789/" ]
+  [[ "${lines[0]}" == "s3://optimizely-events-data/v1/account_id=12345/type=decisions/date=2020-07-01/experiment=56789/" ]]
+  [[ "${lines[1]}" == "s3://optimizely-events-data/v1/account_id=12345/type=decisions/date=2020-07-02/experiment=56789/" ]]
+  [[ "${lines[2]}" == "s3://optimizely-events-data/v1/account_id=12345/type=decisions/date=2020-07-03/experiment=56789/" ]]
 
 }
 
@@ -697,9 +697,9 @@ export invalid_auth_api_response="{
 
   run "./$CLI_NAME" ls --account-id 12345 --type decisions --start 2020-07-01 --end 2020-07-03 --experiment 56789
 
-  [ "${lines[0]}" = "aws s3 ls --human-readable s3://optimizely-events-data/v1/account_id=12345/type=decisions/date=2020-07-01/experiment=56789/" ]
-  [ "${lines[1]}" = "aws s3 ls --human-readable s3://optimizely-events-data/v1/account_id=12345/type=decisions/date=2020-07-02/experiment=56789/" ]
-  [ "${lines[2]}" = "aws s3 ls --human-readable s3://optimizely-events-data/v1/account_id=12345/type=decisions/date=2020-07-03/experiment=56789/" ]
+  [[ "${lines[0]}" == "aws s3 ls --human-readable s3://optimizely-events-data/v1/account_id=12345/type=decisions/date=2020-07-01/experiment=56789/" ]]
+  [[ "${lines[1]}" == "aws s3 ls --human-readable s3://optimizely-events-data/v1/account_id=12345/type=decisions/date=2020-07-02/experiment=56789/" ]]
+  [[ "${lines[2]}" == "aws s3 ls --human-readable s3://optimizely-events-data/v1/account_id=12345/type=decisions/date=2020-07-03/experiment=56789/" ]]
 }
 
 @test "load command" {
@@ -710,9 +710,9 @@ export invalid_auth_api_response="{
 
   run "./$CLI_NAME" load --account-id 12345 --type decisions --start 2020-07-01 --end 2020-07-03 --experiment 56789 --output ./data
 
-  [ "${lines[0]}" = "aws s3 sync s3://optimizely-events-data/v1/account_id=12345/type=decisions/date=2020-07-01/experiment=56789/ ./data/type=decisions/date=2020-07-01/experiment=56789" ]
-  [ "${lines[1]}" = "aws s3 sync s3://optimizely-events-data/v1/account_id=12345/type=decisions/date=2020-07-02/experiment=56789/ ./data/type=decisions/date=2020-07-02/experiment=56789" ]
-  [ "${lines[2]}" = "aws s3 sync s3://optimizely-events-data/v1/account_id=12345/type=decisions/date=2020-07-03/experiment=56789/ ./data/type=decisions/date=2020-07-03/experiment=56789" ]
+  [[ "${lines[0]}" == "aws s3 sync s3://optimizely-events-data/v1/account_id=12345/type=decisions/date=2020-07-01/experiment=56789/ ./data/type=decisions/date=2020-07-01/experiment=56789" ]]
+  [[ "${lines[1]}" == "aws s3 sync s3://optimizely-events-data/v1/account_id=12345/type=decisions/date=2020-07-02/experiment=56789/ ./data/type=decisions/date=2020-07-02/experiment=56789" ]]
+  [[ "${lines[2]}" == "aws s3 sync s3://optimizely-events-data/v1/account_id=12345/type=decisions/date=2020-07-03/experiment=56789/ ./data/type=decisions/date=2020-07-03/experiment=56789" ]]
 }
 
 @test "load command with valid token" {
@@ -725,7 +725,7 @@ export invalid_auth_api_response="{
 
   run "./$CLI_NAME" load --type decisions --start 2020-07-01 --end 2020-07-03 --experiment 56789 --output ./data
 
-  [ "${lines[0]}" = "aws s3 sync ${s3Path_stub}type=decisions/date=2020-07-01/experiment=56789/ ./data/type=decisions/date=2020-07-01/experiment=56789" ]
-  [ "${lines[1]}" = "aws s3 sync ${s3Path_stub}type=decisions/date=2020-07-02/experiment=56789/ ./data/type=decisions/date=2020-07-02/experiment=56789" ]
-  [ "${lines[2]}" = "aws s3 sync ${s3Path_stub}type=decisions/date=2020-07-03/experiment=56789/ ./data/type=decisions/date=2020-07-03/experiment=56789" ]
+  [[ "${lines[0]}" == "aws s3 sync ${s3Path_stub}type=decisions/date=2020-07-01/experiment=56789/ ./data/type=decisions/date=2020-07-01/experiment=56789" ]]
+  [[ "${lines[1]}" == "aws s3 sync ${s3Path_stub}type=decisions/date=2020-07-02/experiment=56789/ ./data/type=decisions/date=2020-07-02/experiment=56789" ]]
+  [[ "${lines[2]}" == "aws s3 sync ${s3Path_stub}type=decisions/date=2020-07-03/experiment=56789/ ./data/type=decisions/date=2020-07-03/experiment=56789" ]]
 }
