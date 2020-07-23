@@ -106,7 +106,7 @@ The following examples use the $CLI_NAME paths command to demonstrate how argume
 # verbose_echo
 # Echo the supplied text if the --verbose flag is on
 verbose_echo() {
-  if [ "$VERBOSE" = true ]; then 
+  if [[ $VERBOSE == true ]]; then 
     echo "$@"
   fi
 }
@@ -181,7 +181,7 @@ check_requirements() {
     fi
   done
 
-  if [ "$should_exit" = true ]; then
+  if [[ $should_exit == true ]]; then
     exit 1
   fi
 }
@@ -229,7 +229,7 @@ assert_before_or_equal() {
     ts2=$(date -d "$d2" +"%s")
   fi
 
-  if [ "$ts1" -gt "$ts2" ]; then
+  if [[ $ts1 > "$ts2" ]]; then
     error_echo "Error: invalid date range: $d1 - $d2"
     exit 1
   fi
@@ -240,11 +240,11 @@ assert_before_or_equal() {
 compute_date_range() {
   date_range=()
 
-  if [ -z "${DATE_RANGE_START:-}" ]; then
+  if [[ -z ${DATE_RANGE_START:-} ]]; then
     return
   fi
 
-  if [ -z "${DATE_RANGE_END:-}" ]; then
+  if [[ -z ${DATE_RANGE_END:-} ]]; then
     DATE_RANGE_END=$DATE_RANGE_START
   fi
 
@@ -253,7 +253,7 @@ compute_date_range() {
   loopend=$(incr_day "$DATE_RANGE_END")
 
   d="$DATE_RANGE_START"
-  while [ "$d" != "$loopend" ]; do 
+  while [[ $d != "$loopend" ]]; do 
     date_range+=("$d")
     d=$(incr_day "$d")
   done
@@ -315,7 +315,7 @@ make_auth_api_request() {
 
   local auth_api_response_code="${auth_api_response:(-3)}"
 
-  if [ "$auth_api_response_code" != "200" ]; then
+  if [[ $auth_api_response_code != "200" ]]; then
     error_echo "Error: received error response from Optimizely Authentication API: $auth_api_response"
     exit 1
   fi
@@ -335,7 +335,7 @@ extract_value_from_json() {
   local val=
   val=$(echo "$json_str" | jq -r "$path")
 
-  if [[ -z "${val:-}" || "$val" == "null" ]]; then
+  if [[ -z ${val:-} || $val == "null" ]]; then
     error_echo "Error: Unable to extract $path from $json_str"
     exit 1
   fi
@@ -409,8 +409,8 @@ execute_aws_cli_cmd() {
 build_s3_base_path() {
   ensure_authenticated_if_token_present
 
-  if [ -z "${S3_BASE_PATH:-}" ]; then
-    if [[ -z "${account_id:-}" || -z "${BUCKET:-}" ]]; then
+  if [[ -z ${S3_BASE_PATH:-} ]]; then
+    if [[ -z ${account_id:-} || -z ${BUCKET:-} ]]; then
       error_echo "Error: Unable to construct S3 base path. Please specify an Optimizely Account ID or an Optimizely Personal Access Token"
       exit 1
     else
@@ -423,7 +423,7 @@ build_s3_base_path() {
 # Validate that the specified type is one of ["decisions", "events"]
 validate_type_param() {
   local type="$1"
-  if [[ "$type" != "decisions" && "$type" != "events" ]]; then
+  if [[ $type != "decisions" && $type != "events" ]]; then
     error_echo "Error: specified type (\"$type\") must be one of \"decisions\" or \"events\""
     exit 1 
   fi
@@ -435,7 +435,7 @@ validate_type_param() {
 build_s3_relative_paths() {
   s3_relative_paths=()
 
-  if [ -z "${type:-}" ]; then
+  if [[ -z ${type:-} ]]; then
     # type was not specified, so the only relative path we can construct is an 
     # empty string
     verbose_echo "Type not specified; date range, experiment, and event params will be ignored."
@@ -446,7 +446,7 @@ build_s3_relative_paths() {
   validate_type_param "$type"
   compute_date_range
 
-  if [ ${#date_range[@]} = 0 ]; then
+  if [[ ${#date_range[@]} == 0 ]]; then
     # Type was specified, but no dates were provided.
     verbose_echo "Valid date range not provided; experiment and event params will be ignored."
     s3_relative_paths+=("type=$type")
@@ -455,7 +455,7 @@ build_s3_relative_paths() {
 
   # Construct a partition string if a partition key and value were supplied
   local partition_str=""
-  if [[ -n "${partition_key:-}" && -n "${partition_val:-}" ]]; then
+  if [[ -n ${partition_key:-} && -n ${partition_val:-} ]]; then
     partition_str="/$partition_key=$partition_val"
   fi
 
@@ -477,7 +477,7 @@ build_s3_absolute_paths() {
 
   for (( i=0; i<${#s3_relative_paths[@]}; ++i )); do
     local rel_path="${s3_relative_paths[i]}"
-    if [ "$rel_path" ]; then
+    if [[ -n "$rel_path" ]]; then
       # if the relative path is non-zero length, add a "/" to the end of the 
       # absolute path
       rel_path="$rel_path/"
