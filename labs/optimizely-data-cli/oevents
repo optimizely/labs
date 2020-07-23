@@ -431,15 +431,15 @@ validate_type_param() {
 
 # build_s3_relative_paths
 # Build S3 relative paths from passed parameters. Relative paths are stored in 
-# $s3_relative_paths
+# $S3_RELATIVE_PATHS
 build_s3_relative_paths() {
-  s3_relative_paths=()
+  S3_RELATIVE_PATHS=()
 
   if [[ -z ${type:-} ]]; then
     # type was not specified, so the only relative path we can construct is an 
     # empty string
     verbose_echo "Type not specified; date range, experiment, and event params will be ignored."
-    s3_relative_paths+=("")
+    S3_RELATIVE_PATHS+=("")
     return
   fi
 
@@ -449,7 +449,7 @@ build_s3_relative_paths() {
   if [[ ${#DATE_RANGE[@]} == 0 ]]; then
     # Type was specified, but no dates were provided.
     verbose_echo "Valid date range not provided; experiment and event params will be ignored."
-    s3_relative_paths+=("type=$type")
+    S3_RELATIVE_PATHS+=("type=$type")
     return
   fi
 
@@ -462,27 +462,27 @@ build_s3_relative_paths() {
   # Build relative paths for each date in the supplied date range
   for d in ${DATE_RANGE[@]}; do
     local relative_path="type=$type/date=$d$partition_str"
-    s3_relative_paths+=("$relative_path")
+    S3_RELATIVE_PATHS+=("$relative_path")
   done
 }
 
 # build_s3_absolute_paths
 # Build S3 absolute paths from passed parameters.  Absolute paths are stored in
-# $s3_absolute_paths
+# $S3_ABSOLUTE_PATHS
 build_s3_absolute_paths() {
   build_s3_base_path
   build_s3_relative_paths
   
-  s3_absolute_paths=()
+  S3_ABSOLUTE_PATHS=()
 
-  for (( i=0; i<${#s3_relative_paths[@]}; ++i )); do
-    local rel_path="${s3_relative_paths[i]}"
+  for (( i=0; i<${#S3_RELATIVE_PATHS[@]}; ++i )); do
+    local rel_path="${S3_RELATIVE_PATHS[i]}"
     if [[ -n "$rel_path" ]]; then
       # if the relative path is non-zero length, add a "/" to the end of the 
       # absolute path
       rel_path="$rel_path/"
     fi
-    s3_absolute_paths+=("$S3_BASE_PATH$rel_path")
+    S3_ABSOLUTE_PATHS+=("$S3_BASE_PATH$rel_path")
   done
 }
 
@@ -516,7 +516,7 @@ auth_command() {
 paths_command() {
   build_s3_absolute_paths
 
-  for p in "${s3_absolute_paths[@]}"; do
+  for p in "${S3_ABSOLUTE_PATHS[@]}"; do
     echo "$p"
   done
 }
@@ -527,7 +527,7 @@ paths_command() {
 list_command() {
   build_s3_absolute_paths
 
-  for p in "${s3_absolute_paths[@]}"; do
+  for p in "${S3_ABSOLUTE_PATHS[@]}"; do
     execute_aws_cli_cmd aws s3 ls --human-readable "$p"
   done
 }
@@ -538,9 +538,9 @@ list_command() {
 load_command() {
   build_s3_absolute_paths
 
-  for (( i=0; i<"${#s3_absolute_paths[@]}"; ++i )); do
-    local rel_path="${s3_relative_paths[i]}"
-    local abs_path="${s3_absolute_paths[i]}"
+  for (( i=0; i<"${#S3_ABSOLUTE_PATHS[@]}"; ++i )); do
+    local rel_path="${S3_RELATIVE_PATHS[i]}"
+    local abs_path="${S3_ABSOLUTE_PATHS[i]}"
     local output_path="$OUTPUT_DIR/$rel_path"
     mkdir -p "$output_path"
     execute_aws_cli_cmd aws s3 sync "$abs_path" "$output_path"

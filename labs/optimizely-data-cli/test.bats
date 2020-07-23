@@ -477,7 +477,7 @@ export invalid_auth_api_response="{
   build_s3_relative_paths
   
   # build_s3_relative_paths should return a single empty string, since no type was specified
-  AreArraysEqual s3_relative_paths expected 
+  AreArraysEqual S3_RELATIVE_PATHS expected 
 }
 
 @test "build_s3_relative_paths with date specified, but no type" {
@@ -489,7 +489,7 @@ export invalid_auth_api_response="{
   build_s3_relative_paths
   
   # build_s3_relative_paths should return a single empty string, since no type was specified
-  AreArraysEqual s3_relative_paths expected
+  AreArraysEqual S3_RELATIVE_PATHS expected
 }
 
 @test "build_s3_relative_paths with type specified" {
@@ -501,7 +501,7 @@ export invalid_auth_api_response="{
   build_s3_relative_paths
   
   # build_s3_relative_paths should return only a "type=decisions" path
-  AreArraysEqual s3_relative_paths expected
+  AreArraysEqual S3_RELATIVE_PATHS expected
 }
 
 @test "build_s3_relative_paths with misspelled type specified" {
@@ -524,7 +524,7 @@ export invalid_auth_api_response="{
   
   build_s3_relative_paths
   
-  AreArraysEqual s3_relative_paths expected
+  AreArraysEqual S3_RELATIVE_PATHS expected
 }
 
 @test "build_s3_relative_paths with type and date range specified" {
@@ -541,7 +541,7 @@ export invalid_auth_api_response="{
   
   build_s3_relative_paths
   
-  AreArraysEqual s3_relative_paths expected
+  AreArraysEqual S3_RELATIVE_PATHS expected
 }
 
 @test "build_s3_relative_paths with type, date range, and experiment specified" {
@@ -560,7 +560,7 @@ export invalid_auth_api_response="{
   
   build_s3_relative_paths
   
-  AreArraysEqual s3_relative_paths expected
+  AreArraysEqual S3_RELATIVE_PATHS expected
 }
 
 # build_s3_absolute_paths
@@ -573,7 +573,7 @@ export invalid_auth_api_response="{
   
   build_s3_absolute_paths
   
-  AreArraysEqual s3_absolute_paths expected
+  AreArraysEqual S3_ABSOLUTE_PATHS expected
 }
 
 @test "build_s3_absolute_paths with type specified" {
@@ -583,7 +583,7 @@ export invalid_auth_api_response="{
   type="decisions"
   expected=( "s3://$BUCKET/v1/account_id=$account_id/type=decisions/" )
   build_s3_absolute_paths
-  AreArraysEqual s3_absolute_paths expected
+  AreArraysEqual S3_ABSOLUTE_PATHS expected
 }
 
 @test "build_s3_absolute_paths with type and single date specified" {
@@ -596,7 +596,7 @@ export invalid_auth_api_response="{
   
   build_s3_absolute_paths
   
-  AreArraysEqual s3_absolute_paths expected
+  AreArraysEqual S3_ABSOLUTE_PATHS expected
 }
 
 @test "build_s3_absolute_paths with type and date range specified" {
@@ -614,7 +614,7 @@ export invalid_auth_api_response="{
 
   build_s3_absolute_paths
   
-  AreArraysEqual s3_absolute_paths expected
+  AreArraysEqual S3_ABSOLUTE_PATHS expected
 }
 
 @test "build_s3_absolute_paths with type, date range, and experiment specified" {
@@ -634,7 +634,7 @@ export invalid_auth_api_response="{
 
   build_s3_absolute_paths
   
-  AreArraysEqual s3_absolute_paths expected
+  AreArraysEqual S3_ABSOLUTE_PATHS expected
 }
 
 # execute_aws_cli_cmd
