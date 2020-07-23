@@ -84,6 +84,82 @@ past=$(( (present-3600) * 1000 ))
   [ "$status" = "1" ]
 }
 
+# get_arch
+
+@test "get_arch" {
+  uname() { echo "Linux"; }
+  export -f uname
+  run get_arch
+  [ "$output" = "Linux" ]
+}
+
+# is_darwin
+
+@test "is_darwin" {
+  uname() { echo "Darwin"; }
+  export -f uname
+  run is_darwin
+  [ "$status" = "0" ] 
+
+  uname() { echo "Linux"; }
+  export -f uname
+  run is_darwin
+  [ "$status" = "1" ] 
+}
+
+# is_linux
+
+@test "is_linux" {
+  uname() { echo "Darwin"; }
+  export -f uname
+  run is_linux
+  [ "$status" = "1" ] 
+
+  uname() { echo "Linux"; }
+  export -f uname
+  run is_linux
+  [ "$status" = "0" ] 
+}
+
+# is_supported_arch
+
+@test "is_supported_arch" {
+
+  uname() { echo "Linux"; }
+  export -f uname
+  run is_supported_arch
+  [ "$status" = "0" ] 
+
+  uname() { echo "Darwin"; }
+  export -f uname
+  run is_supported_arch
+  [ "$status" = "0" ] 
+
+  uname() { echo "Other"; }
+  export -f uname
+  run is_supported_arch
+  [ "$status" = "1" ] 
+}
+
+# check_architecture
+
+@test "check_architecture" {
+  uname() { echo "Linux"; }
+  export -f uname
+  run check_architecture
+  [ "$status" = "0" ] 
+
+  uname() { echo "Darwin"; }
+  export -f uname
+  run check_architecture
+  [ "$status" = "0" ] 
+
+  uname() { echo "Other"; }
+  export -f uname
+  run check_architecture
+  [ "$status" = "1" ] 
+}
+
 # incr_day
 
 @test "incr_day" {

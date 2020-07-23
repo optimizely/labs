@@ -121,12 +121,17 @@ error_echo() {
 # Prerequisites                                                                #
 ################################################################################
 
+# cmd_exists
+# Check whether the passed command exists
 cmd_exists() {
   local cmd="$1"
 
   command -v ${cmd} >/dev/null
 }
 
+# check_requirements
+# Check whether all of the requirements (specified in REQUIREMENTS) are installed
+# and fails if any are missing
 check_requirements() {
 
   local should_exit=false
@@ -141,6 +146,43 @@ check_requirements() {
   done
 
   if [ "$should_exit" = true ]; then
+    exit 1
+  fi
+}
+
+################################################################################
+# Supported Architectures                                                      #
+################################################################################
+
+# get_arch
+# Return the local architecture (i.e. Linux, Darwin, etc.)
+get_arch() {
+  uname
+}
+
+# is_darwin
+# Return true if running on OS X
+is_darwin() {
+  [[ $(get_arch) == 'Darwin' ]]
+}
+
+# is_linux
+# Return true if running on Linux
+is_linux() {
+  [[ $(get_arch) == 'Linux' ]]
+}
+
+# is_supported_arch
+# Return true if running on Linux or OS X
+is_supported_arch() {
+  is_darwin || is_linux
+}
+
+# check_architecture
+# Check whether the current architecture is supported
+check_architecture() {
+  if ! is_supported_arch; then
+    error_echo "Error: Unsupported architecture. $CLI_NAME supports GNU/Linux and Darwin (OS X)."
     exit 1
   fi
 }
@@ -599,14 +641,12 @@ while (( "$#" )); do
       shift
       ;;
     *)
-      echo "Error: command $1 not recognized."
-      echo
-      help_command
+      error_echo "Error: command $1 not recognized. Try '$CLI_NAME help' for more information."
       exit 1
   esac
 done
 
-# Check if requirements are installed
+check_architecture
 check_requirements
 
 case "$CMD" in
@@ -626,7 +666,6 @@ case "$CMD" in
     load_command
     ;;
   *)
-    echo "Error: command $CMD not recognized."
-    help_command
+    error_echo "Error: command $CMD not recognized. Try '$CLI_NAME help' for more information."
     exit 1
 esac
