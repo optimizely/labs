@@ -118,39 +118,6 @@ error_echo() {
 }
 
 ################################################################################
-# Prerequisites                                                                #
-################################################################################
-
-# cmd_exists
-# Check whether the passed command exists
-cmd_exists() {
-  local cmd="$1"
-
-  command -v ${cmd} >/dev/null
-}
-
-# check_requirements
-# Check whether all of the requirements (specified in REQUIREMENTS) are installed
-# and fails if any are missing
-check_requirements() {
-
-  local should_exit=false
-
-  local cmd=
-  for cmd in "${REQUIREMENTS[@]}"
-  do
-    if ! cmd_exists "$cmd"; then
-      error_echo "Error: $CLI_NAME requires $cmd to run.  Please install it and try again."
-      should_exit=true
-    fi
-  done
-
-  if [ "$should_exit" = true ]; then
-    exit 1
-  fi
-}
-
-################################################################################
 # Supported Architectures                                                      #
 ################################################################################
 
@@ -183,6 +150,39 @@ is_supported_arch() {
 check_architecture() {
   if ! is_supported_arch; then
     error_echo "Error: Unsupported architecture. $CLI_NAME supports GNU/Linux and Darwin (OS X)."
+    exit 1
+  fi
+}
+
+################################################################################
+# Prerequisites                                                                #
+################################################################################
+
+# cmd_exists
+# Check whether the passed command exists
+cmd_exists() {
+  local cmd="$1"
+
+  command -v ${cmd} >/dev/null
+}
+
+# check_requirements
+# Check whether all of the requirements (specified in REQUIREMENTS) are installed
+# and fails if any are missing
+check_requirements() {
+
+  local should_exit=false
+
+  local cmd=
+  for cmd in "${REQUIREMENTS[@]}"
+  do
+    if ! cmd_exists "$cmd"; then
+      error_echo "Error: $CLI_NAME requires $cmd to run.  Please install it and try again."
+      should_exit=true
+    fi
+  done
+
+  if [ "$should_exit" = true ]; then
     exit 1
   fi
 }
