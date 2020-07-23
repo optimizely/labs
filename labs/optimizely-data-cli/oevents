@@ -6,7 +6,7 @@
 
 set -euo pipefail
 
-CLI_NAME="oevents"
+CLI_NAME=oevents
 
 usage="$CLI_NAME - a simple CLI for Optimizely Enriched Event Export data
 
@@ -306,7 +306,7 @@ make_auth_api_request() {
     exit 1
   fi
 
-  local auth_endpoint="https://api.optimizely.com/v2/export/credentials"
+  local auth_endpoint=https://api.optimizely.com/v2/export/credentials
 
   verbose_echo "Requesting AWS credentials from $auth_endpoint"
 
@@ -454,7 +454,7 @@ build_s3_relative_paths() {
   fi
 
   # Construct a partition string if a partition key and value were supplied
-  local partition_str=""
+  local partition_str=
   if [[ -n ${partition_key:-} && -n ${partition_val:-} ]]; then
     partition_str="/$partition_key=$partition_val"
   fi
@@ -553,32 +553,32 @@ load_command() {
 
 # Set default global variable values
 REQUIREMENTS=( "aws" "curl" "date" "jq" "uname" )
-BUCKET="optimizely-events-data"
+BUCKET=optimizely-events-data
 OUTPUT_DIR="$(pwd)"
 VERBOSE=false
-CMD="help"
+CMD=help
 
 # Parse command line arguments
 while (( "$#" )); do
   case "$1" in
     help)
-      CMD="help"
+      CMD=help
       shift
       ;;
     auth)
-      CMD="auth"
+      CMD=auth
       shift
       ;;
     paths)
-      CMD="paths"
+      CMD=paths
       shift
       ;;
     ls)
-      CMD="ls"
+      CMD=ls
       shift
       ;;
     load)
-      CMD="load"
+      CMD=load
       shift
       ;;
     --verbose)
@@ -621,13 +621,13 @@ while (( "$#" )); do
       shift
       ;;
     --experiment)
-      partition_key="experiment"
+      partition_key=experiment
       partition_val="$2"
       shift
       shift
       ;; 
     --event)
-      partition_key="event"
+      partition_key=event
       partition_val="$2"
       shift
       shift
