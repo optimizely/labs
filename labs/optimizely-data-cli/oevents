@@ -236,9 +236,9 @@ assert_before_or_equal() {
 }
 
 # compute_date_range
-# Compute a date range between $DATE_RANGE_START and $DATE_RANGE_END, and store the result in $date_range
+# Compute a date range between $DATE_RANGE_START and $DATE_RANGE_END, and store the result in $DATE_RANGE
 compute_date_range() {
-  date_range=()
+  DATE_RANGE=()
 
   if [[ -z ${DATE_RANGE_START:-} ]]; then
     return
@@ -254,7 +254,7 @@ compute_date_range() {
 
   d="$DATE_RANGE_START"
   while [[ $d != "$loopend" ]]; do 
-    date_range+=("$d")
+    DATE_RANGE+=("$d")
     d=$(incr_day "$d")
   done
 }
@@ -446,7 +446,7 @@ build_s3_relative_paths() {
   validate_type_param "$type"
   compute_date_range
 
-  if [[ ${#date_range[@]} == 0 ]]; then
+  if [[ ${#DATE_RANGE[@]} == 0 ]]; then
     # Type was specified, but no dates were provided.
     verbose_echo "Valid date range not provided; experiment and event params will be ignored."
     s3_relative_paths+=("type=$type")
@@ -460,7 +460,7 @@ build_s3_relative_paths() {
   fi
 
   # Build relative paths for each date in the supplied date range
-  for d in ${date_range[@]}; do
+  for d in ${DATE_RANGE[@]}; do
     local relative_path="type=$type/date=$d$partition_str"
     s3_relative_paths+=("$relative_path")
   done

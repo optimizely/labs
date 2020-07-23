@@ -187,7 +187,7 @@ export invalid_auth_api_response="{
 
   compute_date_range
 
-  AreArraysEqual date_range expected
+  AreArraysEqual DATE_RANGE expected
 }
 
 @test "compute_date_range with a single-day range" {
@@ -197,7 +197,7 @@ export invalid_auth_api_response="{
   compute_date_range
 
   # compute_date_range should yield a single date if no end date is specified
-  AreArraysEqual date_range expected
+  AreArraysEqual DATE_RANGE expected
 }
 
 @test "compute_date_range with an invalid range" {
