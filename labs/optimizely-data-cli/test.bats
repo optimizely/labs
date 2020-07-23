@@ -714,3 +714,18 @@ export invalid_auth_api_response="{
   [ "${lines[1]}" = "aws s3 sync s3://optimizely-events-data/v1/account_id=12345/type=decisions/date=2020-07-02/experiment=56789/ ./data/type=decisions/date=2020-07-02/experiment=56789" ]
   [ "${lines[2]}" = "aws s3 sync s3://optimizely-events-data/v1/account_id=12345/type=decisions/date=2020-07-03/experiment=56789/ ./data/type=decisions/date=2020-07-03/experiment=56789" ]
 }
+
+@test "load command with valid token" {
+  # Stub the aws command to echo itself
+  OPTIMIZELY_API_TOKEN="token"
+  aws() { echo "aws $@"; }
+  export -f aws
+  curl() { echo "${valid_auth_api_response}200"; }
+  export -f curl
+
+  run "./$CLI_NAME" load --type decisions --start 2020-07-01 --end 2020-07-03 --experiment 56789 --output ./data
+
+  [ "${lines[0]}" = "aws s3 sync ${s3Path_stub}type=decisions/date=2020-07-01/experiment=56789/ ./data/type=decisions/date=2020-07-01/experiment=56789" ]
+  [ "${lines[1]}" = "aws s3 sync ${s3Path_stub}type=decisions/date=2020-07-02/experiment=56789/ ./data/type=decisions/date=2020-07-02/experiment=56789" ]
+  [ "${lines[2]}" = "aws s3 sync ${s3Path_stub}type=decisions/date=2020-07-03/experiment=56789/ ./data/type=decisions/date=2020-07-03/experiment=56789" ]
+}
