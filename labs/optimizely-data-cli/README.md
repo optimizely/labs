@@ -56,11 +56,23 @@ $ oevents help
 
 ## Authenticating
 
-Enriched Event data is served via [Amazon S3](https://aws.amazon.com/s3/).  You can authenticate `oevents` to AWS in two ways:
+Optimizely Enriched Event data is served via [Amazon S3](https://aws.amazon.com/s3/). `oevents` uses the [Amazon AWS CLI](https://aws.amazon.com/cli/) to interact with S3, which requires authentication.  You can authenticate to AWS in three ways:
 
-1. (Recommended) Providing your [Optimizely Personal Access Token](https://docs.developers.optimizely.com/web/docs/personal-token) via the `OPTIMIZELY_API_TOKEN` environment variable or the `--token` command line argument. `oevents` will acquire AWS credentials using the [Optimizely Authentication API](https://docs.developers.optimizely.com/optimizely-data/docs/authentication-api).
+1. (Recommended) Pass your [Optimizely Personal Access Token](https://docs.developers.optimizely.com/web/docs/personal-token) to `oevents` via the `OPTIMIZELY_API_TOKEN` environment variable:
 
-2. Providing your AWS credentials directly. See the [AWS user guide](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html) for instructions.
+    ```sh
+    $ export OPTIMIZELY_API_TOKEN=<token>
+    $ oevents ls
+    ```
+2. Pass your [Optimizely Personal Access Token](https://docs.developers.optimizely.com/web/docs/personal-token) and [Optimizely Account ID](https://help.optimizely.com/Account_Settings/Account_name%2C_ID%2C_and_multi-account_login_in_Optimizely_X) via the `--token` and `--account-id` command line arguments:
+
+    ```sh
+    $ oevents ls --token <token> --account-id 12345
+    ```
+3. Provide your AWS credentials directly. See the [AWS user guide](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html) for instructions.
+
+If you chose methods 1 or 2, `oevents` will acquire temporary AWS credentials using the [Optimizely Authentication API](https://docs.developers.optimizely.com/optimizely-data/docs/authentication-api).
+
 
 **Note:** If you have an Optimizely Personal Access Token, you can use the `oevents auth` command to acquire temporary AWS credentials that may be used directly with the AWS CLI or client libraries in your ETL pipeline:
 
