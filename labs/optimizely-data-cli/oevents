@@ -315,7 +315,7 @@ make_auth_api_request() {
 
   local auth_api_response_code="${auth_api_response:(-3)}"
 
-  if [[ $auth_api_response_code != "200" ]]; then
+  if [[ $auth_api_response_code != '200' ]]; then
     error_echo "Error: received error response from Optimizely Authentication API: $auth_api_response"
     exit 1
   fi
