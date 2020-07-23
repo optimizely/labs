@@ -717,7 +717,7 @@ export invalid_auth_api_response="{
 
 @test "load command with valid token" {
   # Stub the aws command to echo itself
-  OPTIMIZELY_API_TOKEN="token"
+  export OPTIMIZELY_API_TOKEN="token"
   aws() { echo "aws $@"; }
   export -f aws
   curl() { echo "${valid_auth_api_response}200"; }
