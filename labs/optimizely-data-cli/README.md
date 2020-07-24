@@ -71,10 +71,7 @@ Optimizely Enriched Event data is served via [Amazon S3](https://aws.amazon.com/
     ```
 3. Provide your AWS credentials directly. See the [AWS user guide](https://docs.aws.amazon.com/cli/latest/userguide/cli-configure-files.html) for instructions.
 
-If you chose methods 1 or 2, `oevents` will acquire temporary AWS credentials using the [Optimizely Authentication API](https://docs.developers.optimizely.com/optimizely-data/docs/authentication-api).
-
-
-**Note:** If you have an Optimizely Personal Access Token, you can use the `oevents auth` command to acquire temporary AWS credentials that may be used directly with the AWS CLI or client libraries in your ETL pipeline:
+**Note:** If you chose methods 1 or 2, `oevents` will acquire temporary AWS credentials using the [Optimizely Authentication API](https://docs.developers.optimizely.com/optimizely-data/docs/authentication-api). You can use the `oevents auth` command to display those credentials or write them to a file.  This is handy if you prefer to access Enriched Event by some other means (e.g. using the AWS CLI directly, or [boto3](https://aws.amazon.com/sdk-for-python/)):
 
 ```sh
   $ oevents auth --token <optimizely personal access token>
