@@ -460,7 +460,7 @@ build_s3_relative_paths() {
   fi
 
   # Build relative paths for each date in the supplied date range
-  for d in ${DATE_RANGE[@]}; do
+  for d in "${DATE_RANGE[@]}"; do
     local relative_path="type=$type/date=$d$partition_str"
     S3_RELATIVE_PATHS+=("$relative_path")
   done
