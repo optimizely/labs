@@ -9,7 +9,7 @@ labels:
 
 author:
   name: Asa Schachar
-  headshot:
+  headshot: https://raw.githubusercontent.com/optimizely/labs/master/assets/author-headshots/asaschachar.png
   bio:
   title: Developer Advocate
   company: Optimizely

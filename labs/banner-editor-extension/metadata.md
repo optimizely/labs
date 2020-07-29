@@ -7,11 +7,11 @@ labels:
   - editor extension
 
 author:
-  name:
-  headshot:
+  name: Asa Schachar
+  headshot: https://raw.githubusercontent.com/optimizely/labs/master/assets/author-headshots/asaschachar.png
   bio:
-  title:
-  company:
+  title: Developer Advocate
+  company: Optimizely
 
 seo:
   title:

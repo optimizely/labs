@@ -9,7 +9,7 @@ labels:
 
 author:
   name: Pete Koomen
-  headshot:
+  headshot: https://raw.githubusercontent.com/optimizely/labs/master/assets/author-headshots/petekoomen.png
   bio:
   title: Co-founder
   company: Optimizely
