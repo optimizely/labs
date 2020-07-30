@@ -2,7 +2,7 @@
 
 Optimizely Labs is a collection of tutorials ("labs") for working with Optimizely data and developer tools.
 
-Each lab contains a **focused** combination of documentation and code demonstrating how to solve a specific problem with Optimizely data or developer tools.  For example, [this lab](labs/query_enriched_event_data_with_spark) contains instructions for loading and querying [Optimizely Enriched Event data](https://docs.developers.optimizely.com/web/docs/enriched-events-export) using [Apache Spark](https://spark.apache.org/).
+Each lab contains a **focused** combination of documentation and code demonstrating how to solve a specific problem with Optimizely data or developer tools.  For example, [this lab](labs/query-enriched-event-data-with-spark) contains instructions for loading and querying [Optimizely Enriched Event data](https://docs.developers.optimizely.com/web/docs/enriched-events-export) using [Apache Spark](https://spark.apache.org/).
 
 Labs are **self-contained**, so all of the instructions and resources needed to run executable code can be found in the lab directory.  They're also **open-sourced** under the [Apache 2.0 license](http://www.apache.org/licenses/LICENSE-2.0), so you're free to modify and use them to solve problems in your own way.
 
