@@ -1,0 +1,8 @@
+name: optimizelydata
+dependencies:
+- pip
+- plotly
+- pip:
+    - ssrm-test
+channels:
+- conda-forge
