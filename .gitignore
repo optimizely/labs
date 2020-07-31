@@ -15,6 +15,14 @@ artifacts
 
 # IPython
 .ipynb_checkpoints
+.ipython
+.jupyter
+.local
+
+# NPM
+.npm
+.config
+
 
 # Frontend Ignores
 node_modules
