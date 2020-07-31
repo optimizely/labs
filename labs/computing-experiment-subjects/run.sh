@@ -1,7 +1,7 @@
 #!/bin/bash
 
 SCRIPT_DIR=$(dirname "$0")
-LAB_BASE_DIR=$(cd "$SCRIPT_DIR"/.. || return; pwd)
+LAB_BASE_DIR=$(cd "$SCRIPT_DIR" || return; pwd)
 LAB_ENV_DIR="$LAB_BASE_DIR/env"
 CONDA_BASE=$(conda info --base)
 CONDA_ENV_NAME=optimizelydata
