@@ -66,11 +66,3 @@ The notebook in this lab will load Enriched Event data from `example_data/` in t
 ```sh
 export OPTIMIZELY_DATA_DIR=~/optimizely_data
 ```
-
-### Building `index.md`
-
-You can use `jupyter nbconvert` to convert this lab notebook into markdown:
-
-```sh
-jupyter nbconvert --to markdown --output index.md computing_experiment_subjects.md
-```
