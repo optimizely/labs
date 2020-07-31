@@ -1,7 +1,7 @@
 #!/bin/bash
 
 SCRIPT_DIR=$(dirname "$0")
-LAB_BASE_DIR=$(cd "$SCRIPT_DIR"/.. || return; pwd)
+LAB_BASE_DIR=$(cd "$SCRIPT_DIR" || return; pwd)
 
 CONTAINER_HOME=/home/jovyan
 CONTAINER_LAB_BASE_DIR="$CONTAINER_HOME/lab"
