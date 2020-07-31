@@ -1,5 +1,9 @@
 #!/bin/bash
 
+# run.sh
+#
+# A handy script for running the Lab notebook locally using a conda environment
+
 SCRIPT_DIR=$(dirname "$0")
 LAB_BASE_DIR=$(cd "$SCRIPT_DIR" || return; pwd)
 LAB_ENV_DIR="$LAB_BASE_DIR/env"
