@@ -1,28 +1,20 @@
-# Computing Experiment Observations
+# Computing Experiment Datasets #1: Experiment Subjects
 
-In the [Querying with Spark](../enriched_events_query_with_spark) Lab we learned how to work with [Enriched Event Data](https://docs.developers.optimizely.com/web/docs/enriched-events-export) using [Apache Spark](https://spark.apache.org/).
+In this Lab, we'll use [PySpark](https://spark.apache.org/docs/latest/api/python/index.html) to compute _experiment subjects_ from [Optimizely Enriched Event](https://docs.developers.optimizely.com/optimizely-data/docs/enriched-events-export) ["Decision"](https://docs.developers.optimizely.com/optimizely-data/docs/enriched-events-data-specification#decisions-2) data.
 
-In this Lab, we'll compute _Experiment Observations_, a versatile dataset that can be used for statistical analysis of experiment metrics and reporting.
+Experiment subjects are the individual units that are exposed to a control or treatment in the course of an online experiment.  In most online experiments, subjects are website visitors or app users. However, depending on your experiment design, treatments may also be applied to individual user sessions, service requests, search queries, etc. 
+   
+## Running this notebook with Docker
 
-The notebook in this Lab executes a series of SQL queries to compute observations:
-1. Build a table of users in your experiment from Optimizely decisions
-2. Join this table with analytics data to compute Experiment observations
+The simplest way to get started with PySpark is to run it in a [Docker](https://www.docker.com/) container. With Docker, you can run PySpark and Jupyter Lab without installing any other dependencies.
 
-As in [Querying with Spark](../enriched_events_query_with_spark), we're going to use [Apache Spark](https://spark.apache.org/) to process our SQL queries.
-
-## Running PySpark locally with Docker
-
-The simplest way to get started with PySpark is to run it in a [Docker](https://www.docker.com/) container.  You use Docker to run the Lab notebook with a single command:
+Execute `run-docker.sh` in the lab directory to open Jupyter Lab in a Docker container:
 
 ```sh
-docker run -it --rm \
-    -p 8888:8888 \
-    -v $(pwd):/home/jovyan \
-    jupyter/pyspark-notebook \
-    jupyter lab enriched_events_useful_queries.ipynb
+$ bash run-docker.sh
 ```
 
-Docker makes it easy to get started with PySpark, but it adds overhead and may require [additional configuration](https://docs.docker.com/config/containers/resource_constraints/) to handle large workloads.  
+**Note:** Docker makes it easy to get started with PySpark, but it adds overhead and may require [additional configuration](https://docs.docker.com/config/containers/resource_constraints/) to handle large workloads.  
 
 ## Running Spark locally on the JVM
 
@@ -35,7 +27,7 @@ If you want to run Spark on the JVM, you'll need to install Java 8. Visit Oracle
 If you've got multiple Java versions installed, you'll need to set `JAVA_HOME` variable to point to version 1.8.  On OS X you can use the handy `java_home` utility:
 
 ```sh
-export JAVA_HOME=`/usr/libexec/java_home -v 1.8`
+$ export JAVA_HOME=`/usr/libexec/java_home -v 1.8`
 ```
 
 ### Prerequisite: conda (version 4.4+)
@@ -45,24 +37,30 @@ export JAVA_HOME=`/usr/libexec/java_home -v 1.8`
 
 You can install the `conda` CLI by installing [Anaconda] or [Miniconda].
 
-### Create and activate your Anaconda environment
+### Running Jupyter Lab
+
+This lab directory contains a handy script for building your conda environment and running Jupyter Lab.  To run it, simply use
+
+```sh
+$ bash run.sh
+```
+
+That's it, you're done!
+
+If you prefer to build and activate your conda environment manually, try the following from within the lab directory:
 
 The `environment.yml` file in this directory specifies the anaconda environment needed to run the Jupyter notebook in this directory.  You can create or update this environment using
 
 ```sh
-conda env create --force --file environment.yml
+$ conda env create --force --file env/env.yml
+$ conda activate optimizelydata
+$ jupyter lab .
 ```
 
-Activate this environment with
+## Specifying your data directory
+
+The notebook in this lab will load Enriched Event data from `example_data/` in the lab directory.  If you wish to load data from another directory, you can use the `OPTIMIZELY_DATA_DIR` environment variable.  For example:
 
 ```sh
-conda activate optimizelydata
-```
-
-### Running the Jupyter Notebook
-
-When you've got your environment set up, you're ready to run Jupyter Lab.
-
-```sh
-jupyter lab .
+$ export OPTIMIZELY_DATA_DIR=~/optimizely_data
 ```
