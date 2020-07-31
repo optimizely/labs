@@ -1,58 +1,65 @@
 # Computing Experiment Datasets #1: Experiment Subjects
 
-This Lab is part of a multi-part series focused on computing useful experiment datasets. In this Lab, we'll use [PySpark](https://spark.apache.org/docs/latest/api/python/index.html) to compute _experiment subjects_ from [Optimizely Enriched Event](https://docs.developers.optimizely.com/optimizely-data/docs/enriched-events-export) ["Decision"](https://docs.developers.optimizely.com/optimizely-data/docs/enriched-events-data-specification#decisions-2) data.
+This Lab is part of a multi-part series focused on computing useful experiment datasets. In this Lab, we'll use [PySpark](https://spark.apache.org/docs/latest/api/python/index.html) to compute _experiment subjects_ from [Optimizely Enriched Event](https://docs.developers.optimizely.com/optimizely-data/docs/enriched-events-export) ["ecision"](https://docs.developers.optimizely.com/optimizely-data/docs/enriched-events-data-specification#decisions-2) data.
 
 <!-- We use an external image URL rather than a relative path so that this notebook will be rendered correctly on the Optimizely Labs website -->
 ![Experiment subjects computation](https://raw.githubusercontent.com/optimizely/labs/master/labs/computing-experiment-subjects/img/subjects_computation.png)
 
 **Experiment subjects** are the individual units that are exposed to a control or treatment in the course of an online experiment.  In most online experiments, subjects are website visitors or app users. However, depending on your experiment design, treatments may also be applied to individual user sessions, service requests, search queries, etc. 
 
-## How to run this notebook
+In this Lab we'll transform an event-level ["decision"](https://docs.developers.optimizely.com/optimizely-data/docs/enriched-events-data-specification#decisions-2) input dataset into a subject-level (typically visitor-level) output dataset.  This output dataset contains a record of who was exposed to our experiment, which treatment they received, and when they first received it.  This dataset is useful for
+- computing aggregate statistics about your experiment subjects, such as the number of visitors saw each "variation" on a given day
+- joining with other analytics datasets (like [Optimizely Enriched "conversions"](https://docs.developers.optimizely.com/optimizely-data/docs/enriched-events-data-specification#conversions-2)) to compute experiment metrics and perform experiment analysis
 
-This notebook lives in the [Optimizely Labs](http://github.com/optimizely/labs) repository.  You can download it and everything you need to run it by doing one of the following
-1. Downloading a zipped copy of this Lab directory on the [Optimizely Labs page](https://www.optimizely.com/labs/computing-experiment-subjects/)
-2. Downloading a [zipped copy of the Optimizely Labs repository](https://github.com/optimizely/labs/archive/master.zip) from Github
-3. Cloning the [Github respository](http://github.com/optimizely/labs)
-
-Once you've downloaded this Lab directory (on its own, or as part of the [Optimizely Labs](http://github.com/optimizely/labs) repository, follow the instructions in the `README.md` file for this Lab.
-
-If you wish to run this notebook using a custom data directory, set the `OPTIMIZELY_DATA_DIR` environment variable to point to the 
+This Lab is generated from a Jupyter Notebook.  Scroll to the bottom of this page for instructions on how to run it on your own machine.
 
 ## Analysis parameters
 
 We'll use the following global variables to parameterize our computation:
 
+### Local Data Storage
+
+These parameters specify where this notebook should read and write data. The default location is ./example_data in this notebook's directory. You can point the notebook to another data directory by setting the OPTIMIZELY_DATA_DIR environment variable prior to starting Jupyter Lab, e.g.
+
+```sh
+export OPTIMIZELY_DATA_DIR=~/optimizely_data
+```
+
 
 ```python
 import os
-from datetime import datetime
 
 # Local data storage locations
-# These parameters specify where this notebook should read and write data. The default location
-# is ./example_data in this notebook's directory.  You can point the notebook to another data
-# directory by setting the OPTIMIZELY_DATA_DIR environment variable.
 base_data_dir = os.environ.get("OPTIMIZELY_DATA_DIR", "./example_data")
 decisions_dir = os.path.join(base_data_dir, "type=decisions")
 subjects_output_dir = os.path.join(base_data_dir, "type=subjects")
+```
 
+### Subject ID column
+Used to group event-level records by experiment subject.  It's useful to modify this if you wish use another identifier to denote an individual subject, such as
+- "session_id" if you wish to compute session-level metrics with Optimizely data
+- A custom ID field, perhaps one found in an the user attributes attached to a decision.
+
+Note that if you wish to group by a particular [user attribute](
+https://docs.developers.optimizely.com/full-stack/docs/pass-in-audience-attributes-python), you'll need to add a step to 
+transform your decision data such that this attribute is exposed in its own column
+
+
+```python
 # Subject ID column
-# Used to group event-level records by experiment subject.  It's useful to modify this if you wish
-# use another identifier to denote an individual subject, such as
-#    1. "session_id" if you wish to compute session-level metrics with Optimizely data
-#    2. A custom ID field, perhaps one found in an the user attributes attached to a decision.
-#       Note that if you wish to group by a particular attribute, you'll need to add a step to 
-#       transform your decision data such that this attribute is exposed in its own column
-#       https://docs.developers.optimizely.com/full-stack/docs/pass-in-audience-attributes-python
-decision_subject_id = "visitor_id"
+subject_id = "visitor_id"
+```
+
+### Analysis window
+The analysis window determines which decisions are included in your analysis.  The default window is this notebook is large enough that *all* decisions loaded will be included in the computation, but you can adjust this to focus on a specific time window.
+
+Note that Optimizely Web and Optimizely Full Stack use slightly different attribution logic to determine which subjects are counted in a particular time window.  The logic embedded in the queries in this notebook mimics the Full Stack approach.  More on this below.
+
+
+```python
+from datetime import datetime
 
 # Analysis window
-# The analysis window determines which decisions are included in your analysis.  The default
-# window is this notebook is large enough that *all* decisions loaded will be included in 
-# the computation, but you can adjust this to focus on a specific time window.
-#
-# Note that Optimizely Web and Optimizely Full Stack use slightly different attribution logic
-# to determine which subjects are counted in a particular time window.  The logic embedded in
-# the queries in this notebook mimics the Full Stack approach.  More on this below.
 decisions_start = "2000-01-01 00:00:00"
 decisions_end = "2099-12-31 23:59:59"
 
@@ -126,14 +133,14 @@ This query captures the attribution logic used by [Optimizely Full Stack](https:
 spark.sql(f"""
     CREATE OR REPLACE TEMPORARY VIEW experiment_subjects AS
         SELECT
-            {decision_subject_id},
+            {subject_id},
             experiment_id,
             variation_id,
             timestamp
         FROM (
             SELECT
                 *,
-                RANK() OVER (PARTITION BY experiment_id, {decision_subject_id} ORDER BY timestamp ASC) AS rnk
+                RANK() OVER (PARTITION BY experiment_id, {subject_id} ORDER BY timestamp ASC) AS rnk
             FROM
                 decisions
         )
@@ -206,6 +213,21 @@ spark.sql("""
 
 
 
+
+## Conclusion
+
+In this Lab we transformed an event-level ["decision"](https://docs.developers.optimizely.com/optimizely-data/docs/enriched-events-data-specification#decisions-2) input dataset into a subject-level (typically visitor-level) output dataset.  This output dataset contains a record of who was exposed to our experiment, which treatment they received, and when they first received it. 
+
+We've written our output dataset to disk so that it can be used in other analyses (and future installments in the Experiment Datasets Lab series.)  We performed a simple aggregation on our subjects dataset: counting the number of visitors in each variation included in our input dataset.
+
+## How to run this notebook
+
+This notebook lives in the [Optimizely Labs](http://github.com/optimizely/labs) repository.  You can download it and everything you need to run it by doing one of the following
+- Downloading a zipped copy of this Lab directory on the [Optimizely Labs page](https://www.optimizely.com/labs/computing-experiment-subjects/)
+- Downloading a [zipped copy of the Optimizely Labs repository](https://github.com/optimizely/labs/archive/master.zip) from Github
+- Cloning the [Github respository](http://github.com/optimizely/labs)
+
+Once you've downloaded this Lab directory (on its own, or as part of the [Optimizely Labs](http://github.com/optimizely/labs) repository, follow the instructions in the `README.md` file for this Lab.
 
 
 ```python
