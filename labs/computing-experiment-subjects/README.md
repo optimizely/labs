@@ -13,7 +13,7 @@ The simplest way to get started with PySpark is to run it in a [Docker](https://
 Execute `run-docker.sh` in the lab directory to open Jupyter Lab in a Docker container:
 
 ```sh
-$ bash run-docker.sh
+bash run-docker.sh
 ```
 
 **Note:** Docker makes it easy to get started with PySpark, but it adds overhead and may require [additional configuration](https://docs.docker.com/config/containers/resource_constraints/) to handle large workloads.  
@@ -29,7 +29,7 @@ If you want to run Spark on the JVM, you'll need to install Java 8. Visit Oracle
 If you've got multiple Java versions installed, you'll need to set `JAVA_HOME` variable to point to version 1.8.  On OS X you can use the handy `java_home` utility:
 
 ```sh
-$ export JAVA_HOME=`/usr/libexec/java_home -v 1.8`
+export JAVA_HOME=`/usr/libexec/java_home -v 1.8`
 ```
 
 ### Prerequisite: conda (version 4.4+)
@@ -44,7 +44,7 @@ You can install the `conda` CLI by installing [Anaconda] or [Miniconda].
 This lab directory contains a handy script for building your conda environment and running Jupyter Lab.  To run it, simply use
 
 ```sh
-$ bash run.sh
+bash run.sh
 ```
 
 That's it, you're done!
@@ -54,9 +54,9 @@ If you prefer to build and activate your conda environment manually, try the fol
 The `environment.yml` file in this directory specifies the anaconda environment needed to run the Jupyter notebook in this directory.  You can create or update this environment using
 
 ```sh
-$ conda env create --force --file env/env.yml
-$ conda activate optimizelydata
-$ jupyter lab .
+conda env create --force --file env/env.yml
+conda activate optimizelydata
+jupyter lab .
 ```
 
 ## Specifying a custom data directory
@@ -64,7 +64,7 @@ $ jupyter lab .
 The notebook in this lab will load Enriched Event data from `example_data/` in the lab directory.  If you wish to load data from another directory, you can use the `OPTIMIZELY_DATA_DIR` environment variable.  For example:
 
 ```sh
-$ export OPTIMIZELY_DATA_DIR=~/optimizely_data
+export OPTIMIZELY_DATA_DIR=~/optimizely_data
 ```
 
 ### Building `index.md`
@@ -72,5 +72,5 @@ $ export OPTIMIZELY_DATA_DIR=~/optimizely_data
 You can use `jupyter nbconvert` to convert this lab notebook into markdown:
 
 ```sh
-$ jupyter nbconvert --to markdown --output index.md computing_experiment_subjects.md
+jupyter nbconvert --to markdown --output index.md computing_experiment_subjects.md
 ```
