@@ -6,6 +6,8 @@ __pycache__
 
 # Anaconda
 envs
+.conda
+.cache
 
 # OS X Artifacts
 .DS_Store
@@ -22,7 +24,6 @@ artifacts
 # NPM
 .npm
 .config
-
 
 # Frontend Ignores
 node_modules
