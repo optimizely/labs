@@ -39,7 +39,7 @@ subjects_output_dir = os.path.join(base_data_dir, "type=subjects")
 
 ### Subject ID column
 Used to group event-level records by experiment subject.  It's useful to modify this if you wish use another identifier to denote an individual subject, such as
-- "session_id" if you wish to compute session-level metrics with Optimizely data
+- `"session_id"` if you wish to compute session-level metrics with Optimizely data
 - A custom ID field, perhaps one found in an the user attributes attached to a decision.
 
 Note that if you wish to group by a particular [user attribute](
