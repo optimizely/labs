@@ -5,7 +5,9 @@ This Lab is part of a multi-part series focused on computing useful experiment d
 <!-- We use an external image URL rather than a relative path so that this notebook will be rendered correctly on the Optimizely Labs website -->
 ![Experiment observations computation](https://raw.githubusercontent.com/optimizely/labs/master/labs/computing-experiment-subjects/img/observations_computation.png)
 
-**Experiment observations** map [experiment subjects](https://www.optimizely.com/labs/computing-experiment-subjects/) onto numerical observations made about each subject during an experiment:
+**Experiment observations** capture the the outcomes of your experiment in a format that is easy to work with for follow-on analysis. Each record in this dataset records the numerical observations made about an [experiment subject](https://www.optimizely.com/labs/computing-experiment-subjects/) during an experiment.
+
+Here's a simple example:
 
 | subject_id | experiment_id | variation_id | timestamp                | ordered? | order_count | items_ordered | revenue |
 |------------|---------------|--------------|--------------------------|----------|-------------|---------------|---------|
@@ -14,7 +16,7 @@ This Lab is part of a multi-part series focused on computing useful experiment d
 | visitor_3  | 12345         | A            | July 20th, 2020 14:31:01 | 1        | 1           | 1             | 5.99    |
 
 
-In this Lab we'll join a visitor-level **subjects** input dataset with an event-level **conversions** dataset to produce a subject-level **observatations** output dataset.  This output dataset contains a record of who was exposed to our experiment, which treatment they received, and when they first received it, along with a set of numerical observations about each subject.  This dataset is useful for
+In this Lab we'll join a visitor-level [**experiment subjects**](https://www.optimizely.com/labs/computing-experiment-subjects/) input dataset with an event-level **conversions** dataset to produce a subject-level **experiment observatations** output dataset.  This output dataset contains a record of who was exposed to our experiment, which treatment they received and when they first received it, along with a set of numerical observations about each subject.  This dataset is useful for
 - computing aggregate statistics about an experiment, such as the number of visitors saw each "variation" on a given day, the total number of purchases associated with each experimental treatment, etc.
 - computing and visualizing business metrics for each variation in an experiment
 - performing statistical analysis on the change observed in your business metrics in an experiment
@@ -206,7 +208,7 @@ spark.sql("SELECT event_name, COUNT(1) as `count of events` FROM events GROUP BY
 
 ## Compute experiment events
 
-Next we'll isolate the events that can be attributed to each experiment, which we'll call _experiment events_.  An experiment event is an event triggered during a finite window of time (called the _attribution window_) after a visitor has been exposed to an experiment treatment.
+Next we'll isolate the events that can be attributed to each experiment, which we'll call _experiment events_.  An experiment event is an event, such as a button click or a purchase, that was influenced by an experiment.  We compute this view by isolating the conversion events triggered during a finite window of time (called the _attribution window_) after a visitor has been exposed to an experiment treatment.
 
 
 ```python
@@ -435,7 +437,17 @@ spark.sql("""SELECT * FROM observations""") \
     .parquet(observations_output_dir)
 ```
 
+## Conclusion
 
-```python
+In this Lab we joined a visitor-level **experiment subjects** input dataset with an event-level **conversions** dataset to produce a subject-level **experiment observatations** output dataset.  This output dataset contains a record of who was exposed to our experiment, which treatment they received, and when they first received it, along with a set of numerical observations about each subject.
 
-```
+We've written our output dataset to disk so that it can be used in other analyses (and future installments in the Experiment Datasets Lab series.)
+
+## How to run this notebook
+
+This notebook lives in the [Optimizely Labs](http://github.com/optimizely/labs) repository.  You can download it and everything you need to run it by doing one of the following
+- Downloading a zipped copy of this Lab directory on the [Optimizely Labs page](https://www.optimizely.com/labs/computing-experiment-subjects/)
+- Downloading a [zipped copy of the Optimizely Labs repository](https://github.com/optimizely/labs/archive/master.zip) from Github
+- Cloning the [Github respository](http://github.com/optimizely/labs)
+
+Once you've downloaded this Lab directory (on its own, or as part of the [Optimizely Labs](http://github.com/optimizely/labs) repository), follow the instructions in the `README.md` file for this Lab.
