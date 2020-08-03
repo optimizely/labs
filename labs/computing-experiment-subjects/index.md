@@ -1,6 +1,6 @@
 # Computing Experiment Datasets #1: Experiment Subjects
 
-This Lab is part of a multi-part series focused on computing useful experiment datasets. In this Lab, we'll use [PySpark](https://spark.apache.org/docs/latest/api/python/index.html) to compute _experiment subjects_ from [Optimizely Enriched Event](https://docs.developers.optimizely.com/optimizely-data/docs/enriched-events-export) ["decision"](https://docs.developers.optimizely.com/optimizely-data/docs/enriched-events-data-specification#decisions-2) data.
+This Lab is part of a multi-part series focused on computing useful experiment datasets. In this Lab, we'll use [PySpark](https://spark.apache.org/docs/latest/api/python/index.html) to compute _experiment subjects_ from [Optimizely Enriched Event](https://docs.developers.optimizely.com/optimizely-data/docs/enriched-events-export) ["ecision"](https://docs.developers.optimizely.com/optimizely-data/docs/enriched-events-data-specification#decisions-2) data.
 
 <!-- We use an external image URL rather than a relative path so that this notebook will be rendered correctly on the Optimizely Labs website -->
 ![Experiment subjects computation](https://raw.githubusercontent.com/optimizely/labs/master/labs/computing-experiment-subjects/img/subjects_computation.png)
@@ -19,11 +19,13 @@ We'll use the following global variables to parameterize our computation:
 
 ### Local Data Storage
 
-These parameters specify where this notebook should read and write data. The default location is ./example_data in this notebook's directory. You can point the notebook to another data directory by setting the OPTIMIZELY_DATA_DIR environment variable prior to starting Jupyter Lab, e.g.
+These parameters specify where this notebook should read and write data. The default location is `./example_data` in this notebook's directory. You can point the notebook to another data directory by setting the `OPTIMIZELY_DATA_DIR` environment variable prior to starting Jupyter Lab, e.g.
 
 ```sh
 export OPTIMIZELY_DATA_DIR=~/optimizely_data
 ```
+
+See [Getting Started with Enriched Events](https://docs.developers.optimizely.com/optimizely-data/docs/enriched-events-getting-started) for instructions on downloading Enriched Event data.  Hint: the [oevents](https://github.com/optimizely/oevents) command line tool will automatically load data into the directory specified by `OPTIMIZELY_DATA_DIR` if the variable is set.
 
 
 ```python
@@ -37,7 +39,7 @@ subjects_output_dir = os.path.join(base_data_dir, "type=subjects")
 
 ### Subject ID column
 Used to group event-level records by experiment subject.  It's useful to modify this if you wish use another identifier to denote an individual subject, such as
-- "session_id" if you wish to compute session-level metrics with Optimizely data
+- `"session_id"` if you wish to compute session-level metrics with Optimizely data
 - A custom ID field, perhaps one found in an the user attributes attached to a decision.
 
 Note that if you wish to group by a particular [user attribute](
