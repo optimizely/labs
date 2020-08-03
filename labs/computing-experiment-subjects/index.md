@@ -227,9 +227,4 @@ This notebook lives in the [Optimizely Labs](http://github.com/optimizely/labs) 
 - Downloading a [zipped copy of the Optimizely Labs repository](https://github.com/optimizely/labs/archive/master.zip) from Github
 - Cloning the [Github respository](http://github.com/optimizely/labs)
 
-Once you've downloaded this Lab directory (on its own, or as part of the [Optimizely Labs](http://github.com/optimizely/labs) repository, follow the instructions in the `README.md` file for this Lab.
-
-
-```python
-
-```
+Once you've downloaded this Lab directory (on its own, or as part of the [Optimizely Labs](http://github.com/optimizely/labs) repository), follow the instructions in the `README.md` file for this Lab.
