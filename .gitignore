@@ -3,6 +3,7 @@
 .pyc
 venv
 __pycache__
+build/
 
 # Anaconda
 envs
