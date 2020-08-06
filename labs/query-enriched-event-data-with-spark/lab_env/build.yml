@@ -1,0 +1,4 @@
+dependencies:
+- nbstripout
+channels:
+- conda-forge
