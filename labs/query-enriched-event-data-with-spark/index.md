@@ -43,7 +43,7 @@ If `OPTIMIZELY_DATA_DIR` is not set, data will be loaded from `./data` in your w
 ```python
 import os
 
-base_data_dir = os.environ.get("OPTIMIZELY_DATA_DIR", "./data")
+base_data_dir = os.environ.get("OPTIMIZELY_DATA_DIR", "./example_data")
 
 def read_data(path, view_name):
     """Read parquet data from the supplied path and create a corresponding temporary view with Spark."""
