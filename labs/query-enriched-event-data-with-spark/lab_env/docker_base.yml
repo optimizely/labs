@@ -1,0 +1,5 @@
+dependencies:
+- python=3.7.6
+- ipykernel=5.3.4
+channels:
+- conda-forge
