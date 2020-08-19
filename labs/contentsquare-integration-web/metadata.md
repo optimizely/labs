@@ -20,5 +20,5 @@ seo:
   ogDescription:
   ogImage:
   twitterImage:
-  noindex: true
+  noindex: false
 ---
