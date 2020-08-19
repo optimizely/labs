@@ -8,7 +8,7 @@ labels:
 
 author:
   name: David Sertillange
-  headshot: https://raw.githubusercontent.com/optimizely/labs/master/assets/author-headshots/david-sertillange.jpeg
+  headshot: https://raw.githubusercontent.com/optimizely/labs/master/assets/author-headshots/davidsertillange.png
   bio: David is part of Optimizely's Professional Services team in EMEA. 
   title: Lead Solutions Architect
   company: Optimizely
