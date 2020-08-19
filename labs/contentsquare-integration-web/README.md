@@ -1,5 +1,6 @@
 # ContentSquare Integration for Optimizely Web
 
+Hello! This integration allows you to send experiment and variation data from Optimizely into ContentSquare. 
 ## Pre-requisites
 
 You need a ContentSquare and Optimizely Web account. 
