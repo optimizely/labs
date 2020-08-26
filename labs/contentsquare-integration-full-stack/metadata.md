@@ -3,12 +3,13 @@ title: ContentSquare Integration for Optimizely Full Stack
 summary: This integration allows you to send experiment and variation data from Optimizely Full Stack to ContentSquare.
 revisionDate: '2020-08-19'
 labels:
-  - Integrations
-  - Full Stack
+  - integrations
+  - full stack
+  - analytics
 
 author:
   name: David Sertillange
-  headshot: https://raw.githubusercontent.com/optimizely/labs/master/assets/author-headshots/david-sertillange.jpeg
+  headshot: https://raw.githubusercontent.com/optimizely/labs/master/assets/author-headshots/davidsertillange.png
   bio: David is part of Optimizely's Professional Services team in EMEA. 
   title: Lead Solutions Architect
   company: Optimizely
@@ -20,5 +21,5 @@ seo:
   ogDescription:
   ogImage:
   twitterImage:
-  noindex: true
+  noindex: false
 ---
