@@ -8,7 +8,7 @@ Labs are **self-contained**, so all of the instructions and resources needed to 
 
 ## Resources
 
-- Optimizely Labs page - (Coming soon!) A handy website for exploring, reading, and downloading lab code.
+- [Optimizely Labs page](https://optimizely.com/labs) - A handy website for exploring, reading, and downloading lab code.
 - [Labs directory](labs) - The source of truth for lab content.
 - [Contributing guide](CONTRIBUTING.md) - Want to contribute to this repository?  Start here.
 
