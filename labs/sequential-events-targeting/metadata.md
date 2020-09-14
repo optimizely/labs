@@ -7,6 +7,8 @@ labels:
   - personalisation
   - events
 
+excludeFromListing: false
+
 author:
   name: Thomas Clayson
   headshot: https://raw.githubusercontent.com/optimizely/labs/master/assets/author-headshots/thomasclayson.jpg

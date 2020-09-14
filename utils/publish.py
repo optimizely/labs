@@ -183,6 +183,9 @@ def upsert_lab_to_contentful(slug, lab_info):
       'seo': {
         'en-US': lab_info['seo'],
       },
+      'excludeFromListing': {
+        'en-US': lab_info['excludeFromListing']
+      }
     }
   }
 

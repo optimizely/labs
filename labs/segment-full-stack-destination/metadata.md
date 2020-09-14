@@ -7,6 +7,8 @@ labels:
   - full stack
   - analytics
 
+excludeFromListing: false
+
 author:
   name: Segment Team
   headshot: https://raw.githubusercontent.com/optimizely/labs/master/assets/author-headshots/segment-icon.svg

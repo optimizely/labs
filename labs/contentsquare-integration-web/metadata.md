@@ -7,6 +7,8 @@ labels:
   - web
   - analytics
 
+excludeFromListing: false
+
 author:
   name: David Sertillange
   headshot: https://raw.githubusercontent.com/optimizely/labs/master/assets/author-headshots/davidsertillange.png
