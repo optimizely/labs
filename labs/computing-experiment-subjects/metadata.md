@@ -7,6 +7,8 @@ labels:
   - data
   - analysis
 
+excludeFromListing: false
+
 author:
   name: Pete Koomen
   headshot: https://raw.githubusercontent.com/optimizely/labs/master/assets/author-headshots/petekoomen.png

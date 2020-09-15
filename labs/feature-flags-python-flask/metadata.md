@@ -8,6 +8,8 @@ labels:
   - flask
   - feature flags
 
+excludeFromListing: false
+
 author:
   name: Asa Schachar
   headshot: https://raw.githubusercontent.com/optimizely/labs/master/assets/author-headshots/asaschachar.png

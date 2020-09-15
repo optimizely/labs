@@ -34,6 +34,8 @@ revisionDate: '2020-03-16'
 labels:
   - data
 
+excludeFromListing: true
+
 author:
   name: Asa Schachar
   headshot: '/assets/authors/asa.jpeg'
@@ -53,4 +55,10 @@ seo:
 ```
 5. Submit your changes as a pull request to get reviewed and merged by the Optimizely team.
 
-6. Profit 🎉
+6. Once the pull request is merged, your lab will be available at www.optimizely.com/labs/new-awesome-tutorial
+
+7. Tweak your content to make sure everything looks as you want it to.
+
+8. Once it is ready to be featured on the main page, make a separate pull request to set `excludeFromListing` to `false` in `metadata.md` which will publish the lab on the main optimizely.com/labs page.
+
+9. Profit 🎉
