@@ -23,7 +23,7 @@ This integration is using [Optimizely's Custom Analytics feature](https://help.o
   "form_schema": [],
   "description": "",
   "options": {
-    "track_layer_decision": "/*\n *Name: Optimizely CS Integration\n *Version: 3.0\n */\n(function () {\n    var tvp = \"AB_OP_\";\n\n    function sendToCS(csKey, csValue) {\n        csKey = tvp + csKey;\n\n        _uxa.push([\"trackDynamicVariable\", {\n            key: csKey,\n            value: csValue\n        }]);\n    };\n\n    function startOPIntegration() {\n    sendToCS(decisionString.experiment,decisionString.holdback ? decisionString.variation + ':holdback' : decisionString.variation);\n    }\n\n    function callback() {\n        if (!disableCallback) {\n            disableCallback = true;\n            startOPIntegration();\n\n            if (window.CS_CONF) {\n                CS_CONF.integrations = CS_CONF.integrations || [];\n                CS_CONF.integrations.push(\"Optimizely\");\n            }\n        }\n    }\n\n    var decisionString = optimizely.get('state').getDecisionObject({\n  \t\t\t\"campaignId\": campaignId\n\t\t});\n  \n  \tif(!!decisionString) {\n    \tvar disableCallback = false;\n    \twindow._uxa = window._uxa || [];\n    \t_uxa.push([\"afterPageView\", callback]);\n    }\n  \n})();\n//Optimizely CS Integration End"
+    "track_layer_decision": "/*\n *Name: Optimizely CS Integration\n *Version: 2.1\n */\n(function () {\n    var tvp = \"AB_OP_\";\n\n    function sendToCS(csKey, csValue) {\n        csKey = tvp + csKey;\n\n        _uxa.push([\"trackDynamicVariable\", {\n            key: csKey,\n            value: csValue\n        }]);\n    };\n\n    function startOPIntegration() {\n        sendToCS(decisionString.experiment, decisionString.holdback ? decisionString.variation + ' [Holdback]' : decisionString.variation);\n    }\n\n    function callback() {\n        if (!disableCallback) {\n            disableCallback = true;\n\n            var decisionString = optimizely.get('state').getDecisionObject({\n                \"campaignId\": campaignId\n            });\n\n            if (!!decisionString) {\n                startOPIntegration();\n            }\n\n            if (window.CS_CONF) {\n                CS_CONF.integrations = CS_CONF.integrations || [];\n                CS_CONF.integrations.push(\"Optimizely\");\n            }\n        }\n    }\n\n    var disableCallback = false;\n    window._uxa = window._uxa || [];\n    _uxa.push([\"afterPageView\", callback]);\n\n})();"
   }
 }
 ```
@@ -36,8 +36,8 @@ Moving forward, this integration will be turned on by default for every new expe
 
 We recommend to run an A/A experiment to validate that you are able to see data coming through in ContentSquare. 
 
-If everything works properly, you should see in ContentSquare a Dynamic Variable called `AB_OP_` followed by the campaign Id and experiment Id.	 
-Example: `AB_OP_18180652355_18182752153` where 18180652355 is the campaign Id and 18182752153 the experiment Id. The value of this ContentSquare dynamic variable will be the variation Ids of this experiment. 
+If everything works properly, you should see in ContentSquare a Dynamic Variable called `AB_OP_` followed by the experiment name or id.	 
+Example: `AB_OP_(18180652355)` where 18180652355 is the experimentId. The value of this ContentSquare dynamic variable will be the variation Ids of this experiment. 
 
 ### Integration Code
 
