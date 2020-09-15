@@ -17,12 +17,15 @@ This integration is using [Optimizely's Custom Analytics feature](https://help.o
  6. Paste the following code: 
 
 ```json
-{"plugin_type": "analytics_integration",
-"name": "ContentSquare Integration",
-"form_schema": [],
-"description": "This integration allows you to send the experiment and variation data from Optimizely Web to ContentSquare",
-"options": {
-"track_layer_decision": "function sendTestToCS(csKey, csValue) {\n window._uxa = window._uxa || [];\n window._uxa.push([\"trackDynamicVariable\", {key: csKey, value: csValue} ]);\n}\n\nfunction callback(context) {\n\tif (!disableCallback) {\n\t\tdisableCallback = true;\n\n\t\tif (window.CS_CONF) {\n CS_CONF.integrations = CS_CONF.integrations || [];\n CS_CONF.integrations.push(\"Optimizely Web\");\n\t\t}\n\t}\n}\n  \nvar disableCallback = false;\nwindow._uxa = window._uxa || [];\n_uxa.push([\"afterPageView\", callback]);\n\nvar csPrefix = 'AB_Opti_';\nvar csKey = csPrefix + campaignId + '_' + experimentId;\nvar csValue = variationId;\n\nsendTestToCS(decodeURI(csKey), decodeURI(csValue));"}}
+{
+  "plugin_type": "analytics_integration",
+  "name": "ContentSquare",
+  "form_schema": [],
+  "description": "",
+  "options": {
+    "track_layer_decision": "/*\n *Name: Optimizely CS Integration\n *Version: 3.0\n */\n(function () {\n    var tvp = \"AB_OP_\";\n\n    function sendToCS(csKey, csValue) {\n        csKey = tvp + csKey;\n\n        _uxa.push([\"trackDynamicVariable\", {\n            key: csKey,\n            value: csValue\n        }]);\n    };\n\n    function startOPIntegration() {\n    sendToCS(decisionString.experiment,decisionString.holdback ? decisionString.variation + ':holdback' : decisionString.variation);\n    }\n\n    function callback() {\n        if (!disableCallback) {\n            disableCallback = true;\n            startOPIntegration();\n\n            if (window.CS_CONF) {\n                CS_CONF.integrations = CS_CONF.integrations || [];\n                CS_CONF.integrations.push(\"Optimizely\");\n            }\n        }\n    }\n\n    var decisionString = optimizely.get('state').getDecisionObject({\n  \t\t\t\"campaignId\": campaignId\n\t\t});\n  \n  \tif(!!decisionString) {\n    \tvar disableCallback = false;\n    \twindow._uxa = window._uxa || [];\n    \t_uxa.push([\"afterPageView\", callback]);\n    }\n  \n})();\n//Optimizely CS Integration End"
+  }
+}
 ```
 
 ### Using the integration
@@ -40,29 +43,48 @@ Example: `AB_OP_18180652355_18182752153` where 18180652355 is the campaign Id an
 
 If you're interested in checking out the code that powers this integration, here it is:
 ```javascript
-function sendTestToCS(csKey, csValue) {
+/*
+ *Name: Optimizely CS Integration
+ *Version: 2.1
+ */
+(function () {
+    var tvp = "AB_OP_";
+
+    function sendToCS(csKey, csValue) {
+        csKey = tvp + csKey;
+
+        _uxa.push(["trackDynamicVariable", {
+            key: csKey,
+            value: csValue
+        }]);
+    };
+
+    function startOPIntegration() {
+        sendToCS(decisionString.experiment, decisionString.holdback ? decisionString.variation + ' [Holdback]' : decisionString.variation);
+    }
+
+    function callback() {
+        if (!disableCallback) {
+            disableCallback = true;
+
+            var decisionString = optimizely.get('state').getDecisionObject({
+                "campaignId": campaignId
+            });
+
+            if (!!decisionString) {
+                startOPIntegration();
+            }
+
+            if (window.CS_CONF) {
+                CS_CONF.integrations = CS_CONF.integrations || [];
+                CS_CONF.integrations.push("Optimizely");
+            }
+        }
+    }
+
+    var disableCallback = false;
     window._uxa = window._uxa || [];
-    window._uxa.push(["trackDynamicVariable", {key: csKey, value: csValue} ]);
-}
+    _uxa.push(["afterPageView", callback]);
 
-function callback(context) {
-	if (!disableCallback) {
-		disableCallback = true;
-
-		if (window.CS_CONF) {
-          CS_CONF.integrations = CS_CONF.integrations || [];
-          CS_CONF.integrations.push("Optimizely Web");
-		}
-	}
-}
-     
-var disableCallback = false;
-window._uxa =  window._uxa || [];
-_uxa.push(["afterPageView", callback]);
-
-var csPrefix = 'AB_Opti_';
-var csKey = csPrefix + campaignId + '_' + experimentId;
-var csValue = variationId;
-
-sendTestToCS(decodeURI(csKey), decodeURI(csValue));
+})();
 ```
