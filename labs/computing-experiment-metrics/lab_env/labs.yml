@@ -1,0 +1,14 @@
+dependencies:
+- pip=20.2.1
+- plotly=4.9.0
+- bravado=10.5.0
+- matplotlib
+- python-kaleido
+- ipywidgets
+- jinja2
+- pip:
+    - ssrm-test
+channels:
+- anaconda
+- conda-forge
+- plotly
