@@ -43,12 +43,13 @@ In this notebook, we'll use Optimizely Enriched Event Data and our third-party c
 
 ## Global parameters
 
-The following global parameters are used to control the execution in this notebook.  These parameters may be overridden by setting environment variables prior to launching the notebook, e.g.:
+We use several global parameters to control the execution in this notebook.  These parameters may be overridden by setting environment variables prior to launching the notebook, for example:
 
-```
+```sh
 export OPTIMIZELY_DATA_DIR=~/my_analysis_dir
 ```
 
+In this block we check whether these parameters have been passed with environment variables and assign default values otherwise.  The default value for `OPTIMIZELY_API_TOKEN` is a read-only token for a demonstration Optimizely project.
 
 ```python
 import os
