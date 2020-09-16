@@ -13,13 +13,13 @@ In order to measure the impact this banner has on customer support volumes and d
 <table>
     <tr>
         <td>
-            <img src="https://raw.githubusercontent.com/optimizely/labs/master/labs/computing-experiment-subjects/img/control.png" alt="Control" style="width:100%; padding-left:0px">
+            <img src="img/control.png" alt="Control" style="width:100%; padding-left:0px">
         </td>
         <td>
-            <img src="https://raw.githubusercontent.com/optimizely/labs/master/labs/computing-experiment-subjects/img/message_1.png" alt="Message #1" style="width:100%; padding-right:0px">
+            <img src="img/message_1.png" alt="Message #1" style="width:100%; padding-right:0px">
         </td>
         <td>
-            <img src="https://raw.githubusercontent.com/optimizely/labs/master/labs/computing-experiment-subjects/img/message_2.png" alt="Message #2" style="width:100%; padding-right:0px">
+            <img src="img/message_2.png" alt="Message #2" style="width:100%; padding-right:0px">
         </td>
     </tr>
     <tr>
@@ -43,13 +43,14 @@ In this notebook, we'll use Optimizely Enriched Event Data and our third-party c
 
 ## Global parameters
 
-We use several global parameters to control the execution in this notebook.  These parameters may be overridden by setting environment variables prior to launching the notebook, for example:
+The following global parameters are used to control the execution in this notebook.  These parameters may be overridden by setting environment variables prior to launching the notebook, for example:
 
 ```sh
 export OPTIMIZELY_DATA_DIR=~/my_analysis_dir
 ```
 
 In this block we check whether these parameters have been passed with environment variables and assign default values otherwise.  The default value for `OPTIMIZELY_API_TOKEN` is a read-only token for a demonstration Optimizely project.
+
 
 ```python
 import os
@@ -218,7 +219,7 @@ In this section, we'll compute three useful intermediate experiment datasets:
 
 The following diagram illustrates how these datasets are used to compute _metric observations_ for our experiment:
 
-![Transformations](https://raw.githubusercontent.com/optimizely/labs/master/labs/computing-experiment-subjects/img/transformations.png)
+![Transformations](img/transformations.png)
 
 ### Enriched decisions
 
@@ -243,10 +244,10 @@ The code for enriching decision data can be found in the `enriching_decision_dat
 <table>
     <tr>
         <td>
-            <img src="https://raw.githubusercontent.com/optimizely/labs/master/labs/computing-experiment-subjects/img/transformations_1.png" alt="Experiment Units" style="width:100%; padding-left:0px">
+            <img src="img/transformations_1.png" alt="Experiment Units" style="width:100%; padding-left:0px">
         </td>
         <td>
-            <img src="https://raw.githubusercontent.com/optimizely/labs/master/labs/computing-experiment-subjects/img/tables_1.png" alt="Experiment Units" style="width:100%; padding-left:0px">
+            <img src="img/tables_1.png" alt="Experiment Units" style="width:100%; padding-left:0px">
         </td>
     </tr>
 </table>
@@ -339,10 +340,10 @@ An **experiment event** is an event, such as a button click or a purchase, that 
 <table>
     <tr>
         <td>
-            <img src="https://raw.githubusercontent.com/optimizely/labs/master/labs/computing-experiment-subjects/img/transformations_2.png" alt="Experiment Units" style="width:100%; padding-left:0px">
+            <img src="img/transformations_2.png" alt="Experiment Units" style="width:100%; padding-left:0px">
         </td>
         <td>
-            <img src="https://raw.githubusercontent.com/optimizely/labs/master/labs/computing-experiment-subjects/img/tables_2.png" alt="Experiment Units" style="width:100%; padding-left:0px">
+            <img src="img/tables_2.png" alt="Experiment Units" style="width:100%; padding-left:0px">
         </td>
     </tr>
 </table>
@@ -458,69 +459,20 @@ Unlike **experiment units** and **experiment events**, which can be computed usi
 <table>
     <tr>
         <td>
-            <img src="https://raw.githubusercontent.com/optimizely/labs/master/labs/computing-experiment-subjects/img/transformations_3.png" alt="Experiment Units" style="width:100%; padding-left:0px">
+            <img src="img/transformations_3.png" alt="Experiment Units" style="width:100%; padding-left:0px">
         </td>
         <td>
-            <img src="https://raw.githubusercontent.com/optimizely/labs/master/labs/computing-experiment-subjects/img/tables_3.png" alt="Experiment Units" style="width:100%; padding-left:0px">
+            <img src="img/tables_3.png" alt="Experiment Units" style="width:100%; padding-left:0px">
         </td>
     </tr>
 </table>
 
-We'll start by defining a helper function, `compute_metric_observations` which performs the units/raw observations "join" in the transformation described above and appends the result to a global `observations` dataframe.
+We're going to use a helper function, `compute_metric_observations`, to abstract away some of the redundant parts of this computation.  This function takes a set of "raw observations" as input, and
 
+1. performs a `LEFT JOIN` with our experiment units in order to ensure that the resulting dataset contains an observation for every visitor in our experiment
+2. (optionally) appends the resulting metric observations to a global `observations` dataset
 
-```python
-from pyspark.sql.functions import lit, coalesce
-
-def compute_metric_observations(
-    metric_name, 
-    raw_observations_df, 
-    experiment_units_df,
-    join_on="visitor_id",
-    append_to=None,
-    default_value=0
-):
-    """Compute a "metric observations" dataset for a given metric and (optionally) append it to an existing set of
-    metric observations. Create (or replace) a temporary view "observations" with the result.
-    
-    Parameters: 
-        metric_name              - A string that uniquely identifies the metric for which observations are being computed,
-                                   for example: "Purchase conversion rate"
-                                   
-        raw_observations_df      - A spark dataframe containing a set of raw observations for this metric. This dataframe 
-                                   should contain two columns:
-                                      visitor_id - a unique identifier for each unit
-                                      observation - numerical outcome observered for each unit
-                                   These metric observations will be joined with the provided experiment units dataframe
-                                   so that the resulting dataset contains an observation for every unit. 
-                                   
-        experiment_units_df      - A spark dataframe containing the experiment units for which this metric should be
-                                   computed.
-                                   
-        append_to (optional)     - A spark dataframe to which the resulting metric observation dataframe should be appended.
-                                   If this is provided, the newly-combined dataframe will be returned.
-                                    
-        default_value (optional) - The default value to use for experiment units that do not appear in the raw observations
-                                   dataframe.  If this is not provided, 0 is used.
-    """
-
-    merged_df = experiment_units_df \
-                    .join(raw_observations_df, on=[join_on], how='left') \
-                    .withColumn("_observation", coalesce('observation', lit(default_value))) \
-                    .drop("observation") \
-                    .withColumnRenamed("_observation", "observation") \
-                    .withColumn("metric_name", lit(metric_name))
-
-    if append_to is None:
-        observations = merged_df
-    else:
-        observations = append_to.union(merged_df)
-    
-    observations.createOrReplaceTempView("observations")
-    return observations
-```
-
-Now we'll define a set of observations by executing simple queries on our experiment events.  Each query computes a single _observation_ for each subject.
+This allows us to focus on the logic for aggregating experiment events into a numerical observation, which is the most interesting part of the process.
 
 ### Metric: Purchase conversion rate
 
@@ -606,7 +558,7 @@ We'll use our `add_observations` function to perform a left outer join between `
 
 
 ```python
-observations = compute_metric_observations(
+observations = util.compute_metric_observations(
     "Purchase conversion rate",
     raw_purchase_conversion_rate_obs,
     experiment_units,
@@ -630,6 +582,7 @@ spark.sql("""
         observations
     ORDER BY
         timestamp ASC
+    LIMIT 10
 """)
 ```
 
@@ -648,18 +601,7 @@ spark.sql("""
 <tr><td>Purchase conversion rate</td><td>2020-09-14 11:21:40.894</td><td>user_7</td><td>covid_messaging_experiment</td><td>message_2</td><td>0</td></tr>
 <tr><td>Purchase conversion rate</td><td>2020-09-14 11:21:40.996</td><td>user_8</td><td>covid_messaging_experiment</td><td>message_1</td><td>0</td></tr>
 <tr><td>Purchase conversion rate</td><td>2020-09-14 11:21:41.097</td><td>user_9</td><td>covid_messaging_experiment</td><td>control</td><td>0</td></tr>
-<tr><td>Purchase conversion rate</td><td>2020-09-14 11:21:41.199</td><td>user_10</td><td>covid_messaging_experiment</td><td>control</td><td>0</td></tr>
-<tr><td>Purchase conversion rate</td><td>2020-09-14 11:21:41.3</td><td>user_11</td><td>covid_messaging_experiment</td><td>message_1</td><td>0</td></tr>
-<tr><td>Purchase conversion rate</td><td>2020-09-14 11:21:41.401</td><td>user_12</td><td>covid_messaging_experiment</td><td>control</td><td>0</td></tr>
-<tr><td>Purchase conversion rate</td><td>2020-09-14 11:21:41.503</td><td>user_13</td><td>covid_messaging_experiment</td><td>message_2</td><td>0</td></tr>
-<tr><td>Purchase conversion rate</td><td>2020-09-14 11:21:41.605</td><td>user_14</td><td>covid_messaging_experiment</td><td>control</td><td>0</td></tr>
-<tr><td>Purchase conversion rate</td><td>2020-09-14 11:21:41.706</td><td>user_15</td><td>covid_messaging_experiment</td><td>control</td><td>0</td></tr>
-<tr><td>Purchase conversion rate</td><td>2020-09-14 11:21:41.808</td><td>user_16</td><td>covid_messaging_experiment</td><td>message_2</td><td>0</td></tr>
-<tr><td>Purchase conversion rate</td><td>2020-09-14 11:21:41.911</td><td>user_17</td><td>covid_messaging_experiment</td><td>message_1</td><td>0</td></tr>
-<tr><td>Purchase conversion rate</td><td>2020-09-14 11:21:42.012</td><td>user_18</td><td>covid_messaging_experiment</td><td>control</td><td>0</td></tr>
-<tr><td>Purchase conversion rate</td><td>2020-09-14 11:21:42.114</td><td>user_19</td><td>covid_messaging_experiment</td><td>message_2</td><td>0</td></tr>
 </table>
-only showing top 20 rows
 
 
 
@@ -739,7 +681,7 @@ In this query we count the number of product detail page views per visitor
 
 ```python
 ## Unique conversions on the "add_to_cart" event.
-observations = compute_metric_observations(
+observations = util.compute_metric_observations(
     "Product detail page views per visitor",
     raw_observations_df = spark.sql("""
         SELECT
@@ -773,7 +715,7 @@ spark.sql("""
         observations
     WHERE
         metric_name = "Product detail page views per visitor"
-    LIMIT 10
+    LIMIT 5
 """)
 ```
 
@@ -787,11 +729,6 @@ spark.sql("""
 <tr><td>Product detail page views per visitor</td><td>2020-09-14 11:24:05.094</td><td>covid_messaging_experiment</td><td>18818611832</td><td>user_1425</td><td>3</td></tr>
 <tr><td>Product detail page views per visitor</td><td>2020-09-14 11:24:41.774</td><td>covid_messaging_experiment</td><td>18817551468</td><td>user_1786</td><td>0</td></tr>
 <tr><td>Product detail page views per visitor</td><td>2020-09-14 11:25:30.073</td><td>covid_messaging_experiment</td><td>18802093142</td><td>user_2262</td><td>0</td></tr>
-<tr><td>Product detail page views per visitor</td><td>2020-09-14 11:25:38.915</td><td>covid_messaging_experiment</td><td>18802093142</td><td>user_2349</td><td>0</td></tr>
-<tr><td>Product detail page views per visitor</td><td>2020-09-14 11:22:04.86</td><td>covid_messaging_experiment</td><td>18818611832</td><td>user_242</td><td>0</td></tr>
-<tr><td>Product detail page views per visitor</td><td>2020-09-14 11:22:05.475</td><td>covid_messaging_experiment</td><td>18818611832</td><td>user_248</td><td>0</td></tr>
-<tr><td>Product detail page views per visitor</td><td>2020-09-14 11:26:01.673</td><td>covid_messaging_experiment</td><td>18818611832</td><td>user_2573</td><td>0</td></tr>
-<tr><td>Product detail page views per visitor</td><td>2020-09-14 11:26:38.674</td><td>covid_messaging_experiment</td><td>18818611832</td><td>user_2937</td><td>0</td></tr>
 </table>
 
 
@@ -803,7 +740,7 @@ In this query we compute the total revenue associated with electronics purchases
 
 
 ```python
-observations = compute_metric_observations(
+observations = util.compute_metric_observations(
     "Electronics revenue per visitor",
     raw_observations_df = spark.sql("""
         SELECT
@@ -841,7 +778,7 @@ spark.sql("""
     WHERE
         metric_name = "Electronics revenue per visitor" AND
         observation > 0
-    LIMIT 20
+    LIMIT 5
 """)
 ```
 
@@ -855,21 +792,6 @@ spark.sql("""
 <tr><td>Electronics revenue per visitor</td><td>2020-09-14 11:26:50.953</td><td>covid_messaging_experiment</td><td>18818611832</td><td>user_3058</td><td>79999</td></tr>
 <tr><td>Electronics revenue per visitor</td><td>2020-09-14 11:23:14.427</td><td>covid_messaging_experiment</td><td>18817551468</td><td>user_926</td><td>79999</td></tr>
 <tr><td>Electronics revenue per visitor</td><td>2020-09-14 11:27:48.77</td><td>covid_messaging_experiment</td><td>18818611832</td><td>user_3628</td><td>99999</td></tr>
-<tr><td>Electronics revenue per visitor</td><td>2020-09-14 11:34:20.944</td><td>covid_messaging_experiment</td><td>18817551468</td><td>user_7500</td><td>79999</td></tr>
-<tr><td>Electronics revenue per visitor</td><td>2020-09-14 11:36:59.773</td><td>covid_messaging_experiment</td><td>18818611832</td><td>user_9069</td><td>99999</td></tr>
-<tr><td>Electronics revenue per visitor</td><td>2020-09-14 11:29:24.97</td><td>covid_messaging_experiment</td><td>18817551468</td><td>user_4577</td><td>99999</td></tr>
-<tr><td>Electronics revenue per visitor</td><td>2020-09-14 11:30:12.38</td><td>covid_messaging_experiment</td><td>18802093142</td><td>user_5045</td><td>79999</td></tr>
-<tr><td>Electronics revenue per visitor</td><td>2020-09-14 11:32:14.186</td><td>covid_messaging_experiment</td><td>18817551468</td><td>user_6248</td><td>99999</td></tr>
-<tr><td>Electronics revenue per visitor</td><td>2020-09-14 11:28:41.191</td><td>covid_messaging_experiment</td><td>18802093142</td><td>user_4145</td><td>79999</td></tr>
-<tr><td>Electronics revenue per visitor</td><td>2020-09-14 11:30:30.406</td><td>covid_messaging_experiment</td><td>18818611832</td><td>user_5223</td><td>99999</td></tr>
-<tr><td>Electronics revenue per visitor</td><td>2020-09-14 11:23:27.435</td><td>covid_messaging_experiment</td><td>18818611832</td><td>user_1054</td><td>99999</td></tr>
-<tr><td>Electronics revenue per visitor</td><td>2020-09-14 11:30:26.352</td><td>covid_messaging_experiment</td><td>18817551468</td><td>user_5183</td><td>79999</td></tr>
-<tr><td>Electronics revenue per visitor</td><td>2020-09-14 11:35:28.073</td><td>covid_messaging_experiment</td><td>18802093142</td><td>user_8163</td><td>99999</td></tr>
-<tr><td>Electronics revenue per visitor</td><td>2020-09-14 11:23:52.813</td><td>covid_messaging_experiment</td><td>18802093142</td><td>user_1304</td><td>79999</td></tr>
-<tr><td>Electronics revenue per visitor</td><td>2020-09-14 11:34:19.223</td><td>covid_messaging_experiment</td><td>18802093142</td><td>user_7483</td><td>79999</td></tr>
-<tr><td>Electronics revenue per visitor</td><td>2020-09-14 11:36:30.731</td><td>covid_messaging_experiment</td><td>18817551468</td><td>user_8782</td><td>79999</td></tr>
-<tr><td>Electronics revenue per visitor</td><td>2020-09-14 11:37:49.161</td><td>covid_messaging_experiment</td><td>18818611832</td><td>user_9557</td><td>99999</td></tr>
-<tr><td>Electronics revenue per visitor</td><td>2020-09-14 11:24:16.276</td><td>covid_messaging_experiment</td><td>18817551468</td><td>user_1535</td><td>99999</td></tr>
 </table>
 
 
@@ -1013,7 +935,7 @@ Now we can compute metric observations for call center calls and duration!
 
 ```python
 # Count the number of support phone calls per visitor
-observations = compute_metric_observations(
+observations = util.compute_metric_observations(
     "Customer support calls per visitor",
     raw_observations_df = spark.sql("""
         SELECT
@@ -1029,7 +951,7 @@ observations = compute_metric_observations(
 )
 
 # Count the number of support phone calls per visitor
-observations = compute_metric_observations(
+observations = util.compute_metric_observations(
     "Total customer support minutes per visitor",
     raw_observations_df = spark.sql("""
         SELECT
