@@ -50,3 +50,26 @@ cp "$UPDATED_TEMP_NB" "$NB"
 
 # 3. Use nbconvert to build index.md from the passed notebook
 jupyter nbconvert --execute --to markdown --output "$LAB_BASE_DIR/index.md" "$NB"
+
+
+# Converting relative image paths to absolute URLs
+# This step is necessary to ensure that images in index.md display correctly on optimizely.com/labs
+# The logic here is somewhat hacky--only relative links for images in the img directory are modified,
+# and only then if they are included one of the following forms:
+#     ![Alt text](img/path/to/image.png)
+#     <img src="img/path/to/image.png"> 
+
+
+# Extract lab name from LAB_BASE_DIR
+LAB_BASE_DIR_ABS_PATH=$(realpath $LAB_BASE_DIR)
+LAB_NAME=${LAB_BASE_DIR_ABS_PATH##*/}
+
+# Construct the correct URL prefix
+IMG_URL_PREFIX=https:\\/\\/raw.githubusercontent.com\\/optimizely\\/labs\\/master\\/labs\\/$LAB_NAME\\/img\\/
+
+# Replace relative paths with our URL prefix in index.md -> _index.md
+sed "s/src=\"img\//src=\"$IMG_URL_PREFIX/g; s/](img\//]($IMG_URL_PREFIX/g" $LAB_BASE_DIR/index.md > $LAB_BASE_DIR/_index.md
+
+# _index.md -> index.md
+rm $LAB_BASE_DIR/index.md
+mv $LAB_BASE_DIR/_index.md $LAB_BASE_DIR/index.md

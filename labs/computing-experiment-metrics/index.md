@@ -13,13 +13,13 @@ In order to measure the impact this banner has on customer support volumes and d
 <table>
     <tr>
         <td>
-            <img src="img/control.png" alt="Control" style="width:100%; padding-left:0px">
+            <img src="https://raw.githubusercontent.com/optimizely/labs/master/labs/computing-experiment-metrics/img/control.png" alt="Control" style="width:100%; padding-left:0px">
         </td>
         <td>
-            <img src="img/message_1.png" alt="Message #1" style="width:100%; padding-right:0px">
+            <img src="https://raw.githubusercontent.com/optimizely/labs/master/labs/computing-experiment-metrics/img/message_1.png" alt="Message #1" style="width:100%; padding-right:0px">
         </td>
         <td>
-            <img src="img/message_2.png" alt="Message #2" style="width:100%; padding-right:0px">
+            <img src="https://raw.githubusercontent.com/optimizely/labs/master/labs/computing-experiment-metrics/img/message_2.png" alt="Message #2" style="width:100%; padding-right:0px">
         </td>
     </tr>
     <tr>
@@ -219,7 +219,7 @@ In this section, we'll compute three useful intermediate experiment datasets:
 
 The following diagram illustrates how these datasets are used to compute _metric observations_ for our experiment:
 
-![Transformations](img/transformations.png)
+![Transformations](https://raw.githubusercontent.com/optimizely/labs/master/labs/computing-experiment-metrics/img/transformations.png)
 
 ### Enriched decisions
 
@@ -244,10 +244,10 @@ The code for enriching decision data can be found in the `enriching_decision_dat
 <table>
     <tr>
         <td>
-            <img src="img/transformations_1.png" alt="Experiment Units" style="width:100%; padding-left:0px">
+            <img src="https://raw.githubusercontent.com/optimizely/labs/master/labs/computing-experiment-metrics/img/transformations_1.png" alt="Experiment Units" style="width:100%; padding-left:0px">
         </td>
         <td>
-            <img src="img/tables_1.png" alt="Experiment Units" style="width:100%; padding-left:0px">
+            <img src="https://raw.githubusercontent.com/optimizely/labs/master/labs/computing-experiment-metrics/img/tables_1.png" alt="Experiment Units" style="width:100%; padding-left:0px">
         </td>
     </tr>
 </table>
@@ -340,10 +340,10 @@ An **experiment event** is an event, such as a button click or a purchase, that 
 <table>
     <tr>
         <td>
-            <img src="img/transformations_2.png" alt="Experiment Units" style="width:100%; padding-left:0px">
+            <img src="https://raw.githubusercontent.com/optimizely/labs/master/labs/computing-experiment-metrics/img/transformations_2.png" alt="Experiment Units" style="width:100%; padding-left:0px">
         </td>
         <td>
-            <img src="img/tables_2.png" alt="Experiment Units" style="width:100%; padding-left:0px">
+            <img src="https://raw.githubusercontent.com/optimizely/labs/master/labs/computing-experiment-metrics/img/tables_2.png" alt="Experiment Units" style="width:100%; padding-left:0px">
         </td>
     </tr>
 </table>
@@ -459,10 +459,10 @@ Unlike **experiment units** and **experiment events**, which can be computed usi
 <table>
     <tr>
         <td>
-            <img src="img/transformations_3.png" alt="Experiment Units" style="width:100%; padding-left:0px">
+            <img src="https://raw.githubusercontent.com/optimizely/labs/master/labs/computing-experiment-metrics/img/transformations_3.png" alt="Experiment Units" style="width:100%; padding-left:0px">
         </td>
         <td>
-            <img src="img/tables_3.png" alt="Experiment Units" style="width:100%; padding-left:0px">
+            <img src="https://raw.githubusercontent.com/optimizely/labs/master/labs/computing-experiment-metrics/img/tables_3.png" alt="Experiment Units" style="width:100%; padding-left:0px">
         </td>
     </tr>
 </table>
