@@ -9,6 +9,6 @@ dependencies:
 - pip:
     - ssrm-test
 channels:
-- anaconda
 - conda-forge
+- anaconda
 - plotly
