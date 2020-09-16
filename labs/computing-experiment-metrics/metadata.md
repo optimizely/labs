@@ -2,6 +2,7 @@
 title: Computing metrics with event-level experiment data
 summary: A notebook for computing "metric observations" with event-level experiment data
 revisionDate: '2020-09-15'
+excludeFromListing: true
 labels:
   - jupyter
   - data
