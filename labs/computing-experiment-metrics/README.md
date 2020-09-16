@@ -1,11 +1,6 @@
-# Optimizely Labs Template Notebook
+# Computing metrics with event-level experiment data
 
-This Lab serves as a template for building [Optimizely Labs](https://www.optimizely.com/labs) using Jupyter notebooks.  It contains
-- a template notebook for lab content (this document)
-- scripts for building, testing, and running this notebook
-- a template README with instructions for running this notebook
-
-The notebook in this directory is configured to run in a custom "Optimizely Labs Environment" Jupyter kernel and contains a set of simple integration tests for ensuring that dependencies are installed correctly. It should be replaced with a notebook containing the content of your lab.
+In this Lab, we'll walk through an end-to-end workflow for computing a series of metrics with data collected by both Optimizely and a third party during an Optimizely Full Stack experiment.
 
 ## Running this notebook
 
