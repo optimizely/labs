@@ -806,7 +806,7 @@ We'll start by reading in our call center data:
 
 ```python
 # Read call center logs CSV into a pandas dataframe
-df = pd.read_csv("call_data.csv")
+df = pd.read_csv("covid_test_data/call_data.csv")
 
 # Display a sample of our call record data
 df.head(5)
@@ -833,7 +833,7 @@ df.head(5)
   <thead>
     <tr style="text-align: right;">
       <th></th>
-      <th>user_id</th>
+      <th>visitor_id</th>
       <th>call_start</th>
       <th>call_duration_min</th>
     </tr>
@@ -841,33 +841,33 @@ df.head(5)
   <tbody>
     <tr>
       <th>0</th>
-      <td>user_1007</td>
-      <td>9/15/2020 0:00:00</td>
-      <td>8.495311</td>
+      <td>user_1</td>
+      <td>9/15/2020 23:00:00</td>
+      <td>1.224888</td>
     </tr>
     <tr>
       <th>1</th>
-      <td>user_1009</td>
-      <td>9/15/2020 3:00:00</td>
-      <td>2.162568</td>
+      <td>user_9</td>
+      <td>9/15/2020 11:00:00</td>
+      <td>3.999876</td>
     </tr>
     <tr>
       <th>2</th>
-      <td>user_1014</td>
-      <td>9/15/2020 12:00:00</td>
-      <td>3.996617</td>
+      <td>user_14</td>
+      <td>9/15/2020 2:00:00</td>
+      <td>2.843966</td>
     </tr>
     <tr>
       <th>3</th>
-      <td>user_1015</td>
-      <td>9/15/2020 16:00:00</td>
-      <td>6.886584</td>
+      <td>user_17</td>
+      <td>9/15/2020 9:00:00</td>
+      <td>6.462949</td>
     </tr>
     <tr>
       <th>4</th>
-      <td>user_1017</td>
-      <td>9/15/2020 18:00:00</td>
-      <td>3.464795</td>
+      <td>user_21</td>
+      <td>9/15/2020 16:00:00</td>
+      <td>6.397294</td>
     </tr>
   </tbody>
 </table>
@@ -900,11 +900,11 @@ spark.sql("SELECT * FROM call_records LIMIT 5")
 
 <table border='1'>
 <tr><th>visitor_id</th><th>call_start</th><th>call_duration_min</th><th>timestamp</th></tr>
-<tr><td>user_1007</td><td>9/15/2020 0:00:00</td><td>8.495310611</td><td>2020-09-15 00:00:00</td></tr>
-<tr><td>user_1009</td><td>9/15/2020 3:00:00</td><td>2.16256821</td><td>2020-09-15 03:00:00</td></tr>
-<tr><td>user_1014</td><td>9/15/2020 12:00:00</td><td>3.99661667</td><td>2020-09-15 12:00:00</td></tr>
-<tr><td>user_1015</td><td>9/15/2020 16:00:00</td><td>6.886583842</td><td>2020-09-15 16:00:00</td></tr>
-<tr><td>user_1017</td><td>9/15/2020 18:00:00</td><td>3.4647948310000003</td><td>2020-09-15 18:00:00</td></tr>
+<tr><td>user_1</td><td>9/15/2020 23:00:00</td><td>1.22488779</td><td>2020-09-15 23:00:00</td></tr>
+<tr><td>user_9</td><td>9/15/2020 11:00:00</td><td>3.999875568</td><td>2020-09-15 11:00:00</td></tr>
+<tr><td>user_14</td><td>9/15/2020 2:00:00</td><td>2.8439659039999996</td><td>2020-09-15 02:00:00</td></tr>
+<tr><td>user_17</td><td>9/15/2020 9:00:00</td><td>6.46294865</td><td>2020-09-15 09:00:00</td></tr>
+<tr><td>user_21</td><td>9/15/2020 16:00:00</td><td>6.39729429</td><td>2020-09-15 16:00:00</td></tr>
 </table>
 
 
@@ -1004,9 +1004,9 @@ spark.sql("""
 
 <table border='1'>
 <tr><th>metric_name</th><th>experiment_name</th><th>variation_name</th><th>unit_count</th><th>sum(observation)</th><th>metric_value</th></tr>
-<tr><td>Customer support calls per visitor</td><td>covid_messaging_experiment</td><td>control</td><td>3304</td><td>1115.0</td><td>0.33746973365617433</td></tr>
-<tr><td>Customer support calls per visitor</td><td>covid_messaging_experiment</td><td>message_1</td><td>3367</td><td>1109.0</td><td>0.32937332937332936</td></tr>
-<tr><td>Customer support calls per visitor</td><td>covid_messaging_experiment</td><td>message_2</td><td>3329</td><td>1115.0</td><td>0.3349354160408531</td></tr>
+<tr><td>Customer support calls per visitor</td><td>covid_messaging_experiment</td><td>control</td><td>3304</td><td>957.0</td><td>0.2896489104116223</td></tr>
+<tr><td>Customer support calls per visitor</td><td>covid_messaging_experiment</td><td>message_1</td><td>3367</td><td>649.0</td><td>0.19275319275319275</td></tr>
+<tr><td>Customer support calls per visitor</td><td>covid_messaging_experiment</td><td>message_2</td><td>3329</td><td>672.0</td><td>0.20186242114749173</td></tr>
 <tr><td>Electronics revenue per visitor</td><td>covid_messaging_experiment</td><td>control</td><td>3304</td><td>1.4499837E7</td><td>4388.570520581114</td></tr>
 <tr><td>Electronics revenue per visitor</td><td>covid_messaging_experiment</td><td>message_1</td><td>3367</td><td>1.4959831E7</td><td>4443.07425007425</td></tr>
 <tr><td>Electronics revenue per visitor</td><td>covid_messaging_experiment</td><td>message_2</td><td>3329</td><td>1.9899777E7</td><td>5977.704115349955</td></tr>
@@ -1016,9 +1016,9 @@ spark.sql("""
 <tr><td>Purchase conversion rate</td><td>covid_messaging_experiment</td><td>control</td><td>3304</td><td>163.0</td><td>0.04933414043583535</td></tr>
 <tr><td>Purchase conversion rate</td><td>covid_messaging_experiment</td><td>message_1</td><td>3367</td><td>169.0</td><td>0.05019305019305019</td></tr>
 <tr><td>Purchase conversion rate</td><td>covid_messaging_experiment</td><td>message_2</td><td>3329</td><td>223.0</td><td>0.06698708320817062</td></tr>
-<tr><td>Total customer support minutes per visitor</td><td>covid_messaging_experiment</td><td>control</td><td>3304</td><td>5154.63733961806</td><td>1.5601202601749575</td></tr>
-<tr><td>Total customer support minutes per visitor</td><td>covid_messaging_experiment</td><td>message_1</td><td>3367</td><td>5011.598830877945</td><td>1.488446341217091</td></tr>
-<tr><td>Total customer support minutes per visitor</td><td>covid_messaging_experiment</td><td>message_2</td><td>3329</td><td>5101.002656990411</td><td>1.5322927777081439</td></tr>
+<tr><td>Total customer support minutes per visitor</td><td>covid_messaging_experiment</td><td>control</td><td>3304</td><td>4617.232851461323</td><td>1.3974675700548798</td></tr>
+<tr><td>Total customer support minutes per visitor</td><td>covid_messaging_experiment</td><td>message_1</td><td>3367</td><td>2612.508941759429</td><td>0.775915931618482</td></tr>
+<tr><td>Total customer support minutes per visitor</td><td>covid_messaging_experiment</td><td>message_2</td><td>3329</td><td>2663.5191790325903</td><td>0.8000958783516342</td></tr>
 </table>
 
 
@@ -1063,15 +1063,15 @@ spark.sql("""
 
 <table border='1'>
 <tr><th>metric_name</th><th>experiment_name</th><th>variation_name</th><th>browser</th><th>unit_count</th><th>sum(observation)</th><th>metric_value</th></tr>
-<tr><td>Customer support calls per visitor</td><td>covid_messaging_experiment</td><td>control</td><td>chrome</td><td>1651</td><td>566.0</td><td>0.34282253179890976</td></tr>
-<tr><td>Customer support calls per visitor</td><td>covid_messaging_experiment</td><td>control</td><td>firefox</td><td>1094</td><td>353.0</td><td>0.3226691042047532</td></tr>
-<tr><td>Customer support calls per visitor</td><td>covid_messaging_experiment</td><td>control</td><td>safari</td><td>559</td><td>196.0</td><td>0.35062611806797855</td></tr>
-<tr><td>Customer support calls per visitor</td><td>covid_messaging_experiment</td><td>message_1</td><td>chrome</td><td>1723</td><td>590.0</td><td>0.3424260011607661</td></tr>
-<tr><td>Customer support calls per visitor</td><td>covid_messaging_experiment</td><td>message_1</td><td>firefox</td><td>1085</td><td>342.0</td><td>0.3152073732718894</td></tr>
-<tr><td>Customer support calls per visitor</td><td>covid_messaging_experiment</td><td>message_1</td><td>safari</td><td>559</td><td>177.0</td><td>0.31663685152057247</td></tr>
-<tr><td>Customer support calls per visitor</td><td>covid_messaging_experiment</td><td>message_2</td><td>chrome</td><td>1695</td><td>569.0</td><td>0.335693215339233</td></tr>
-<tr><td>Customer support calls per visitor</td><td>covid_messaging_experiment</td><td>message_2</td><td>firefox</td><td>1121</td><td>377.0</td><td>0.33630686886708294</td></tr>
-<tr><td>Customer support calls per visitor</td><td>covid_messaging_experiment</td><td>message_2</td><td>safari</td><td>513</td><td>169.0</td><td>0.32943469785575047</td></tr>
+<tr><td>Customer support calls per visitor</td><td>covid_messaging_experiment</td><td>control</td><td>chrome</td><td>1651</td><td>472.0</td><td>0.28588734100545127</td></tr>
+<tr><td>Customer support calls per visitor</td><td>covid_messaging_experiment</td><td>control</td><td>firefox</td><td>1094</td><td>321.0</td><td>0.29341864716636196</td></tr>
+<tr><td>Customer support calls per visitor</td><td>covid_messaging_experiment</td><td>control</td><td>safari</td><td>559</td><td>164.0</td><td>0.29338103756708406</td></tr>
+<tr><td>Customer support calls per visitor</td><td>covid_messaging_experiment</td><td>message_1</td><td>chrome</td><td>1723</td><td>337.0</td><td>0.1955890887986071</td></tr>
+<tr><td>Customer support calls per visitor</td><td>covid_messaging_experiment</td><td>message_1</td><td>firefox</td><td>1085</td><td>207.0</td><td>0.19078341013824884</td></tr>
+<tr><td>Customer support calls per visitor</td><td>covid_messaging_experiment</td><td>message_1</td><td>safari</td><td>559</td><td>105.0</td><td>0.18783542039355994</td></tr>
+<tr><td>Customer support calls per visitor</td><td>covid_messaging_experiment</td><td>message_2</td><td>chrome</td><td>1695</td><td>359.0</td><td>0.21179941002949854</td></tr>
+<tr><td>Customer support calls per visitor</td><td>covid_messaging_experiment</td><td>message_2</td><td>firefox</td><td>1121</td><td>223.0</td><td>0.19892952720785012</td></tr>
+<tr><td>Customer support calls per visitor</td><td>covid_messaging_experiment</td><td>message_2</td><td>safari</td><td>513</td><td>90.0</td><td>0.17543859649122806</td></tr>
 <tr><td>Electronics revenue per visitor</td><td>covid_messaging_experiment</td><td>control</td><td>chrome</td><td>1651</td><td>7719913.0</td><td>4675.90127195639</td></tr>
 <tr><td>Electronics revenue per visitor</td><td>covid_messaging_experiment</td><td>control</td><td>firefox</td><td>1094</td><td>4259953.0</td><td>3893.924131627057</td></tr>
 <tr><td>Electronics revenue per visitor</td><td>covid_messaging_experiment</td><td>control</td><td>safari</td><td>559</td><td>2519971.0</td><td>4507.998211091234</td></tr>
@@ -1090,6 +1090,8 @@ only showing top 20 rows
 
 
 ## Computing sequential statistics with Optimizely's Stats Services
+
+According to the metric data above, visitors who saw either of our informational banners during our experiment were less likely call support.  How confident can we be that the difference in call rates can be attributed to our banner, as opposed to statistical noise?
 
 We're working on launching a set of Stats Services that can be used to perform sequential hypothesis testing on metric observation data.  You can learn more about these services and request early access [here](optimizely.com/solutions/data-teams).
 
