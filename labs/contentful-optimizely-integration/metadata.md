@@ -7,6 +7,8 @@ labels:
   - full stack
   - cms
 
+excludeFromListing: false
+
 author:
   name: Contentful Team
   headshot: https://raw.githubusercontent.com/optimizely/labs/master/assets/author-headshots/contentful-icon.svg
