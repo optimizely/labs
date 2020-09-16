@@ -1,12 +1,6 @@
 # Computing metrics with event-level experiment data
 
-This Lab contains a series of notebooks that transform event-level data collected during an Optimizely experiment into several useful experiment datasets:
-
-- **Experiment units**: the individual units (usually website visitors or app users) that are exposed to a control or treatment in the course of an online experiment. 
-- **Experiment events**: the conversion events, such as a button click or a purchase, that was influenced by an experiment. We compute this view by isolating the conversion events triggered during a finite window of time (called the attribution window) after a visitor has been exposed to an experiment treatment.
-- **Metric observations**: a mapping of experiment units to metric-specific numerical outcomes observed during an experiment
-
-In this notebook, we'll walk through an end-to-end workflow for computing a series of metrics with data collected by both Optimizely and a third party during an Optimizely Full Stack experiment.
+In this Lab, we'll walk through an end-to-end workflow for computing a series of metrics with data collected by both Optimizely and a third party during an Optimizely Full Stack experiment.
 
 ## The experiment
 
@@ -46,15 +40,6 @@ In order to measure the impact this banner has on customer support volumes and d
 Attic & Button's call centers are managed by a third party.  This third party shares call data with Attic & Button periodically in a [CSV](https://en.wikipedia.org/wiki/Comma-separated_values) file, making it difficult to track customer support metrics on Optimizely's [Experiment Results Page](https://app.optimizely.com/l/QQbfVyRFQYGq-J57P-3XoQ?previousView=VARIATIONS&variation=email_button&utm_campaign=copy).
 
 In this notebook, we'll use Optimizely Enriched Event Data and our third-party call data to compute a variety of metrics for our experiment, including "Support calls per visitor" and "Total call duration per visitor". 
-
-## What we're going to do
-
-1. Download Optimizely decision and conversion data for our experiment
-2. Compute "experiment units" and "experiment events" datasets
-3. Load customer support call log data compute an "experiment calls" dataset 
-4. Compute a set of metrics with our experiment datasets
-5. Compute sequential p-values and confidence intervals using Optimizely Stats Engine Service
-6. Render a simple experiment results report
 
 ## Global parameters
 
@@ -101,14 +86,14 @@ We'll start by download [decision](https://docs.developers.optimizely.com/optimi
 
 
 ```python
-!oevents load --type decisions --experiment 18786493712 --date 2020-09-14
+# !oevents load --type decisions --experiment 18786493712 --date 2020-09-14
 ```
 
 Next we'll download [conversion](https://docs.developers.optimizely.com/optimizely-data/docs/enriched-events-data-specification#conversions-2) data collected during our experiment.  Each **conversion event** captures the moment a visitor took some action on our website, e.g. viewing our homepage, adding an item to their shopping cart, or making a purchase.
 
 
 ```python
-!oevents load --type events --date 2020-09-14
+# !oevents load --type events --date 2020-09-14
 ```
 
 ## Load Decision and Conversion Data into Spark Dataframes
@@ -236,7 +221,7 @@ The following diagram illustrates how these datasets are used to compute _metric
 
 ### Enriched decisions
 
-First we'll use Optimizely's [Experiment API](https://library.optimizely.com/docs/api/app/v2/index.html#operation/get_experiment) to enrich our decision data with experiment and variation names.  This step makes it easier to build human-readable experiment reports with this data, as we will see below.
+First we'll use Optimizely's [Experiment API](https://library.optimizely.com/docs/api/app/v2/index.html#operation/get_experiment) to enrich our decision data with experiment and variation names.  This step makes it easier to build human-readable experiment reports with this data.
 
 The code for enriching decision data can be found in the `enriching_decision_data.ipynb` notebook in this lab directory.
 
@@ -480,6 +465,8 @@ Unlike **experiment units** and **experiment events**, which can be computed usi
     </tr>
 </table>
 
+We'll start by defining a helper function, `compute_metric_observations` which performs the units/raw observations "join" in the transformation described above and appends the result to a global `observations` dataframe.
+
 
 ```python
 from pyspark.sql.functions import lit, coalesce
@@ -493,7 +480,7 @@ def compute_metric_observations(
     default_value=0
 ):
     """Compute a "metric observations" dataset for a given metric and (optionally) append it to an existing set of
-    metric observations. Create (ore replace) a temporary view "observations" with the result.
+    metric observations. Create (or replace) a temporary view "observations" with the result.
     
     Parameters: 
         metric_name              - A string that uniquely identifies the metric for which observations are being computed,
@@ -502,7 +489,7 @@ def compute_metric_observations(
         raw_observations_df      - A spark dataframe containing a set of raw observations for this metric. This dataframe 
                                    should contain two columns:
                                       visitor_id - a unique identifier for each unit
-                                      observation - numerical outcome observered for this metric
+                                      observation - numerical outcome observered for each unit
                                    These metric observations will be joined with the provided experiment units dataframe
                                    so that the resulting dataset contains an observation for every unit. 
                                    
@@ -746,7 +733,7 @@ spark.sql("""
 
 ### Metric: Product detail page views per visitor
 
-In this query we the number of product detail page views per visitor
+In this query we count the number of product detail page views per visitor
 
 
 ```python
@@ -851,7 +838,8 @@ spark.sql("""
     FROM 
         observations
     WHERE
-        metric_name = "Electronics revenue per visitor"
+        metric_name = "Electronics revenue per visitor" AND
+        observation > 0
     LIMIT 20
 """)
 ```
@@ -861,26 +849,26 @@ spark.sql("""
 
 <table border='1'>
 <tr><th>metric_name</th><th>timestamp</th><th>experiment_name</th><th>variation_id</th><th>visitor_id</th><th>observation</th></tr>
-<tr><td>Electronics revenue per visitor</td><td>2020-09-14 11:23:26.823</td><td>covid_messaging_experiment</td><td>18817551468</td><td>user_1048</td><td>0</td></tr>
-<tr><td>Electronics revenue per visitor</td><td>2020-09-14 11:23:59.303</td><td>covid_messaging_experiment</td><td>18817551468</td><td>user_1368</td><td>0</td></tr>
-<tr><td>Electronics revenue per visitor</td><td>2020-09-14 11:24:05.094</td><td>covid_messaging_experiment</td><td>18818611832</td><td>user_1425</td><td>0</td></tr>
-<tr><td>Electronics revenue per visitor</td><td>2020-09-14 11:24:41.774</td><td>covid_messaging_experiment</td><td>18817551468</td><td>user_1786</td><td>0</td></tr>
-<tr><td>Electronics revenue per visitor</td><td>2020-09-14 11:25:30.073</td><td>covid_messaging_experiment</td><td>18802093142</td><td>user_2262</td><td>0</td></tr>
-<tr><td>Electronics revenue per visitor</td><td>2020-09-14 11:25:38.915</td><td>covid_messaging_experiment</td><td>18802093142</td><td>user_2349</td><td>0</td></tr>
-<tr><td>Electronics revenue per visitor</td><td>2020-09-14 11:22:04.86</td><td>covid_messaging_experiment</td><td>18818611832</td><td>user_242</td><td>0</td></tr>
-<tr><td>Electronics revenue per visitor</td><td>2020-09-14 11:22:05.475</td><td>covid_messaging_experiment</td><td>18818611832</td><td>user_248</td><td>0</td></tr>
-<tr><td>Electronics revenue per visitor</td><td>2020-09-14 11:26:01.673</td><td>covid_messaging_experiment</td><td>18818611832</td><td>user_2573</td><td>0</td></tr>
-<tr><td>Electronics revenue per visitor</td><td>2020-09-14 11:26:38.674</td><td>covid_messaging_experiment</td><td>18818611832</td><td>user_2937</td><td>0</td></tr>
-<tr><td>Electronics revenue per visitor</td><td>2020-09-14 11:26:40.193</td><td>covid_messaging_experiment</td><td>18802093142</td><td>user_2952</td><td>0</td></tr>
-<tr><td>Electronics revenue per visitor</td><td>2020-09-14 11:27:40.562</td><td>covid_messaging_experiment</td><td>18818611832</td><td>user_3547</td><td>0</td></tr>
-<tr><td>Electronics revenue per visitor</td><td>2020-09-14 11:27:50.896</td><td>covid_messaging_experiment</td><td>18802093142</td><td>user_3649</td><td>0</td></tr>
-<tr><td>Electronics revenue per visitor</td><td>2020-09-14 11:28:30.652</td><td>covid_messaging_experiment</td><td>18817551468</td><td>user_4041</td><td>0</td></tr>
-<tr><td>Electronics revenue per visitor</td><td>2020-09-14 11:22:23.397</td><td>covid_messaging_experiment</td><td>18817551468</td><td>user_424</td><td>0</td></tr>
-<tr><td>Electronics revenue per visitor</td><td>2020-09-14 11:29:20.916</td><td>covid_messaging_experiment</td><td>18818611832</td><td>user_4537</td><td>0</td></tr>
-<tr><td>Electronics revenue per visitor</td><td>2020-09-14 11:29:23.449</td><td>covid_messaging_experiment</td><td>18817551468</td><td>user_4562</td><td>0</td></tr>
-<tr><td>Electronics revenue per visitor</td><td>2020-09-14 11:29:42.099</td><td>covid_messaging_experiment</td><td>18802093142</td><td>user_4746</td><td>0</td></tr>
-<tr><td>Electronics revenue per visitor</td><td>2020-09-14 11:29:43.619</td><td>covid_messaging_experiment</td><td>18818611832</td><td>user_4761</td><td>0</td></tr>
-<tr><td>Electronics revenue per visitor</td><td>2020-09-14 11:30:07.925</td><td>covid_messaging_experiment</td><td>18818611832</td><td>user_5001</td><td>0</td></tr>
+<tr><td>Electronics revenue per visitor</td><td>2020-09-14 11:24:06.005</td><td>covid_messaging_experiment</td><td>18817551468</td><td>user_1434</td><td>79999</td></tr>
+<tr><td>Electronics revenue per visitor</td><td>2020-09-14 11:31:45.74</td><td>covid_messaging_experiment</td><td>18818611832</td><td>user_5967</td><td>79999</td></tr>
+<tr><td>Electronics revenue per visitor</td><td>2020-09-14 11:26:50.953</td><td>covid_messaging_experiment</td><td>18818611832</td><td>user_3058</td><td>79999</td></tr>
+<tr><td>Electronics revenue per visitor</td><td>2020-09-14 11:23:14.427</td><td>covid_messaging_experiment</td><td>18817551468</td><td>user_926</td><td>79999</td></tr>
+<tr><td>Electronics revenue per visitor</td><td>2020-09-14 11:27:48.77</td><td>covid_messaging_experiment</td><td>18818611832</td><td>user_3628</td><td>99999</td></tr>
+<tr><td>Electronics revenue per visitor</td><td>2020-09-14 11:34:20.944</td><td>covid_messaging_experiment</td><td>18817551468</td><td>user_7500</td><td>79999</td></tr>
+<tr><td>Electronics revenue per visitor</td><td>2020-09-14 11:36:59.773</td><td>covid_messaging_experiment</td><td>18818611832</td><td>user_9069</td><td>99999</td></tr>
+<tr><td>Electronics revenue per visitor</td><td>2020-09-14 11:29:24.97</td><td>covid_messaging_experiment</td><td>18817551468</td><td>user_4577</td><td>99999</td></tr>
+<tr><td>Electronics revenue per visitor</td><td>2020-09-14 11:30:12.38</td><td>covid_messaging_experiment</td><td>18802093142</td><td>user_5045</td><td>79999</td></tr>
+<tr><td>Electronics revenue per visitor</td><td>2020-09-14 11:32:14.186</td><td>covid_messaging_experiment</td><td>18817551468</td><td>user_6248</td><td>99999</td></tr>
+<tr><td>Electronics revenue per visitor</td><td>2020-09-14 11:28:41.191</td><td>covid_messaging_experiment</td><td>18802093142</td><td>user_4145</td><td>79999</td></tr>
+<tr><td>Electronics revenue per visitor</td><td>2020-09-14 11:30:30.406</td><td>covid_messaging_experiment</td><td>18818611832</td><td>user_5223</td><td>99999</td></tr>
+<tr><td>Electronics revenue per visitor</td><td>2020-09-14 11:23:27.435</td><td>covid_messaging_experiment</td><td>18818611832</td><td>user_1054</td><td>99999</td></tr>
+<tr><td>Electronics revenue per visitor</td><td>2020-09-14 11:30:26.352</td><td>covid_messaging_experiment</td><td>18817551468</td><td>user_5183</td><td>79999</td></tr>
+<tr><td>Electronics revenue per visitor</td><td>2020-09-14 11:35:28.073</td><td>covid_messaging_experiment</td><td>18802093142</td><td>user_8163</td><td>99999</td></tr>
+<tr><td>Electronics revenue per visitor</td><td>2020-09-14 11:23:52.813</td><td>covid_messaging_experiment</td><td>18802093142</td><td>user_1304</td><td>79999</td></tr>
+<tr><td>Electronics revenue per visitor</td><td>2020-09-14 11:34:19.223</td><td>covid_messaging_experiment</td><td>18802093142</td><td>user_7483</td><td>79999</td></tr>
+<tr><td>Electronics revenue per visitor</td><td>2020-09-14 11:36:30.731</td><td>covid_messaging_experiment</td><td>18817551468</td><td>user_8782</td><td>79999</td></tr>
+<tr><td>Electronics revenue per visitor</td><td>2020-09-14 11:37:49.161</td><td>covid_messaging_experiment</td><td>18818611832</td><td>user_9557</td><td>99999</td></tr>
+<tr><td>Electronics revenue per visitor</td><td>2020-09-14 11:24:16.276</td><td>covid_messaging_experiment</td><td>18817551468</td><td>user_1535</td><td>99999</td></tr>
 </table>
 
 
