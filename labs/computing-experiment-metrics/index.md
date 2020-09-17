@@ -59,7 +59,7 @@ from IPython.display import clear_output
 
 # This notebook requires an Optimizely API token.
 # The default token provided here is a read-only token associated with a demo Optimizely account
-OPTIMIZELY_API_TOKEN = os.environ.get("OPTIMIZELY_API_TOKEN", "2:bqZXaNE24MFUlhyGFrKKY9DMA-G02xoou7fR0nQlQ3bT89uvjtF8")
+OPTIMIZELY_API_TOKEN = os.environ.get("OPTIMIZELY_API_TOKEN", "2:d6K8bPrDoTr_x4hiFCNVidcZk0YEPwcIHZk-IZb5sM3Q7RxRDafI")
 
 # Uncomment the following block to enable manual API token entry
 # if OPTIMIZELY_API_TOKEN is None:
