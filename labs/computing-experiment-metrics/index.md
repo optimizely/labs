@@ -57,8 +57,9 @@ import os
 from getpass import getpass
 from IPython.display import clear_output
 
-# This notebook requires an Optimizely API token.  
-OPTIMIZELY_API_TOKEN = os.environ.get("OPTIMIZELY_API_TOKEN", "2:bqZXaNE24MFUlhyGFrKKY9DMA-G02xoou7fR0nQlQ3bT89uvjtF8")
+# This notebook requires an Optimizely API token.
+# The default token provided here is a read-only token associated with a demo Optimizely account
+OPTIMIZELY_API_TOKEN = os.environ.get("OPTIMIZELY_API_TOKEN", "2:d6K8bPrDoTr_x4hiFCNVidcZk0YEPwcIHZk-IZb5sM3Q7RxRDafI")
 
 # Uncomment the following block to enable manual API token entry
 # if OPTIMIZELY_API_TOKEN is None:
@@ -84,10 +85,13 @@ The default input data for this notebook can be found in the in `covid_test_data
 
 If you have the [oevents](https://github.com/optimizely/oevents) command line tool installed and accessible in your`PATH` environment variable, you may uncomment the following commands to re-download this data. Note that this will require `OPTIMIZELY_API_TOKEN` to be set to the default value specified above.
 
-We'll start by download [decision](https://docs.developers.optimizely.com/optimizely-data/docs/enriched-events-data-specification#decisions-2) data collected during our experiment.  Each **decision** captures the moment a visitor was added to our experiment.
+We'll start by downloading [decision](https://docs.developers.optimizely.com/optimizely-data/docs/enriched-events-data-specification#decisions-2) data collected during our experiment.  Each **decision** captures the moment a visitor was added to our experiment.
 
 
 ```python
+# Uncomment this line to re-download decision data for this experiment 
+# Note: requires oevents to be install and accessible on your path
+
 # !oevents load --type decisions --experiment 18786493712 --date 2020-09-14
 ```
 
@@ -95,6 +99,9 @@ Next we'll download [conversion](https://docs.developers.optimizely.com/optimize
 
 
 ```python
+# Uncomment this line to re-download conversion data for this experiment 
+# Note: requires oevents to be install and accessible on your path
+
 # !oevents load --type events --date 2020-09-14
 ```
 
@@ -1023,6 +1030,8 @@ spark.sql("""
 
 
 
+
+It looks like the average number of customer support calls per visitor and the average call duration are both much lower in the cohorts that saw one of our informational banner!
 
 ### Computing metric values for a visitor segment
 
