@@ -21,7 +21,7 @@ This integration is using [Optimizely's Custom Analytics feature](https://help.o
   "plugin_type": "analytics_integration",
   "name": "ContentSquare",
   "form_schema": [],
-  "description": "",
+  "description": "This integration allows you to send the experiment and variation data from Optimizely Web to ContentSquare",
   "options": {
     "track_layer_decision": "/*\n *Name: Optimizely CS Integration\n *Version: 2.1\n */\n(function () {\n    var tvp = \"AB_OP_\";\n\n    function sendToCS(csKey, csValue) {\n        csKey = tvp + csKey;\n\n        _uxa.push([\"trackDynamicVariable\", {\n            key: csKey,\n            value: csValue\n        }]);\n    };\n\n    function startOPIntegration() {\n        sendToCS(decisionString.experiment, decisionString.holdback ? decisionString.variation + ' [Holdback]' : decisionString.variation);\n    }\n\n    function callback() {\n        if (!disableCallback) {\n            disableCallback = true;\n\n            var decisionString = optimizely.get('state').getDecisionObject({\n                \"campaignId\": campaignId\n            });\n\n            if (!!decisionString) {\n                startOPIntegration();\n            }\n\n            if (window.CS_CONF) {\n                CS_CONF.integrations = CS_CONF.integrations || [];\n                CS_CONF.integrations.push(\"Optimizely\");\n            }\n        }\n    }\n\n    var disableCallback = false;\n    window._uxa = window._uxa || [];\n    _uxa.push([\"afterPageView\", callback]);\n\n})();"
   }
