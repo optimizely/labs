@@ -22,7 +22,10 @@ def delete_lab(slug):
     return
   else:
     print('Found existing entry for slug %s, deleting...' % slug)
-    entry.unpublish()
+    
+    if entry.is_published:
+      entry.unpublish()
+     
     entry.delete()
 
   print('FINISHED delete for slug %s' % slug)

@@ -210,6 +210,7 @@ def upsert_lab_to_contentful(slug, lab_info):
 
 
 def main():
+  labs_with_errors = []
   print('======= Step 0 =======')
   print('Filtering labs that should not be published based on hard coded blacklist:')
   for slug in SLUG_BLACKLIST:
@@ -240,6 +241,13 @@ def main():
     except Exception as error:
       print('ERROR publishing %s...' % slug)
       print(error)
+      labs_with_errors.append(slug)
   print('Finished publishing step!')
+
+  if len(labs_with_errors) > 0:
+    print('ERROR publishing %d lab(s):' % len(labs_with_errors))
+    print(labs_with_errors)
+    raise Exception('Upload to Contentful Failed for %d lab(s). See logs for details' % len(labs_with_errors))
+
 
 main()
