@@ -489,7 +489,7 @@ Since _any_ visitor who triggered an appropriate experiment event should be coun
 
 
 ```python
-## Unique conversions on the "add to cart" event.
+## Unique conversions on the "purchase" event.
 raw_purchase_conversion_rate_obs = spark.sql(f"""
     SELECT
         visitor_id,
@@ -561,7 +561,7 @@ raw_purchase_conversion_rate_obs.toPandas().head(5)
 
 
 
-We'll use our `add_observations` function to perform a left outer join between `experiment_units` and our newly-computed `add_to_cart` conversions.
+We'll use `util.compute_metric_observations` function to perform a left outer join between `experiment_units` and our newly-computed `purchase` conversion data.
 
 
 ```python
