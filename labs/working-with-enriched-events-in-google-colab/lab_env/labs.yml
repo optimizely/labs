@@ -1,0 +1,4 @@
+dependencies:
+- pip=20.2.1
+channels:
+- conda-forge
