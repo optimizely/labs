@@ -1,0 +1,9 @@
+{
+  "plugin_type": "analytics_integration",
+  "name": "Zuko Form Analytics",
+  "form_schema": [],
+  "description": "Track Optimizely experiments and variations as Zuko custom attributes",
+  "options": {
+    "track_layer_decision": "(function () {\n  window.optimizely = window.optimizely || [];\n  window.optimizely.push({\n    type: 'integration',\n    OAuthClientId: 19937894614\n  });\n  var activeExperimentIds = window.optimizely.get('state').getActiveExperimentIds();\n  var experiments = window.optimizely.get('state').getExperimentStates();\n  activeExperimentIds.forEach(function (expId) {\n    window.zuko = window.zuko || {};\n    window.zuko.attributes = window.zuko.attributes || {};\n    var exp = experiments[expId];\n    var expName = exp.experimentName;\n    var expVariantName = exp.variation.name;\n    if (expName && expVariantName) {\n      window.zuko.attributes['Optimizely Experiment ' + expName] = 'Variant ' + expVariantName;\n    }\n  });\n}());\n"
+  }
+}
