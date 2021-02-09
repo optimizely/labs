@@ -9,7 +9,7 @@ labels:
   - forms
   - performance
 
-excludeFromListing: true
+excludeFromListing: false
 
 author:
   name: Zuko Team
