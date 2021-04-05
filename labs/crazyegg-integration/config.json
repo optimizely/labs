@@ -1,0 +1,28 @@
+{
+  "plugin_type": "analytics_integration",
+  "name": "Crazyegg",
+  "form_schema": [
+    {
+      "default_value": "off",
+      "field_type": "dropdown",
+      "name": "heatmaps",
+      "label": "Heatmaps",
+      "options": {
+        "choices": [
+          {
+            "value": "off",
+            "label": "Off"
+          },
+          {
+            "value": "on",
+            "label": "On"
+          }
+        ]
+      }
+    }
+  ],
+  "description": "This integration allows you to see tag heatmaps with Optimizely data. For more information on how to use this integration, please take a look at this Knowledge Base article: https://help.optimizely.com/Integrate_Optimizely_with_Crazyegg",
+  "options": {
+    "track_layer_decision": "if(extension.heatmaps === \"on\") {\n  if(!isHoldback) {\n    window.CE_SNAPSHOT_NAME = '' + variationId;\n  }\n}\n"
+  }
+}
