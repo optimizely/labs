@@ -5,7 +5,7 @@ Crazy Egg integration allows you to see heatmaps with Optimizely data.
 ## Pre-requisites
 
 * You'll need a Crazy Egg account. Head here to get started: [https://www.crazyegg.com](https://www.crazyegg.com).
-* You'll need an Optimizely account with at least one experiment set up.
+* You'll need an Optimizely Web project with at least one experiment set up.
 * The [force variation parameter](https://help.optimizely.com/QA_Campaigns_and_Experiments/Force_behaviors_in_Optimizely_X_using_query_parameters) needs to be enabled. It can be enabled by going to the Settings tab in Optimizely, then make sure the "Disable force variation parameter" box is unchecked.
 
 ## Installation
