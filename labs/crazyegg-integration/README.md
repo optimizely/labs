@@ -1,6 +1,6 @@
 # Crazy Egg Integration
 
-Crazy Egg integration allows you to see heatmaps with Optimizely data. For more information on how to use this integration, please take a look at this Knowledge Base article: https://help.optimizely.com/Integrate_Optimizely_with_Crazyegg
+Crazy Egg integration allows you to see heatmaps with Optimizely data. 
 
 ## Pre-requisites
 
