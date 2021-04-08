@@ -21,7 +21,7 @@
       }
     }
   ],
-  "description": "This integration allows you to see heatmaps with Optimizely data. For more information on how to use this integration, please take a look at this Knowledge Base article: https://help.optimizely.com/Integrate_Optimizely_with_Crazyegg",
+  "description": "This integration allows you to see heatmaps with Optimizely data.
   "options": {
     "track_layer_decision": "if(extension.heatmaps === \"on\") {\n  if(!isHoldback) {\n    window.CE_SNAPSHOT_NAME = '' + variationId;\n  }\n}\n"
   }
