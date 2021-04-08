@@ -13,7 +13,7 @@ excludeFromListing: false
 
 author:
   name: Crazy Egg Team
-  headshot: https://w3-assets.crazyeggcdn.com/images/svg/logo-ce-main.svg
+  headshot: https://s3.amazonaws.com/resources.crazyegg.com/3-CrazyEgg_Logo.png
   company: Crazy Egg
 
 seo:
