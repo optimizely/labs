@@ -1,0 +1,28 @@
+{
+  "plugin_type": "analytics_integration",
+  "name": "Crazy Egg",
+  "form_schema": [
+    {
+      "default_value": "off",
+      "field_type": "dropdown",
+      "name": "heatmaps",
+      "label": "Heatmaps",
+      "options": {
+        "choices": [
+          {
+            "value": "off",
+            "label": "Off"
+          },
+          {
+            "value": "on",
+            "label": "On"
+          }
+        ]
+      }
+    }
+  ],
+  "description": "This integration allows you to see heatmaps with Optimizely data.
+  "options": {
+    "track_layer_decision": "if(extension.heatmaps === \"on\") {\n  if(!isHoldback) {\n    window.CE_SNAPSHOT_NAME = '' + variationId;\n  }\n}\n"
+  }
+}
