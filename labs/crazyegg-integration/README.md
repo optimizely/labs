@@ -21,6 +21,6 @@ Crazy Egg integration allows you to see heatmaps with Optimizely data.
 
 * In _Optimizely_, get your experiment's variation IDs. You can get them by going to the experiment in the _Optimizely UI_, clicking onto the experiment you want to integrate, and clicking on API Names. You will find the variation IDs in the _Variations_ section. Write down the IDs.
 * In _Crazy Egg_ for each variant from the above step, create a _snapshot_ by providing the experiment page url appended with `optimizely_x` queryparam. Example: https://www.example.com/my-page/?optimizely_x=`VARIATIONID`. 
-In _advanced settings_ select `Track by name`, and provide the `variationId` in the text box.
+In `advanced settings` select `Track by name`, and provide the `variationId` in the text box.
 
 
