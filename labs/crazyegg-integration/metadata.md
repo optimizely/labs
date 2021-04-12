@@ -9,11 +9,11 @@ labels:
   - forms
   - heatmap
 
-excludeFromListing: true
+excludeFromListing: false
 
 author:
   name: Crazy Egg Team
-  headshot: https://s3.amazonaws.com/resources.crazyegg.com/3-CrazyEgg_Logo.png
+  headshot: https://s3.amazonaws.com/resources.crazyegg.com/ce-profile-img.png
   company: Crazy Egg
 
 seo:
