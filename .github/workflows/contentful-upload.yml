@@ -24,10 +24,8 @@ jobs:
 
     - name: Upload
       env:
-        # TODO: Change to https://library.optimizely.com/
-        LIBRARY_URL: https://asa-labs.s3.us-east-2.amazonaws.com/
-        # TODO: Change to library-optimizely-com
-        LIBRARY_S3_BUCKET: asa-labs
+        LIBRARY_URL: https://library.optimizely.com/
+        LIBRARY_S3_BUCKET: library-optimizely-com
         LIBRARY_S3_ACCESS_KEY: ${{ secrets.LIBRARY_S3_ACCESS_KEY }}
 
         LIBRARY_S3_SECRET_KEY: ${{ secrets.LIBRARY_S3_SECRET_KEY }}
