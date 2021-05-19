@@ -3,6 +3,8 @@ import 'package:optimizely_agent_client/optimizely_agent.dart';
 void main() async {
   OptimizelyAgent agent = new OptimizelyAgent('JY3jkLmiQiAqHd866edA3', 'http://127.0.0.1:8080', new UserContext('zee'));
   
+  await agent.loadAndCacheDecisions();
+
   print('---- Calling DecideAll API ----');
   var decisions = await agent.decideAll(    
     [
@@ -19,7 +21,7 @@ void main() async {
       OptimizelyDecideOption.DISABLE_DECISION_EVENT,
       OptimizelyDecideOption.INCLUDE_REASONS
     ]);
-  print(decision.toJson());  
+  print(decision.toJson());
 
   print('---- Calling OptimizelyConfig API ----');
   OptimizelyConfig config = await agent.getOptimizelyConfig();

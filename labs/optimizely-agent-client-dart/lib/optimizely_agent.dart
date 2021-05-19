@@ -25,6 +25,7 @@ import './src/models/user_context.dart';
 import './src/models/optimizely_config/optimizely_config.dart';
 import './src/models/override_response.dart';
 import './src/request_manager.dart';
+import './src/decision_cache.dart';
 
 // Exporting all the required classes
 export './src/models/optimizely_decision.dart';
@@ -44,6 +45,7 @@ export './src/models/optimizely_config/optimizely_variation.dart';
 class OptimizelyAgent {
   RequestManager _requestmanager;
   UserContext userContext;
+  DecisionCache decisionCache = new DecisionCache();
 
   OptimizelyAgent(String sdkKey, String url, UserContext userContext) {
     _requestmanager = RequestManager(sdkKey, url);
@@ -130,6 +132,14 @@ class OptimizelyAgent {
       print('Invalid User Context, Failing `decide`');
       return null;
     }
+    OptimizelyDecision cachedDecision = decisionCache.getDecision(resolvedUserContext, key);
+    if (cachedDecision != null) {
+      print('--- Cache Hit!!! Returning Cached decision ---');
+      return cachedDecision;
+    } else {
+      print('--- Cache Miss!!! Making a call to agent ---');
+    }
+
     Response resp = await _requestmanager.decide(userContext: resolvedUserContext, key: key, optimizelyDecideOptions: optimizelyDecideOptions);
     if (resp.statusCode == 200) {
       return OptimizelyDecision.fromJson(resp.data);      
@@ -163,4 +173,17 @@ class OptimizelyAgent {
   }
 
   isUserContextValid(UserContext userContext) => userContext?.userId != null && userContext?.userId != '';
+
+  Future<void> loadAndCacheDecisions([UserContext overrideUserContext]) async {
+    UserContext resolvedUserContext = userContext;
+    if (overrideUserContext != null) {
+      resolvedUserContext = overrideUserContext;
+    }
+    if (!isUserContextValid(resolvedUserContext)) {
+      print('Invalid User Context, Failing `loadAndCacheDecisions`');
+      return null;
+    }
+    List<OptimizelyDecision> decisions = await decideAll([OptimizelyDecideOption.DISABLE_DECISION_EVENT], resolvedUserContext);
+    decisions.forEach((decision) => decisionCache.addDecision(resolvedUserContext, decision.flagKey, decision));    
+  }
 }
