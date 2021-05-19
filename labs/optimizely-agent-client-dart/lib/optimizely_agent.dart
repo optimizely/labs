@@ -23,7 +23,6 @@ import './src/models/optimizely_decide_option.dart';
 import './src/models/optimizely_decision.dart';
 import './src/models/user_context.dart';
 import './src/models/optimizely_config/optimizely_config.dart';
-import './src/models/override_response.dart';
 import './src/request_manager.dart';
 import './src/decision_cache.dart';
 
@@ -31,7 +30,6 @@ import './src/decision_cache.dart';
 export './src/models/optimizely_decision.dart';
 export './src/models/decision_types.dart';
 export './src/models/optimizely_decision_legacy.dart';
-export './src/models/override_response.dart';
 export './src/models/optimizely_decide_option.dart';
 export './src/models/user_context.dart';
 

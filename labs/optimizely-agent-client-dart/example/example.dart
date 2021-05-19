@@ -43,7 +43,7 @@ void main() async {
   print('');
 
   print('---- Calling Activate API ----');
-  List<OptimizelyDecisionLegacy> optimizelyDecisionsLegacy = await agent.activate(userId: 'user1', type: DecisionType.experiment, enabled: true);
+  List<OptimizelyDecisionLegacy> optimizelyDecisionsLegacy = await agent.activate(type: DecisionType.experiment, enabled: true);
   if (optimizelyDecisionsLegacy != null) {
     print('Total Decisions ${optimizelyDecisionsLegacy.length}');
     optimizelyDecisionsLegacy.forEach((OptimizelyDecisionLegacy decision) {
@@ -53,15 +53,6 @@ void main() async {
   print('');
 
   print('---- Calling Track API ----');
-  await agent.track(eventKey: 'button1_click', userId: 'user1');
-  print('');
-
-  print('---- Calling Override API ----');
-  OverrideResponse overrideResponse = await agent.overrideDecision(userId: 'user1', experimentKey: 'playground-test', variationKey: 'variation_5');
-  if (overrideResponse != null) {        
-    print('Previous Variation: ${overrideResponse.prevVariationKey}');
-    print('New Variation: ${overrideResponse.variationKey}');
-    overrideResponse.messages.forEach((String message) => print('Message: $message'));
-  }
-  print('');
+  await agent.track(eventKey: 'button1_click');
+  print('Done!');
 }
