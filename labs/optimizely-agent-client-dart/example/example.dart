@@ -1,8 +1,26 @@
 import 'package:optimizely_agent_client/optimizely_agent.dart';
 
 void main() async {
-  OptimizelyAgent agent = new OptimizelyAgent('{SDK_KEY}', '{AGENT_URL}');
+  OptimizelyAgent agent = new OptimizelyAgent('JY3jkLmiQiAqHd866edA3', 'http://127.0.0.1:8080', new UserContext('zee'));
   
+  print('---- Calling DecideAll API ----');
+  var decisions = await agent.decideAll(    
+    [
+      OptimizelyDecideOption.DISABLE_DECISION_EVENT,
+      OptimizelyDecideOption.INCLUDE_REASONS
+    ],
+  );
+  decisions?.forEach((decision) {
+    print(decision.toJson());
+  });
+  print('');
+
+  var decision = await agent.decide('product_sort', [
+      OptimizelyDecideOption.DISABLE_DECISION_EVENT,
+      OptimizelyDecideOption.INCLUDE_REASONS
+    ]);
+  print(decision.toJson());  
+
   print('---- Calling OptimizelyConfig API ----');
   OptimizelyConfig config = await agent.getOptimizelyConfig();
   if (config != null) {
@@ -15,14 +33,18 @@ void main() async {
         print('  Variation Id: ${variation.id}');
       });
     });
+    
+    config.featuresMap.forEach((String key, OptimizelyFeature feature) {      
+      print('Feature Key: $key');
+    });
   }
   print('');
 
   print('---- Calling Activate API ----');
-  List<OptimizelyDecision> optimizelyDecisions = await agent.activate(userId: 'user1', type: DecisionType.experiment, enabled: true);
-  if (optimizelyDecisions != null) {
-    print('Total Decisions ${optimizelyDecisions.length}');
-    optimizelyDecisions.forEach((OptimizelyDecision decision) {
+  List<OptimizelyDecisionLegacy> optimizelyDecisionsLegacy = await agent.activate(userId: 'user1', type: DecisionType.experiment, enabled: true);
+  if (optimizelyDecisionsLegacy != null) {
+    print('Total Decisions ${optimizelyDecisionsLegacy.length}');
+    optimizelyDecisionsLegacy.forEach((OptimizelyDecisionLegacy decision) {
       print(decision.toJson());
     });
   }

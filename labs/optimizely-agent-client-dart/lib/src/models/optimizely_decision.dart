@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020, Optimizely, Inc. and contributors                        *
+ * Copyright 2021, Optimizely, Inc. and contributors                        *
  *                                                                          *
  * Licensed under the Apache License, Version 2.0 (the "License");          *
  * you may not use this file except in compliance with the License.         *
@@ -14,41 +14,35 @@
  * limitations under the License.                                           *
  ***************************************************************************/
 
+import './user_context.dart';
+
 class OptimizelyDecision {
-  OptimizelyDecision(this.userId, this.experimentKey, this.error);
-
-  String userId;
-  String experimentKey;
-  String featureKey;
-  String variationKey;
-  String type;
   Map<String, dynamic> variables;
+  String variationKey;
   bool enabled;
-  String error;
+  String ruleKey;
+  String flagKey;
+  UserContext userContext;
+  List<String> reasons;
 
-  factory OptimizelyDecision.fromJson(Map<String, dynamic> json) {
-    return OptimizelyDecision(
-      json['userId'] as String,
-      json['experimentKey'] as String,
-      json['error'] as String ?? '',
-    )
-    ..featureKey = json['featureKey'] as String
-    ..variationKey = json['variationKey'] as String
-    ..type = json['type'] as String
-    ..variables = json['variables'] as Map<String, dynamic> ?? {}
-    ..enabled = json['enabled'] as bool;
-  }
+  OptimizelyDecision.fromJson(Map<String, dynamic> json)
+    : variables = json['variables'] as Map<String, dynamic> ?? {},
+      variationKey = json['variationKey'],
+      enabled = json['enabled'],
+      ruleKey = json['ruleKey'],
+      flagKey = json['flagKey'],
+      userContext = UserContext.fromJson(json['userContext']),
+      reasons = (json['reasons'] as List<dynamic>).map((r) => r.toString()).toList();
 
   Map<String, dynamic> toJson() {
     return <String, dynamic> {
-      'userId': this.userId,
-      'experimentKey': this.experimentKey,
-      'featureKey': this.featureKey,
-      'variationKey': this.variationKey,
-      'type': this.type,
+      'userContext': this.userContext.toJson(),
+      'ruleKey': this.ruleKey,
+      'flagKey': this.flagKey,
+      'variationKey': this.variationKey,      
       'variables': this.variables,
       'enabled': this.enabled,
-      'error': this.error,
+      'reasons': this.reasons,
     };
   }
 }

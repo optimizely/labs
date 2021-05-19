@@ -17,7 +17,9 @@
 import 'package:meta/meta.dart';
 import 'package:dio/dio.dart';
 
+import './models/user_context.dart';
 import './models/decision_types.dart';
+import './models/optimizely_decide_option.dart';
 import './network/http_manager.dart';
 
 class RequestManager {
@@ -127,6 +129,35 @@ class RequestManager {
     Response resp;
     try {
       resp = await _manager.postRequest("/v1/activate", body, queryParams);
+    } on DioError catch(err) {
+      resp = err.response != null ? err.response : new Response(statusCode: 0, statusMessage: err.message);
+    }
+    return resp;
+  }
+
+  Future<Response> decide({    
+    @required UserContext userContext,
+    String key,
+    List<OptimizelyDecideOption> optimizelyDecideOptions = const []
+  }) async {
+    Map<String, dynamic> body = {
+      "userId": userContext.userId,
+      "decideOptions": optimizelyDecideOptions.map((option) => option.toString().split('.').last).toList(),      
+    };
+
+    if (userContext.attributes != null) {
+      body["userAttributes"] = userContext.attributes;
+    }
+
+    Map<String, dynamic> queryParams = {};
+    
+    if (key != null) {
+      queryParams['keys'] = key;
+    }
+
+    Response resp;
+    try {
+      resp = await _manager.postRequest("/v1/decide", body, queryParams);
     } on DioError catch(err) {
       resp = err.response != null ? err.response : new Response(statusCode: 0, statusMessage: err.message);
     }

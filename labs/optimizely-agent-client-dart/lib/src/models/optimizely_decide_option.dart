@@ -14,27 +14,10 @@
  * limitations under the License.                                           *
  ***************************************************************************/
 
-import 'dart:io';
-import 'package:dio/dio.dart';
-
-class HttpManager {
-  final String _sdkKey;
-  final String _url;
-  final _client = Dio();
-
-  HttpManager(this._sdkKey, this._url) {
-    _client.options.baseUrl = _url;
-    _client.options.headers = {
-      "X-Optimizely-SDK-Key": _sdkKey,
-      HttpHeaders.contentTypeHeader: "application/json"
-    };
-  }
-
-  Future<Response> getRequest(String endpoint) {
-    return _client.get('$_url$endpoint');
-  }
-
-  Future<Response> postRequest(String endpoint, Object body, [Map<String, dynamic> queryParams]) {
-    return _client.post(endpoint, data: body, queryParameters: queryParams);
-  }
+enum OptimizelyDecideOption {
+  DISABLE_DECISION_EVENT,
+  ENABLED_FLAGS_ONLY,
+  IGNORE_USER_PROFILE_SERVICE,
+  EXCLUDE_VARIABLES,
+  INCLUDE_REASONS
 }

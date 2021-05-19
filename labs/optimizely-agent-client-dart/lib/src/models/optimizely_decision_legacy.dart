@@ -14,27 +14,41 @@
  * limitations under the License.                                           *
  ***************************************************************************/
 
-import 'dart:io';
-import 'package:dio/dio.dart';
+class OptimizelyDecisionLegacy {
+  OptimizelyDecisionLegacy(this.userId, this.experimentKey, this.error);
 
-class HttpManager {
-  final String _sdkKey;
-  final String _url;
-  final _client = Dio();
+  String userId;
+  String experimentKey;
+  String featureKey;
+  String variationKey;
+  String type;
+  Map<String, dynamic> variables;
+  bool enabled;
+  String error;
 
-  HttpManager(this._sdkKey, this._url) {
-    _client.options.baseUrl = _url;
-    _client.options.headers = {
-      "X-Optimizely-SDK-Key": _sdkKey,
-      HttpHeaders.contentTypeHeader: "application/json"
+  factory OptimizelyDecisionLegacy.fromJson(Map<String, dynamic> json) {
+    return OptimizelyDecisionLegacy(
+      json['userId'] as String,
+      json['experimentKey'] as String,
+      json['error'] as String ?? '',
+    )
+    ..featureKey = json['featureKey'] as String
+    ..variationKey = json['variationKey'] as String
+    ..type = json['type'] as String
+    ..variables = json['variables'] as Map<String, dynamic> ?? {}
+    ..enabled = json['enabled'] as bool;
+  }
+
+  Map<String, dynamic> toJson() {
+    return <String, dynamic> {
+      'userId': this.userId,
+      'experimentKey': this.experimentKey,
+      'featureKey': this.featureKey,
+      'variationKey': this.variationKey,
+      'type': this.type,
+      'variables': this.variables,
+      'enabled': this.enabled,
+      'error': this.error,
     };
-  }
-
-  Future<Response> getRequest(String endpoint) {
-    return _client.get('$_url$endpoint');
-  }
-
-  Future<Response> postRequest(String endpoint, Object body, [Map<String, dynamic> queryParams]) {
-    return _client.post(endpoint, data: body, queryParameters: queryParams);
   }
 }

@@ -17,16 +17,22 @@
 import 'package:meta/meta.dart';
 import 'package:dio/dio.dart';
 
-import './src/models/activate_response.dart';
+import './src/models/optimizely_decision_legacy.dart';
 import './src/models/decision_types.dart';
-
+import './src/models/optimizely_decide_option.dart';
+import './src/models/optimizely_decision.dart';
+import './src/models/user_context.dart';
 import './src/models/optimizely_config/optimizely_config.dart';
 import './src/models/override_response.dart';
 import './src/request_manager.dart';
 
+// Exporting all the required classes
+export './src/models/optimizely_decision.dart';
 export './src/models/decision_types.dart';
-export './src/models/activate_response.dart';
+export './src/models/optimizely_decision_legacy.dart';
 export './src/models/override_response.dart';
+export './src/models/optimizely_decide_option.dart';
+export './src/models/user_context.dart';
 
 // Exporting all OptimizelyConfig entities
 export './src/models/optimizely_config/optimizely_config.dart';
@@ -37,9 +43,11 @@ export './src/models/optimizely_config/optimizely_variation.dart';
 
 class OptimizelyAgent {
   RequestManager _requestmanager;
+  UserContext userContext;
 
-  OptimizelyAgent(String sdkKey, String url) {
+  OptimizelyAgent(String sdkKey, String url, UserContext userContext) {
     _requestmanager = RequestManager(sdkKey, url);
+    this.userContext = userContext;
   }
 
   /// Returns status code and OptimizelyConfig object
@@ -79,7 +87,7 @@ class OptimizelyAgent {
 
   /// Activate makes feature and experiment decisions for the selected query parameters
   /// and returns list of OptimizelyDecision
-  Future<List<OptimizelyDecision>> activate({
+  Future<List<OptimizelyDecisionLegacy>> activate({
     @required String userId,
     Map<String, dynamic> userAttributes,
     List<String> featureKey,
@@ -98,6 +106,53 @@ class OptimizelyAgent {
       enabled: enabled
     );
     if (resp.statusCode == 200) {
+      List<OptimizelyDecisionLegacy> optimizelyDecisions = [];
+      resp.data.forEach((element) {
+        optimizelyDecisions.add(OptimizelyDecisionLegacy.fromJson(element));
+      });
+      return optimizelyDecisions;
+    }
+    return null;
+  }
+
+  Future<OptimizelyDecision> decide(
+    String key,
+    [
+      List<OptimizelyDecideOption> optimizelyDecideOptions = const [],
+      UserContext overrideUserContext
+    ]
+  ) async {
+    UserContext resolvedUserContext = userContext;
+    if (overrideUserContext != null) {
+      resolvedUserContext = overrideUserContext;
+    }
+    if (!isUserContextValid(resolvedUserContext)) {
+      print('Invalid User Context, Failing `decide`');
+      return null;
+    }
+    Response resp = await _requestmanager.decide(userContext: resolvedUserContext, key: key, optimizelyDecideOptions: optimizelyDecideOptions);
+    if (resp.statusCode == 200) {
+      return OptimizelyDecision.fromJson(resp.data);      
+    }
+    return null;
+  }
+
+  Future<List<OptimizelyDecision>> decideAll(    
+    [
+      List<OptimizelyDecideOption> optimizelyDecideOptions = const [],
+      UserContext overrideUserContext
+    ]
+  ) async {
+    UserContext resolvedUserContext = userContext;
+    if (overrideUserContext != null) {
+      resolvedUserContext = overrideUserContext;
+    }
+    if (!isUserContextValid(resolvedUserContext)) {
+      print('Invalid User Context, Failing `decideAll`');
+      return null;
+    }
+    Response resp = await _requestmanager.decide(userContext: resolvedUserContext, optimizelyDecideOptions: optimizelyDecideOptions);
+    if (resp.statusCode == 200) {      
       List<OptimizelyDecision> optimizelyDecisions = [];
       resp.data.forEach((element) {
         optimizelyDecisions.add(OptimizelyDecision.fromJson(element));
@@ -106,4 +161,6 @@ class OptimizelyAgent {
     }
     return null;
   }
+
+  isUserContextValid(UserContext userContext) => userContext?.userId != null && userContext?.userId != '';
 }

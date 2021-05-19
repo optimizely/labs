@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright 2020, Optimizely, Inc. and contributors                        *
+ * Copyright 2021, Optimizely, Inc. and contributors                        *
  *                                                                          *
  * Licensed under the Apache License, Version 2.0 (the "License");          *
  * you may not use this file except in compliance with the License.         *
@@ -14,27 +14,22 @@
  * limitations under the License.                                           *
  ***************************************************************************/
 
-import 'dart:io';
-import 'package:dio/dio.dart';
+class UserContext {
+  String userId;
+  Map<String, String> attributes = new Map<String, String>();
 
-class HttpManager {
-  final String _sdkKey;
-  final String _url;
-  final _client = Dio();
+  UserContext(userId, [attributes])
+    : this.userId = userId,
+      this.attributes = attributes;
 
-  HttpManager(this._sdkKey, this._url) {
-    _client.options.baseUrl = _url;
-    _client.options.headers = {
-      "X-Optimizely-SDK-Key": _sdkKey,
-      HttpHeaders.contentTypeHeader: "application/json"
+  UserContext.fromJson(Map<String, dynamic> json)
+    : userId = json['userId'],
+      attributes = (json['attributes'] as Map<String, dynamic>).map((k, e) => MapEntry(k, e as String));
+
+  Map<String, dynamic> toJson() {
+    return <String, dynamic> {
+      "userId": this.userId,
+      "attributes": this.attributes
     };
-  }
-
-  Future<Response> getRequest(String endpoint) {
-    return _client.get('$_url$endpoint');
-  }
-
-  Future<Response> postRequest(String endpoint, Object body, [Map<String, dynamic> queryParams]) {
-    return _client.post(endpoint, data: body, queryParameters: queryParams);
   }
 }
