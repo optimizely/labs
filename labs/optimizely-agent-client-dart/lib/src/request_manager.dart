@@ -68,27 +68,6 @@ class RequestManager {
     return resp;
   }
 
-  Future<Response> overrideDecision({
-    @required String userId,
-    @required String experimentKey,
-    @required String variationKey
-  }) async {    
-    Map<String, dynamic> body = {
-      "userId": userId,
-      "experimentKey": experimentKey,
-      "variationKey": variationKey
-    };
-    
-    Response resp;
-    try {
-      resp = await _manager.postRequest("/v1/override", body);
-    } on DioError catch(err) {
-      print(err.message);
-      resp = err.response != null ? err.response : new Response(statusCode: 0, statusMessage: err.message);
-    }
-    return resp;
-  }
-
   Future<Response> activate({
     @required String userId,
     Map<String, dynamic> userAttributes,
@@ -142,7 +121,7 @@ class RequestManager {
   }) async {
     Map<String, dynamic> body = {
       "userId": userContext.userId,
-      "decideOptions": optimizelyDecideOptions.map((option) => option.toString().split('.').last).toList(),      
+      "decideOptions": optimizelyDecideOptions?.map((option) => option.toString().split('.').last)?.toList(),
     };
 
     if (userContext.attributes != null) {

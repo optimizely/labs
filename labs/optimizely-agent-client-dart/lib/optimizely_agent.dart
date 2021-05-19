@@ -61,46 +61,46 @@ class OptimizelyAgent {
   /// Tracks an event and returns nothing.
   Future<void> track({
     @required String eventKey,
-    String userId,
     Map<String, dynamic> eventTags,
-    Map<String, dynamic> userAttributes
+    UserContext overrideUserContext
   }) {
+    UserContext resolvedUserContext = userContext;
+    if (overrideUserContext != null) {
+      resolvedUserContext = overrideUserContext;
+    }
+    if (!isUserContextValid(resolvedUserContext)) {
+      print('Invalid User Context, Failing `track`');
+      return null;
+    }
     return _requestmanager.track(
       eventKey: eventKey,
-      userId: userId,
+      userId: resolvedUserContext.userId,
       eventTags: eventTags,
-      userAttributes: userAttributes
+      userAttributes: resolvedUserContext.attributes
     );    
-  }
-
-  /// Overrides a decision for the user and returns OverrideResponse object.
-  Future<OverrideResponse> overrideDecision({
-    @required String userId,
-    @required String experimentKey,
-    @required String variationKey
-  }) async {
-    Response resp = await _requestmanager.overrideDecision(
-      userId: userId,
-      experimentKey: experimentKey,
-      variationKey: variationKey
-    );
-    return resp.statusCode == 200 ? OverrideResponse.fromJson(resp.data) : null;
   }
 
   /// Activate makes feature and experiment decisions for the selected query parameters
   /// and returns list of OptimizelyDecision
   Future<List<OptimizelyDecisionLegacy>> activate({
-    @required String userId,
-    Map<String, dynamic> userAttributes,
     List<String> featureKey,
     List<String> experimentKey,
     bool disableTracking,
     DecisionType type,
-    bool enabled
+    bool enabled,
+    UserContext overrideUserContext
   }) async {
+    UserContext resolvedUserContext = userContext;
+    if (overrideUserContext != null) {
+      resolvedUserContext = overrideUserContext;
+    }
+    if (!isUserContextValid(resolvedUserContext)) {
+      print('Invalid User Context, Failing `activate`');
+      return null;
+    }
     Response resp = await _requestmanager.activate(
-      userId: userId,
-      userAttributes: userAttributes,
+      userId: resolvedUserContext.userId,
+      userAttributes: resolvedUserContext.attributes,
       featureKey: featureKey,
       experimentKey: experimentKey,
       disableTracking: disableTracking,
@@ -186,4 +186,6 @@ class OptimizelyAgent {
     List<OptimizelyDecision> decisions = await decideAll([OptimizelyDecideOption.DISABLE_DECISION_EVENT], resolvedUserContext);
     decisions.forEach((decision) => decisionCache.addDecision(resolvedUserContext, decision.flagKey, decision));    
   }
+
+  resetCache() => decisionCache.reset();
 }

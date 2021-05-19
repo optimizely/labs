@@ -20,7 +20,7 @@ import './models/user_context.dart';
 class DecisionCache {
   Map<String, Map<String, OptimizelyDecision>> cache = {};
 
-  addDecision(UserContext userContext, String flagKey, OptimizelyDecision decision) {
+  void addDecision(UserContext userContext, String flagKey, OptimizelyDecision decision) {
     String userId = userContext.userId;
     if (cache.containsKey(userId)) {
       cache[userId][flagKey] = decision;
@@ -36,4 +36,6 @@ class DecisionCache {
     }
     return null;
   }
+
+  void reset() => cache = {};
 }
