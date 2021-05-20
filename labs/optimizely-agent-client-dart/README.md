@@ -1,38 +1,74 @@
-# Dart Client for Optimizely Agent
-This is a dart client to facilitate communication with Optimizely Agent.
+# Dart / FlutterClient for Optimizely Agent
+This is a dart / flutter client to facilitate communication with Optimizely Agent.
 
 ## Initialization
 ```
-OptimizelyAgent(String sdkKey, String url)
+OptimizelyAgent(String sdkKey, String url, UserContext userContext)
 ```
-The client can be initialized buy providing `sdkKey` and url where `agent` is deployed.
+The client can be initialized by providing `sdkKey`, url where `agent` is deployed and `userContext` which contains `userId` and `attributes`. The client memoizes the user information and reuses it for subsequent calls.
 
 #### Example
 ```
-OptimizelyAgent agent = new OptimizelyAgent('{sdkKey}', 'http://localhost:8080');
+OptimizelyAgent agent = new OptimizelyAgent('{sdkKey}', 'http://localhost:8080', UserContext('user1', {'group': 'premium'}));
 ```
 
-## Activate
+## Decision Caching
+By default, the client makes a new http call to the agent for every decision. Optionally, to avoid latency, all decisions can be loaded and cached for a userContext.
+
+```
+loadAndCacheDecisions([UserContext overrideUserContext]) → Future<void>
+```
+
+When no arguments are provided, it will load decisions for the memoized user. An optional`overrideUserContext` can be provided to load and cache decisions for a different user.
+
+####
+```
+await agent.loadAndCacheDecisions();
+```
+
+## Decide
+
+```
+decide(
+  String key, 
+  [List<OptimizelyDecideOption> optimizelyDecideOptions = const [],
+  UserContext overrideUserContext
+]) → Future<OptimizelyDecision>
+```
+
+`decide` takes flag Key as a required parameter and evaluates the decision for the memoized user. It can also optionally take decide options or override User. `decide` returns a cached decision if available otherwise it makes an API call to the agent.
+
+## Decide All
+
+```
+decideAll(
+  [List<OptimizelyDecideOption> optimizelyDecideOptions = const [],
+  UserContext overrideUserContext
+]) → Future<List<OptimizelyDecision>>
+```
+
+`decideAll` evaluates all the decisions for the memoized user. It can also optionally take decide options or override User. `decideAll` does not make use of the cache and always makes a new API call to agent.
+
+## Activate (Legacy)
 ```
 activate({
-  @required String userId,
-  Map<String, dynamic> userAttributes,
   List<String> featureKey,
   List<String> experimentKey,
   bool disableTracking,
   DecisionType type,
-  bool enabled
-}) → Future<List<OptimizelyDecision>>
+  bool enabled,
+  UserContext overrideUserContext
+}) → Future<List<OptimizelyDecisionLegacy>>
 ```
 
-Activate takes `userId` as a required argument and a combination of optional arguments and returns a list of decisions represented by `OptimizelyDecision`.
+Activate is a Legacy API and should only be used with legacy experiments. I uses memoized user and takes a combination of optional arguments and returns a list of decisions. Activate does not leverage decision caching.
 
 #### Example
 ```
-List<OptimizelyDecision> optimizelyDecisions = await agent.activate(userId: 'user1', type: DecisionType.experiment, enabled: true);
+List<OptimizelyDecisionLegacy> optimizelyDecisions = await agent.activate(type: DecisionType.experiment, enabled: true);
 if (optimizelyDecisions != null) {
   print('Total Decisions ${optimizelyDecisions.length}');
-  optimizelyDecisions.forEach((OptimizelyDecision decision) {
+  optimizelyDecisions.forEach((OptimizelyDecisionLegacy decision) {
     print(decision.variationKey);
   });
 }
@@ -41,18 +77,17 @@ if (optimizelyDecisions != null) {
 ## Track
 ```
 track({
-  @required String eventKey,
-  String userId,
+  @required String eventKey,  
   Map<String, dynamic> eventTags,
-  Map<String, dynamic> userAttributes
+  UserContext overrideUserContext
 }) → Future<void>
 ```
 
-Track takes `eventKey` as a required argument and a combination of optional arguments and returns nothing.
+Track takes `eventKey` as a required argument and a combination of optional arguments and sends an event.
 
 #### Example
 ```
-await agent.track(eventKey: 'button1_click', userId: 'user1');
+await agent.track(eventKey: 'button1_click');
 ```
 
 ## Optimizely Config
@@ -75,26 +110,5 @@ if (config != null) {
       print('  Variation Id: ${variation.id}');
     });
   });
-}
-```
-
-## Override Decision
-```
-overrideDecision({
-  @required String userId,
-  @required String experimentKey,
-  @required String variationKey
-}) → Future<OverrideResponse>
-```
-
-overrideDecision requires all the parameters and returns on `OverrideResponse` object which contains previous variation, new variation, messages and some more information.
-
-#### Example
-```
-OverrideResponse overrideResponse = await agent.overrideDecision(userId: 'user1', experimentKey: 'playground-test', variationKey: 'variation_5');
-if (overrideResponse != null) {        
-  print('Previous Variation: ${overrideResponse.prevVariationKey}');
-  print('New Variation: ${overrideResponse.variationKey}');
-  overrideResponse.messages.forEach((String message) => print('Message: $message'));
 }
 ```

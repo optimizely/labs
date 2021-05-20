@@ -1,7 +1,7 @@
 import 'package:optimizely_agent_client/optimizely_agent.dart';
 
 void main() async {
-  OptimizelyAgent agent = new OptimizelyAgent('JY3jkLmiQiAqHd866edA3', 'http://127.0.0.1:8080', new UserContext('zee'));
+  OptimizelyAgent agent = new OptimizelyAgent('{SDK_KEY}', '{AGENT_URL}', UserContext('{USER_ID}'));
   
   await agent.loadAndCacheDecisions();
 
@@ -17,7 +17,7 @@ void main() async {
   });
   print('');
 
-  var decision = await agent.decide('product_sort', [
+  var decision = await agent.decide('{FLAG_KEY}', [
       OptimizelyDecideOption.DISABLE_DECISION_EVENT,
       OptimizelyDecideOption.INCLUDE_REASONS
     ]);
@@ -53,6 +53,6 @@ void main() async {
   print('');
 
   print('---- Calling Track API ----');
-  await agent.track(eventKey: 'button1_click');
+  await agent.track(eventKey: '{EVENT_NAME}');
   print('Done!');
 }
