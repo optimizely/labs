@@ -1,6 +1,6 @@
 # Crazy Egg Integration
 
-The Crazy Egg integration allows you to see heatmaps with Optimizely data. 
+The Crazy Egg integration allows you to see heatmaps with Optimizely data.
 
 ## Pre-requisites
 
@@ -10,15 +10,51 @@ The Crazy Egg integration allows you to see heatmaps with Optimizely data.
 
 ## Optimizely Setup
 
-1. Download the integration Resource file located on the left side of this page.
-2. Unzip the resources file.
-3. In Optimizely: go to _Settings_ > _Integrations_ > _Create Analytics Integration…_ > _Using JSON_
-4. Copy and paste the contents of _config.json_ from step 2 into the _JSON Code_ window in Optimizely and click _Create Integration_.
-5. Select _Crazy Egg_ in the integration list and enable the integration.
-6. Find the experiment in Optimizely that you want to integrate Crazy Egg with, click on the Integrations tab and make sure the HeatMaps field is "ON".
-7. You’ll need your experiment's variation IDs. You can find them in Optimizely UI under Experiments.  Choose the Experiment you want to integrate, and click on API Names. Under the Variations section, you will find the IDs. Write these down.
+1. Navigate to the Optimizely project in which you want to use the integration.
+2. Click on **Settings** in the left navigation bar, and then **Integrations**.
+3. Click on the blue button titled **"Create New Analytics Integration"**.
+4. In the dropdown menu select **Using JSON**.
+5. Copy and paste the following code into the _JSON Code_ window in Optimizely and click **Create Integration**.
+
+```
+{
+  "plugin_type": "analytics_integration",
+  "name": "Crazy Egg",
+  "form_schema": [
+    {
+      "default_value": "off",
+      "field_type": "dropdown",
+      "name": "heatmaps",
+      "label": "Heatmaps",
+      "options": {
+        "choices": [
+          {
+            "value": "off",
+            "label": "Off"
+          },
+          {
+            "value": "on",
+            "label": "On"
+          }
+        ]
+      }
+    }
+  ],
+  "description": "This integration allows you to see heatmaps with Optimizely data.
+  "options": {
+    "track_layer_decision": "if(extension.heatmaps === \"on\") {\n  if(!isHoldback) {\n    window.CE_SNAPSHOT_NAME = '' + variationId;\n  }\n}\n"
+  }
+}
+```
+6. Select **Crazy Egg** in the integration list and **enable** the integration.
+7. Click on **Experiments** in the left navigation bar, click on the **Name** of the experiment.
+8. Click on **Integrations** in the submenu, and make sure the Crazy Egg Heatmaps field is **On**.
+9. Next you will need to find your experiment's variation IDs. Click on **API Names** in the submenu.
+10. Find the **variation ID's** for the control and any variants, you will need these for the Crazy Egg setup.
 
 ## Crazy Egg Setup
 
-* In Crazy Egg, create a snapshot for each ID. The snapshot URL will need to have the experiment page URL appended with `optimizely_x` query param. Example: https://www.example.com/my-page/?optimizely_x=`VARIATIONID`. 
-* Under the advanced settings - Tracking Options, select the Track by name option and enter the variationID in the text box.
+In Crazy Egg, you will need to create a separate snapshot for each ID. 
+1. The **Snapshot URL** will need to have the experiment page URL appended with `optimizely_x` query param. Example: https://www.example.com/my-page/?optimizely_x=VARIATIONID.
+2. The **Snapshot name** will need to be the **variant ID**.
+3. Under the **Advanced settings**, select the Tracking Option of **Track by name**. Note: You just need to select this option, you won't need to add the additional code on your page since the integration automatically handles it.
