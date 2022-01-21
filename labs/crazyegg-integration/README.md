@@ -54,7 +54,7 @@ The Crazy Egg integration allows you to see heatmaps with Optimizely data.
 
 ## Crazy Egg Setup
 
-In Crazy Egg, you will need to create a seperate snasphot for each ID. 
+In Crazy Egg, you will need to create a separate snapshot for each ID. 
 1. The **Snapshot URL** will need to have the experiment page URL appended with `optimizely_x` query param. Example: https://www.example.com/my-page/?optimizely_x=VARIATIONID.
 2. The **Snapshot name** will need to be the **variant ID**
 3. Under the **Advanced settings**, select the Tracking Option of **Track by name**. Note: You just need to select this option, you won't need to add the additional code on your page since the integration automatically handles it.
