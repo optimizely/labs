@@ -1,9 +1,9 @@
-# ContentSquare Integration for Optimizely Web
+# Contentsquare Integration for Optimizely Web
 
-Hello! This integration allows you to send experiment and variation data from Optimizely into ContentSquare. 
+Hello! This integration allows you to send experiment and variation data from Optimizely into Contentsquare. 
 ## Pre-requisites
 
-You need a ContentSquare and Optimizely Web account. 
+You need a Contentsquare and Optimizely Web account. 
 
 ### Installation
 
@@ -19,9 +19,9 @@ This integration is using [Optimizely's Custom Analytics feature](https://help.o
 ```json
 {
   "plugin_type": "analytics_integration",
-  "name": "ContentSquare",
+  "name": "Contentsquare",
   "form_schema": [],
-  "description": "This integration allows you to send the experiment and variation data from Optimizely Web to ContentSquare",
+  "description": "This integration allows you to send the experiment and variation data from Optimizely Web to Contentsquare",
   "options": {
     "track_layer_decision": "/*\n *Name: Optimizely CS Integration\n *Version: 2.1\n */\n(function () {\n    var tvp = \"AB_OP_\";\n\n    function sendToCS(csKey, csValue) {\n        csKey = tvp + csKey;\n\n        _uxa.push([\"trackDynamicVariable\", {\n            key: csKey,\n            value: csValue\n        }]);\n    };\n\n    function startOPIntegration(decisionString) {\n        sendToCS(decisionString.experiment, decisionString.holdback ? decisionString.variation + ' [Holdback]' : decisionString.variation);\n    }\n\n    function callback() {\n        if (!disableCallback) {\n            disableCallback = true;\n\n            var decisionString = optimizely.get('state').getDecisionObject({\n                \"campaignId\": campaignId\n            });\n\n            if (!!decisionString) {\n                startOPIntegration(decisionString);\n            }\n\n            if (window.CS_CONF) {\n                CS_CONF.integrations = CS_CONF.integrations || [];\n                CS_CONF.integrations.push(\"Optimizely\");\n            }\n        }\n    }\n\n    var disableCallback = false;\n    window._uxa = window._uxa || [];\n    _uxa.push([\"afterPageView\", callback]);\n\n})();"
   }
@@ -34,10 +34,10 @@ Before using this integration, you'll need to enable it in the [project settings
 
 Moving forward, this integration will be turned on by default for every new experiment you create in Optimizely Web. 
 
-We recommend to run an A/A experiment to validate that you are able to see data coming through in ContentSquare. 
+We recommend to run an A/A experiment to validate that you are able to see data coming through in Contentsquare. 
 
-If everything works properly, you should see in ContentSquare a Dynamic Variable called `AB_OP_` followed by the experiment name or id.	 
-Example: `AB_OP_(18180652355)` where 18180652355 is the experimentId. The value of this ContentSquare dynamic variable will be the variation Ids of this experiment. 
+If everything works properly, you should see in Contentsquare a Dynamic Variable called `AB_OP_` followed by the experiment name or id.	 
+Example: `AB_OP_(18180652355)` where 18180652355 is the experimentId. The value of this Contentsquare dynamic variable will be the variation Ids of this experiment. 
 
 ### Integration Code
 
