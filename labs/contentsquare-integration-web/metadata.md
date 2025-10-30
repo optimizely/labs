@@ -1,6 +1,6 @@
 ---
-title: ContentSquare Integration for Optimizely Web
-summary: This integration allows you to send experiment and variation data from Optimizely Web to ContentSquare.
+title: Contentsquare Integration for Optimizely Web
+summary: This integration allows you to send experiment and variation data from Optimizely Web to Contentsquare.
 revisionDate: '2020-08-19'
 labels:
   - integrations
@@ -17,8 +17,8 @@ author:
   company: Optimizely
 
 seo:
-  title: ContentSquare Integration for Optimizely Web
-  description: This integration allows you to send experiment and variation data from Optimizely Web to ContentSquare.
+  title: Contentsquare Integration for Optimizely Web
+  description: This integration allows you to send experiment and variation data from Optimizely Web to Contentsquare.
   ogTitle:
   ogDescription:
   ogImage:
