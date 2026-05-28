@@ -21,8 +21,8 @@
       }
     }
   ],
-  "description": "This integration allows you to see heatmaps with Optimizely data.
+  "description": "This integration allows you to see heatmaps with Optimizely data.",
   "options": {
-    "track_layer_decision": "if(extension.heatmaps === \"on\") {\n  if(!isHoldback) {\n    window.CE_SNAPSHOT_NAME = '' + variationId;\n  }\n}\n"
+    "track_layer_decision": "if(extension.heatmaps === \"on\") {\n  if(!isHoldback && typeof variationId === \"string\" && variationId !== \"\") {\n    window.CE_SNAPSHOT_NAME = variationId;\n  }\n}\n"
   }
 }
